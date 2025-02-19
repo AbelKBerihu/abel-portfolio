@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { ArrowDown, Linkedin, Mail, Phone, Youtube } from "lucide-react";
 import { Button } from "./ui/button";
@@ -34,12 +33,12 @@ export const Hero = () => {
             <Button
               variant="outline"
               size="lg"
-              className="glass hover:bg-[#0A66C2]/10"
+              className="glass hover:bg-[#0A66C2]/10 transition-all duration-300 ease-in-out transform hover:scale-105"
               asChild
             >
               <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" className="flex items-center">
-                <Linkedin className="mr-2 h-5 w-5 text-[#0A66C2]" />
-                <span className="text-[#0A66C2]">LinkedIn</span>
+                <Linkedin className="mr-2 h-5 w-5 text-[#0A66C2] transition-transform duration-300 ease-in-out group-hover:rotate-12" />
+                <span className="text-[#0A66C2] transition-colors duration-300">LinkedIn</span>
               </a>
             </Button>
 

@@ -1,8 +1,12 @@
+
 import { motion } from "framer-motion";
 import { ArrowDown, Linkedin, Mail, Phone, Youtube } from "lucide-react";
 import { Button } from "./ui/button";
 
 export const Hero = () => {
+  const text = "ABEL KEBEDE";
+  const characters = Array.from(text);
+
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="container mx-auto px-4">
@@ -15,9 +19,27 @@ export const Hero = () => {
           <span className="text-primary/80 font-medium tracking-wider uppercase">
             Web Developer & Video Editor
           </span>
-          <h1 className="text-4xl md:text-6xl font-bold mt-4 mb-6">
-            Crafting Digital
-            <span className="text-primary"> Experiences</span>
+          <h1 className="text-4xl md:text-6xl font-bold mt-4 mb-6 flex justify-center items-center gap-[2px]">
+            {characters.map((char, index) => (
+              <motion.span
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.3,
+                  delay: index * 0.1,
+                }}
+                className="inline-block"
+              >
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+              className="inline-block w-[4px] h-[40px] md:h-[60px] bg-primary ml-2"
+            />
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             I create engaging web experiences and compelling video content that
@@ -33,38 +55,29 @@ export const Hero = () => {
             <Button
               variant="outline"
               size="lg"
-              className="glass hover:bg-[#0A66C2]/10 transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="glass hover:bg-primary/10 transition-all duration-500 ease-in-out transform hover:scale-110 text-lg"
               asChild
             >
-              <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" className="flex items-center">
-                <Linkedin className="mr-2 h-5 w-5 text-[#0A66C2] transition-transform duration-300 ease-in-out group-hover:rotate-12" />
-                <span className="text-[#0A66C2] transition-colors duration-300">LinkedIn</span>
+              <a href="tel:+1234567890" className="group relative">
+                <Phone className="mr-2 h-6 w-6" />
+                <span className="relative z-10">Call Me</span>
+                <span className="absolute left-0 -bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-300 text-sm whitespace-nowrap">
+                  +1234567890
+                </span>
               </a>
             </Button>
 
             <Button
               variant="outline"
               size="lg"
-              className="glass"
-              asChild
-            >
-              <a href="mailto:your.email@example.com">
-                <Mail className="mr-2 h-5 w-5" />
-                Email
-              </a>
-            </Button>
-
-            <Button
-              variant="outline"
-              size="lg"
-              className="glass hover:bg-[#14A800]/10"
+              className="glass hover:bg-[#14A800]/10 transition-all duration-300 ease-in-out transform hover:scale-110 text-lg"
               asChild
             >
               <a href="https://upwork.com/your-profile" target="_blank" rel="noopener noreferrer" className="flex items-center">
                 <svg
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  className="mr-2 h-5 w-5 text-[#14A800]"
+                  className="mr-2 h-6 w-6 text-[#14A800]"
                 >
                   <path d="M18.561 13.158c-1.102 0-2.135-.467-3.074-1.227l.228-1.076.008-.042c.207-1.143.849-3.06 2.839-3.06 1.492 0 2.703 1.212 2.703 2.703-.001 1.489-1.212 2.702-2.704 2.702zm0-8.14c-2.539 0-4.51 1.649-5.31 4.366-1.22-1.834-2.148-4.036-2.687-5.892H7.828v7.112c-.002 1.406-1.141 2.546-2.547 2.546-1.405 0-2.543-1.14-2.543-2.546V3.492H0v7.112c0 2.917 2.37 5.297 5.281 5.297 2.913 0 5.283-2.38 5.283-5.297V9.06c.53 1.086 1.181 2.185 1.971 3.15l-1.67 7.873h2.833l1.213-5.727c1.063.679 2.285 1.109 3.652 1.109 3 0 5.439-2.452 5.439-5.45 0-3-2.439-5.439-5.441-5.439z" />
                 </svg>
@@ -75,12 +88,12 @@ export const Hero = () => {
             <Button
               variant="outline"
               size="lg"
-              className="glass"
+              className="glass hover:bg-[#0A66C2]/10 transition-all duration-300 ease-in-out transform hover:scale-105"
               asChild
             >
-              <a href="tel:+1234567890">
-                <Phone className="mr-2 h-5 w-5" />
-                Call Me
+              <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" className="flex items-center">
+                <Linkedin className="mr-2 h-5 w-5 text-[#0A66C2] transition-transform duration-300 ease-in-out group-hover:rotate-12" />
+                <span className="text-[#0A66C2] transition-colors duration-300">LinkedIn</span>
               </a>
             </Button>
 
@@ -134,6 +147,18 @@ export const Hero = () => {
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                 </svg>
                 <span className="text-[#25D366]">WhatsApp</span>
+              </a>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="lg"
+              className="glass"
+              asChild
+            >
+              <a href="mailto:your.email@example.com">
+                <Mail className="mr-2 h-5 w-5" />
+                Email
               </a>
             </Button>
           </motion.div>

@@ -3,9 +3,10 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Send } from "lucide-react";
-import { useState } from "react";
+import { Mail, Send, Phone } from "lucide-react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import emailjs from '@emailjs/browser';
 
 interface ContactForm {
   name: string;
@@ -20,6 +21,16 @@ export const Contact = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -33,36 +44,32 @@ export const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // You'll need to create these API endpoints to handle the different platform messages
-      const responses = await Promise.all([
-        // Send to Telegram
-        fetch("/api/send-telegram", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }),
-        // Send to WhatsApp
-        fetch("/api/send-whatsapp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }),
-        // Send to Gmail
-        fetch("/api/send-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }),
-      ]);
+      // Send via EmailJS
+      await emailjs.send(
+        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
+        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+        },
+        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
+      );
 
-      const allSuccessful = responses.every((res) => res.ok);
+      // Send to Telegram bot
+      await fetch('https://api.telegram.org/bot6758334021:AAHb0yd3d6MLaxDhGdjAgp4GiARI7H6dDLg/sendMessage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: '1234567890', // Replace with your chat ID
+          text: `New Contact Form Submission:\nName: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message}`,
+        }),
+      });
 
-      if (allSuccessful) {
-        toast.success("Message sent successfully!");
-        setFormData({ name: "", email: "", message: "" });
-      } else {
-        toast.error("Failed to send message to all platforms");
-      }
+      toast.success("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
@@ -91,9 +98,13 @@ export const Contact = () => {
           viewport={{ once: true }}
           className="max-w-md mx-auto"
         >
-          <div className="glass rounded-lg p-6 shadow-lg">
+          <div className="glass rounded-lg p-6 shadow-lg backdrop-blur-lg">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+              >
                 <Input
                   placeholder="Your Name"
                   name="name"
@@ -102,8 +113,12 @@ export const Contact = () => {
                   className="bg-white/50"
                   required
                 />
-              </div>
-              <div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
                 <Input
                   placeholder="Email Address"
                   type="email"
@@ -113,8 +128,12 @@ export const Contact = () => {
                   className="bg-white/50"
                   required
                 />
-              </div>
-              <div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+              >
                 <Textarea
                   placeholder="Your Message"
                   name="message"
@@ -123,11 +142,20 @@ export const Contact = () => {
                   className="bg-white/50 min-h-[120px]"
                   required
                 />
-              </div>
-              <Button className="w-full" type="submit" disabled={isSubmitting}>
-                <Send className="w-4 h-4 mr-2" />
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
+                  className="w-full glass hover:bg-primary/20 transition-all duration-300"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {!isMobile && <Send className="w-4 h-4 mr-2" />}
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </Button>
+              </motion.div>
             </form>
           </div>
         </motion.div>

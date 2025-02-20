@@ -9,7 +9,7 @@ const Index = () => {
   return (
     <AnimatePresence mode="wait">
       <motion.div 
-        className="bg-background min-h-screen"
+        className="bg-background min-h-screen font-jetbrains"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

@@ -86,7 +86,7 @@ export const Hero = () => {
                 className="glass hover:bg-primary/10 transition-all duration-500 ease-in-out transform hover:scale-110 text-lg w-48 h-[48px] group"
                 asChild
               >
-                <a href="tel:+1234567890" className="relative overflow-hidden">
+                <a href="tel:+251 930 466 887" className="relative overflow-hidden">
                   <Phone className="mr-2 h-6 w-6" />
                   <span className="group-hover:translate-y-[-100%] transition-transform duration-300 inline-block">
                     Call Me
@@ -103,7 +103,7 @@ export const Hero = () => {
                 className="glass hover:bg-[#14A800]/10 transition-all duration-300 ease-in-out transform hover:scale-110 text-lg w-48"
                 asChild
               >
-                <a href="https://upwork.com/your-profile" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                <a href="https://www.upwork.com/freelancers/abelk27?mp_source=share" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
                   <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
@@ -128,7 +128,7 @@ export const Hero = () => {
                 className="glass hover:bg-[#0A66C2]/10 transition-all duration-300 ease-in-out transform hover:scale-105"
                 asChild
               >
-                <a href="https://linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer" className="flex items-center">
+                <a href="https://www.linkedin.com/in/abel-ks?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BzYJQWI5dTYqMYcRcVpLULw%3D%3D" target="_blank" rel="noopener noreferrer" className="flex items-center">
                   <Linkedin className="mr-2 h-5 w-5 text-[#0A66C2] transition-transform duration-300 ease-in-out group-hover:rotate-12" />
                   <span className="text-[#0A66C2] transition-colors duration-300">LinkedIn</span>
                 </a>
@@ -157,7 +157,7 @@ export const Hero = () => {
                 className="glass hover:bg-[#0088cc]/10"
                 asChild
               >
-                <a href="https://t.me/your-username" target="_blank" rel="noopener noreferrer" className="flex items-center">
+                <a href="https://t.me/Avebinaa" target="_blank" rel="noopener noreferrer" className="flex items-center">
                   <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
@@ -175,7 +175,7 @@ export const Hero = () => {
                 className="glass hover:bg-[#25D366]/10"
                 asChild
               >
-                <a href="https://wa.me/1234567890" target="_blank" rel="noopener noreferrer" className="flex items-center">
+                <a href="https://wa.me/0930466887" target="_blank" rel="noopener noreferrer" className="flex items-center">
                   <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
@@ -193,7 +193,7 @@ export const Hero = () => {
                 className="glass"
                 asChild
               >
-                <a href="mailto:your.email@example.com">
+                <a href="mailto:your.ks.avebina7@gmail.com">
                   <Mail className="mr-2 h-5 w-5" />
                   Email
                 </a>

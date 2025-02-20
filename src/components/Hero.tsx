@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { ArrowDown, Linkedin, Mail, Phone, Youtube } from "lucide-react";
 import { Button } from "./ui/button";
@@ -5,6 +6,27 @@ import { Button } from "./ui/button";
 export const Hero = () => {
   const text = "ABEL KEBEDE";
   const characters = Array.from(text);
+
+  const nameVariants = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1,
+        repeat: Infinity,
+        repeatDelay: 3,
+      },
+    },
+  };
+
+  const letterVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+      },
+    },
+  };
 
   return (
     <motion.section 
@@ -24,16 +46,16 @@ export const Hero = () => {
           <span className="text-primary/80 font-medium tracking-wider uppercase">
             Web Developer & Video Editor
           </span>
-          <h1 className="text-4xl md:text-6xl font-bold mt-4 mb-6 flex justify-center items-center gap-[2px]">
+          <motion.h1 
+            variants={nameVariants}
+            initial="initial"
+            animate="animate"
+            className="text-4xl md:text-6xl font-bold mt-4 mb-6 flex justify-center items-center gap-[2px]"
+          >
             {characters.map((char, index) => (
               <motion.span
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.3,
-                  delay: index * 0.1,
-                }}
+                variants={letterVariants}
                 className="inline-block"
               >
                 {char === " " ? "\u00A0" : char}
@@ -45,7 +67,7 @@ export const Hero = () => {
               transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
               className="inline-block w-[4px] h-[40px] md:h-[60px] bg-primary ml-2"
             />
-          </h1>
+          </motion.h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
             I create engaging web experiences and compelling video content that
             captivate audiences and drive results.
@@ -61,13 +83,15 @@ export const Hero = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="glass hover:bg-primary/10 transition-all duration-500 ease-in-out transform hover:scale-110 text-lg w-48"
+                className="glass hover:bg-primary/10 transition-all duration-500 ease-in-out transform hover:scale-110 text-lg w-48 h-[48px] group"
                 asChild
               >
-                <a href="tel:+1234567890" className="group relative">
+                <a href="tel:+1234567890" className="relative overflow-hidden">
                   <Phone className="mr-2 h-6 w-6" />
-                  <span className="relative z-10">Call Me</span>
-                  <span className="absolute left-0 -bottom-8 opacity-0 group-hover:opacity-100 transition-all duration-300 text-sm whitespace-nowrap">
+                  <span className="group-hover:translate-y-[-100%] transition-transform duration-300 inline-block">
+                    Call Me
+                  </span>
+                  <span className="absolute left-1/2 -translate-x-1/2 top-1/2 translate-y-[100%] group-hover:translate-y-[-50%] transition-transform duration-300 text-lg font-medium whitespace-nowrap">
                     +1234567890
                   </span>
                 </a>

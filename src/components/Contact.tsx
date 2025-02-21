@@ -1,9 +1,8 @@
-
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Mail, Send, Phone } from "lucide-react";
+import { Mail, Send, Phone, Github, MessageSquare } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import emailjs from '@emailjs/browser';
@@ -23,6 +22,8 @@ export const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isPhoneHovered, setIsPhoneHovered] = useState(false);
+  const [isGithubHovered, setIsGithubHovered] = useState(false);
+  const [isDiscordHovered, setIsDiscordHovered] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -91,39 +92,106 @@ export const Contact = () => {
           <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
           <p className="text-muted-foreground">Let's discuss your next project</p>
           
-          {/* Phone Number with Hover Effect */}
-          <motion.div 
-            className="mt-4 inline-block relative cursor-pointer"
-            onHoverStart={() => setIsPhoneHovered(true)}
-            onHoverEnd={() => setIsPhoneHovered(false)}
-          >
-            <AnimatePresence mode="wait">
-              {!isPhoneHovered && (
-                <motion.div
-                  key="phone-default"
-                  initial={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
-                  className="flex items-center gap-2 text-primary"
-                >
-                  <Phone className="w-5 h-5" />
-                  <span>Call Me</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <AnimatePresence>
-              {isPhoneHovered && (
-                <motion.div
-                  key="phone-number"
-                  initial={{ opacity: 0, scale: 0.8, position: 'absolute', top: 0, left: 0 }}
-                  animate={{ opacity: 1, scale: 1.1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-primary font-medium whitespace-nowrap"
-                >
-                  +251 912 345 678
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+          <div className="flex items-center justify-center gap-8 mt-4">
+            <motion.div 
+              className="inline-block relative cursor-pointer"
+              onHoverStart={() => setIsPhoneHovered(true)}
+              onHoverEnd={() => setIsPhoneHovered(false)}
+            >
+              <AnimatePresence mode="wait">
+                {!isPhoneHovered && (
+                  <motion.div
+                    key="phone-default"
+                    initial={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                    className="flex items-center gap-2 text-primary"
+                  >
+                    <Phone className="w-5 h-5" />
+                    <span>Call Me</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {isPhoneHovered && (
+                  <motion.div
+                    key="phone-number"
+                    initial={{ opacity: 0, scale: 0.8, position: 'absolute', top: 0, left: 0 }}
+                    animate={{ opacity: 1, scale: 1.1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="text-primary font-medium whitespace-nowrap"
+                  >
+                    +251 912 345 678
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            <motion.div 
+              className="inline-block relative cursor-pointer"
+              onHoverStart={() => setIsGithubHovered(true)}
+              onHoverEnd={() => setIsGithubHovered(false)}
+            >
+              <AnimatePresence mode="wait">
+                {!isGithubHovered && (
+                  <motion.div
+                    key="github-default"
+                    initial={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                    className="flex items-center gap-2 text-primary"
+                  >
+                    <Github className="w-5 h-5" />
+                    <span>GitHub</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {isGithubHovered && (
+                  <motion.div
+                    key="github-username"
+                    initial={{ opacity: 0, scale: 0.8, position: 'absolute', top: 0, left: 0 }}
+                    animate={{ opacity: 1, scale: 1.1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="text-primary font-medium whitespace-nowrap"
+                  >
+                    @abelkm99
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            <motion.div 
+              className="inline-block relative cursor-pointer"
+              onHoverStart={() => setIsDiscordHovered(true)}
+              onHoverEnd={() => setIsDiscordHovered(false)}
+            >
+              <AnimatePresence mode="wait">
+                {!isDiscordHovered && (
+                  <motion.div
+                    key="discord-default"
+                    initial={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                    className="flex items-center gap-2 text-primary"
+                  >
+                    <MessageSquare className="w-5 h-5" />
+                    <span>Discord</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence>
+                {isDiscordHovered && (
+                  <motion.div
+                    key="discord-username"
+                    initial={{ opacity: 0, scale: 0.8, position: 'absolute', top: 0, left: 0 }}
+                    animate={{ opacity: 1, scale: 1.1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="text-primary font-medium whitespace-nowrap"
+                  >
+                    @abelk
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </div>
         </motion.div>
 
         <motion.div

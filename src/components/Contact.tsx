@@ -1,5 +1,5 @@
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,6 +22,7 @@ export const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isPhoneHovered, setIsPhoneHovered] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -44,16 +45,15 @@ export const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Send via EmailJS
       await emailjs.send(
-        'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-        'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
+        'service_wne1zy9', // Your EmailJS service ID
+        'template_8z2ypcj', // Your EmailJS template ID
         {
           from_name: formData.name,
           from_email: formData.email,
           message: formData.message,
         },
-        'YOUR_PUBLIC_KEY' // Replace with your EmailJS public key
+        'RwhyRBgaROGXAK2j_' // Your EmailJS public key
       );
 
       // Send to Telegram bot
@@ -63,7 +63,7 @@ export const Contact = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          chat_id: '1234567890', // Replace with your chat ID
+          chat_id: '1234567890',
           text: `New Contact Form Submission:\nName: ${formData.name}\nEmail: ${formData.email}\nMessage: ${formData.message}`,
         }),
       });
@@ -90,7 +90,40 @@ export const Contact = () => {
         >
           <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
           <p className="text-muted-foreground">Let's discuss your next project</p>
+          
+          {/* Phone Number with Hover Effect */}
+          <motion.div 
+            className="mt-4 inline-block relative cursor-pointer"
+            onHoverStart={() => setIsPhoneHovered(true)}
+            onHoverEnd={() => setIsPhoneHovered(false)}
+          >
+            <AnimatePresence mode="wait">
+              {!isPhoneHovered ? (
+                <motion.div
+                  key="phone-default"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="flex items-center gap-2 text-primary"
+                >
+                  <Phone className="w-5 h-5" />
+                  <span>Call Me</span>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="phone-number"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1.1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="text-primary font-medium"
+                >
+                  +251 912 345 678
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

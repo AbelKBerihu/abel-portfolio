@@ -5,6 +5,7 @@ import { Projects } from "@/components/Projects";
 import { Skills } from "@/components/Skills";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
         transition={{ duration: 0.5 }}
       >
         <CustomCursor />
+        <Header />
         <Hero />
         <Projects />
         <Skills />

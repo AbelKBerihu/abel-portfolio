@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Github, MessageSquare } from "lucide-react";
+import { Github, MessageSquare, Mail, Youtube, Linkedin } from "lucide-react";
 import { useState } from "react";
 
 export const Footer = () => {
@@ -11,7 +11,7 @@ export const Footer = () => {
     <footer className="py-8 bg-background/50 backdrop-blur-sm border-t">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-center gap-6">
-          <div className="flex items-center gap-8">
+          <div className="flex flex-wrap items-center gap-8">
             {/* GitHub */}
             <motion.a
               href="https://github.com/abelkm99"
@@ -72,6 +72,46 @@ export const Footer = () => {
                   @abelk
                 </motion.span>
               )}
+            </motion.a>
+
+            {/* LinkedIn */}
+            <motion.a
+              href="https://www.linkedin.com/in/abel-ks"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative cursor-none hover:text-[#0A66C2] transition-colors"
+              whileHover={{ scale: 1.1 }}
+            >
+              <div className="flex items-center gap-2">
+                <Linkedin className="w-5 h-5" />
+                <span>LinkedIn</span>
+              </div>
+            </motion.a>
+
+            {/* YouTube */}
+            <motion.a
+              href="https://youtube.com/your-channel"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative cursor-none hover:text-red-500 transition-colors"
+              whileHover={{ scale: 1.1 }}
+            >
+              <div className="flex items-center gap-2">
+                <Youtube className="w-5 h-5" />
+                <span>YouTube</span>
+              </div>
+            </motion.a>
+
+            {/* Email */}
+            <motion.a
+              href="mailto:ks.avebina7@gmail.com"
+              className="relative cursor-none"
+              whileHover={{ scale: 1.1 }}
+            >
+              <div className="flex items-center gap-2">
+                <Mail className="w-5 h-5" />
+                <span>Email</span>
+              </div>
             </motion.a>
           </div>
           

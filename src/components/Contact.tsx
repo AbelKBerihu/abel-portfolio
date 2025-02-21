@@ -98,24 +98,26 @@ export const Contact = () => {
             onHoverEnd={() => setIsPhoneHovered(false)}
           >
             <AnimatePresence mode="wait">
-              {!isPhoneHovered ? (
+              {!isPhoneHovered && (
                 <motion.div
                   key="phone-default"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
                   className="flex items-center gap-2 text-primary"
                 >
                   <Phone className="w-5 h-5" />
                   <span>Call Me</span>
                 </motion.div>
-              ) : (
+              )}
+            </AnimatePresence>
+            <AnimatePresence>
+              {isPhoneHovered && (
                 <motion.div
                   key="phone-number"
-                  initial={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, scale: 0.8, position: 'absolute', top: 0, left: 0 }}
                   animate={{ opacity: 1, scale: 1.1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-primary font-medium"
+                  className="text-primary font-medium whitespace-nowrap"
                 >
                   +251 912 345 678
                 </motion.div>

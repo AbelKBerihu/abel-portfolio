@@ -4,6 +4,8 @@ import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
 import { Skills } from "@/components/Skills";
 import { Contact } from "@/components/Contact";
+import { Footer } from "@/components/Footer";
+import { CustomCursor } from "@/components/CustomCursor";
 
 const Index = () => {
   return (
@@ -15,10 +17,12 @@ const Index = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.5 }}
       >
+        <CustomCursor />
         <Hero />
         <Projects />
         <Skills />
         <Contact />
+        <Footer />
       </motion.div>
     </AnimatePresence>
   );

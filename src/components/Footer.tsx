@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Github, Discord, Mail, Youtube, Linkedin, Telegram } from "lucide-react";
+import { Github, MessageCircle, Mail, Youtube, Linkedin, MessageSquare } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -31,7 +31,7 @@ export const Footer = () => {
               whileHover={{ scale: 1.1 }}
             >
               <div className="flex items-center gap-2">
-                <Discord className="w-5 h-5" />
+                <MessageCircle className="w-5 h-5" />
                 <span>Discord</span>
               </div>
             </motion.a>
@@ -59,7 +59,7 @@ export const Footer = () => {
               whileHover={{ scale: 1.1 }}
             >
               <div className="flex items-center gap-2">
-                <Telegram className="w-5 h-5" />
+                <MessageSquare className="w-5 h-5" />
                 <span>Telegram</span>
               </div>
             </motion.a>

@@ -7,6 +7,7 @@ import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Index = () => {
   return (
@@ -19,6 +20,7 @@ const Index = () => {
         transition={{ duration: 0.5 }}
       >
         <CustomCursor />
+        <ThemeToggle />
         <Header />
         <Hero />
         <Projects />

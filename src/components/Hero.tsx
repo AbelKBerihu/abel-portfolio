@@ -1,11 +1,13 @@
-
 import { motion } from "framer-motion";
-import { ArrowDown, Phone } from "lucide-react";
+import { ArrowDown, Phone, Upload } from "lucide-react";
 import { Button } from "./ui/button";
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 
 export const Hero = () => {
   const text = "ABEL KEBEDE";
   const characters = Array.from(text);
+  const [isPhoneHovered, setIsPhoneHovered] = useState(false);
 
   const nameVariants = {
     animate: {
@@ -30,6 +32,7 @@ export const Hero = () => {
 
   return (
     <motion.section 
+      id="home"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
@@ -78,22 +81,69 @@ export const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="flex justify-center gap-4"
+              className="flex flex-wrap justify-center gap-4"
             >
               <Button
                 variant="outline"
                 size="lg"
-                className="glass hover:bg-primary/10 transition-all duration-500 ease-in-out transform hover:scale-110 text-lg w-48 h-[48px] group cursor-none"
+                onMouseEnter={() => setIsPhoneHovered(true)}
+                onMouseLeave={() => setIsPhoneHovered(false)}
+                className="glass hover:bg-primary/10 transition-all duration-500 ease-in-out transform hover:scale-110 text-lg w-48 h-[48px] relative overflow-hidden cursor-none"
                 asChild
               >
-                <a href="tel:+251 930 466 887" className="relative overflow-hidden">
-                  <Phone className="mr-2 h-6 w-6" />
-                  <span className="group-hover:translate-y-[-100%] transition-transform duration-300 inline-block">
-                    Call Me
-                  </span>
-                  <span className="absolute left-1/2 -translate-x-1/2 top-1/2 translate-y-[100%] group-hover:translate-y-[-50%] transition-transform duration-300 text-lg font-medium whitespace-nowrap">
-                    +1234567890
-                  </span>
+                <a href="tel:+251 930 466 887">
+                  <AnimatePresence mode="wait">
+                    {!isPhoneHovered ? (
+                      <motion.div
+                        initial={{ y: 0 }}
+                        exit={{ y: -30 }}
+                        className="flex items-center justify-center gap-2 absolute inset-0"
+                      >
+                        <Phone className="h-6 w-6" />
+                        <span>Call Me</span>
+                      </motion.div>
+                    ) : (
+                      <motion.span
+                        initial={{ y: 30 }}
+                        animate={{ y: 0 }}
+                        className="absolute inset-0 flex items-center justify-center"
+                      >
+                        +251 930 466 887
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </a>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="lg"
+                className="glass hover:bg-[#14A800]/10 transition-all duration-500 text-lg h-[48px] cursor-none"
+                asChild
+              >
+                <a 
+                  href="https://www.upwork.com/your-profile" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-[#14A800] hover:text-[#14A800]"
+                >
+                  <span>Hire me on Upwork</span>
+                </a>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="lg"
+                className="glass hover:bg-primary/10 transition-all duration-500 text-lg h-[48px] cursor-none"
+                asChild
+              >
+                <a 
+                  href="/resume.pdf" 
+                  download 
+                  className="flex items-center gap-2"
+                >
+                  <Upload className="h-5 w-5" />
+                  <span>Download CV</span>
                 </a>
               </Button>
             </motion.div>

@@ -1,12 +1,8 @@
 
 import { motion } from "framer-motion";
-import { Github, MessageSquare, Mail, Youtube, Linkedin } from "lucide-react";
-import { useState } from "react";
+import { Github, Discord, Mail, Youtube, Linkedin, Telegram } from "lucide-react";
 
 export const Footer = () => {
-  const [isGithubHovered, setIsGithubHovered] = useState(false);
-  const [isDiscordHovered, setIsDiscordHovered] = useState(false);
-
   return (
     <footer className="py-8 bg-background/50 backdrop-blur-sm border-t">
       <div className="container mx-auto px-4">
@@ -17,30 +13,13 @@ export const Footer = () => {
               href="https://github.com/abelkm99"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative cursor-none"
-              onHoverStart={() => setIsGithubHovered(true)}
-              onHoverEnd={() => setIsGithubHovered(false)}
+              className="cursor-none hover:text-primary transition-colors"
               whileHover={{ scale: 1.1 }}
             >
-              <motion.div
-                animate={{
-                  opacity: isGithubHovered ? 0 : 1,
-                  scale: isGithubHovered ? 0.8 : 1,
-                }}
-                className="flex items-center gap-2 text-primary"
-              >
+              <div className="flex items-center gap-2">
                 <Github className="w-5 h-5" />
                 <span>GitHub</span>
-              </motion.div>
-              {isGithubHovered && (
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="absolute top-0 left-0 text-primary font-medium whitespace-nowrap"
-                >
-                  @abelkm99
-                </motion.span>
-              )}
+              </div>
             </motion.a>
 
             {/* Discord */}
@@ -48,30 +27,13 @@ export const Footer = () => {
               href="https://discord.com/users/abelk"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative cursor-none"
-              onHoverStart={() => setIsDiscordHovered(true)}
-              onHoverEnd={() => setIsDiscordHovered(false)}
+              className="cursor-none hover:text-[#5865F2] transition-colors"
               whileHover={{ scale: 1.1 }}
             >
-              <motion.div
-                animate={{
-                  opacity: isDiscordHovered ? 0 : 1,
-                  scale: isDiscordHovered ? 0.8 : 1,
-                }}
-                className="flex items-center gap-2 text-primary"
-              >
-                <MessageSquare className="w-5 h-5" />
+              <div className="flex items-center gap-2">
+                <Discord className="w-5 h-5" />
                 <span>Discord</span>
-              </motion.div>
-              {isDiscordHovered && (
-                <motion.span
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="absolute top-0 left-0 text-primary font-medium whitespace-nowrap"
-                >
-                  @abelk
-                </motion.span>
-              )}
+              </div>
             </motion.a>
 
             {/* LinkedIn */}
@@ -79,7 +41,7 @@ export const Footer = () => {
               href="https://www.linkedin.com/in/abel-ks"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative cursor-none hover:text-[#0A66C2] transition-colors"
+              className="cursor-none hover:text-[#0A66C2] transition-colors"
               whileHover={{ scale: 1.1 }}
             >
               <div className="flex items-center gap-2">
@@ -88,12 +50,26 @@ export const Footer = () => {
               </div>
             </motion.a>
 
+            {/* Telegram */}
+            <motion.a
+              href="https://t.me/yourusername"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-none hover:text-[#0088cc] transition-colors"
+              whileHover={{ scale: 1.1 }}
+            >
+              <div className="flex items-center gap-2">
+                <Telegram className="w-5 h-5" />
+                <span>Telegram</span>
+              </div>
+            </motion.a>
+
             {/* YouTube */}
             <motion.a
               href="https://youtube.com/your-channel"
               target="_blank"
               rel="noopener noreferrer"
-              className="relative cursor-none hover:text-red-500 transition-colors"
+              className="cursor-none hover:text-red-500 transition-colors"
               whileHover={{ scale: 1.1 }}
             >
               <div className="flex items-center gap-2">
@@ -105,7 +81,7 @@ export const Footer = () => {
             {/* Email */}
             <motion.a
               href="mailto:ks.avebina7@gmail.com"
-              className="relative cursor-none"
+              className="cursor-none hover:text-primary transition-colors"
               whileHover={{ scale: 1.1 }}
             >
               <div className="flex items-center gap-2">

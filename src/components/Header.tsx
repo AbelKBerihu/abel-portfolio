@@ -6,7 +6,7 @@ export const Header = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80; // Offset for header height
+      const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
       
@@ -21,10 +21,11 @@ export const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-sm border-b">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <motion.div
+          <motion.button
+            onClick={() => scrollToSection('home')}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 cursor-none"
           >
             <motion.div
               whileHover={{ rotate: 360 }}
@@ -33,14 +34,14 @@ export const Header = () => {
               <Code className="w-8 h-8 text-primary" />
             </motion.div>
             <span className="text-lg font-bold tracking-wider">ABEL.DEV</span>
-          </motion.div>
+          </motion.button>
           
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-4"
-          >
-            <nav className="hidden md:flex items-center gap-8 -ml-20">
+          <div className="flex items-center space-x-8">
+            <motion.nav
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="hidden md:flex items-center gap-8"
+            >
               <motion.button
                 onClick={() => scrollToSection('projects')}
                 className="text-sm hover:text-primary transition-colors cursor-none"
@@ -62,8 +63,8 @@ export const Header = () => {
               >
                 Contact
               </motion.button>
-            </nav>
-          </motion.div>
+            </motion.nav>
+          </div>
         </div>
       </div>
     </header>

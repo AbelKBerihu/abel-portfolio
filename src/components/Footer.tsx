@@ -31,7 +31,7 @@ export const Footer = () => {
               whileHover={{ scale: 1.1 }}
             >
               <div className="flex items-center gap-2">
-                <MessageCircle className="w-5 h-5" />
+                <MessageCircle className="w-5 h-5 rounded-full" strokeWidth={2.5} />
                 <span>Discord</span>
               </div>
             </motion.a>

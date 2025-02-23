@@ -8,6 +8,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Certifications } from "@/components/Certifications";
 
 const Index = () => {
   return (
@@ -28,6 +29,9 @@ const Index = () => {
           </div>
           <div id="projects">
             <Projects />
+          </div>
+          <div id="certifications">
+            <Certifications />
           </div>
           <div id="skills">
             <Skills />

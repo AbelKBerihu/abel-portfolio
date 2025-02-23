@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Code, Film } from "lucide-react";
+import { Code, Film, Globe, ShoppingBag, Music, Coffee } from "lucide-react";
 
 const projects = [
   {
@@ -8,12 +8,42 @@ const projects = [
     description: "A modern e-commerce solution built with React and Node.js",
     type: "web",
     image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+    icon: ShoppingBag,
   },
   {
     title: "Brand Campaign",
     description: "Cinematic video production for a major brand",
     type: "video",
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
+    icon: Film,
+  },
+  {
+    title: "Music Streaming App",
+    description: "A Spotify-like music streaming platform",
+    type: "web",
+    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
+    icon: Music,
+  },
+  {
+    title: "Restaurant Website",
+    description: "Modern website with online ordering system",
+    type: "web",
+    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+    icon: Coffee,
+  },
+  {
+    title: "Portfolio Platform",
+    description: "Showcase platform for creative professionals",
+    type: "web",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+    icon: Globe,
+  },
+  {
+    title: "Social Network",
+    description: "Community platform with real-time features",
+    type: "web",
+    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
+    icon: Code,
   },
 ];
 

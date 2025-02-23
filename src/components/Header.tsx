@@ -50,6 +50,13 @@ export const Header = () => {
                 Projects
               </motion.button>
               <motion.button
+                onClick={() => scrollToSection('certifications')}
+                className="text-sm hover:text-primary transition-colors cursor-none"
+                whileHover={{ scale: 1.05 }}
+              >
+                Certifications
+              </motion.button>
+              <motion.button
                 onClick={() => scrollToSection('skills')}
                 className="text-sm hover:text-primary transition-colors cursor-none"
                 whileHover={{ scale: 1.05 }}

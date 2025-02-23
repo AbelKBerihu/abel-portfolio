@@ -49,6 +49,7 @@ export const Contact = () => {
         {
           from_name: formData.name,
           from_email: formData.email,
+          to_email: 'ks.abelkebede@gmail.com',
           message: formData.message,
         },
         'RwhyRBgaROGXAK2j_'

@@ -78,6 +78,10 @@
     background-size: 400% 400%;
   }
 
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+
   @keyframes slideUp {
     from {
       opacity: 0;
@@ -107,6 +111,15 @@
     }
     100% {
       background-position: 0% 50%;
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
     }
   }
 }

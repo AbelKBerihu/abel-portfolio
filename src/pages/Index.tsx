@@ -9,6 +9,7 @@ import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Certifications } from "@/components/Certifications";
+import { Marquee } from "@/components/Marquee";
 
 const Index = () => {
   return (
@@ -39,6 +40,7 @@ const Index = () => {
           <div id="contact">
             <Contact />
           </div>
+          <Marquee />
           <Footer />
         </div>
       </motion.div>

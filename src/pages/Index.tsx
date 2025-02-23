@@ -17,15 +17,8 @@ const Index = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.3 }}
       >
-        {/* Gradient Background */}
-        <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 animate-gradient-x" />
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-[100px]" />
-        </div>
-
-        {/* Content */}
         <div className="relative z-10">
           <CustomCursor />
           <ThemeToggle />

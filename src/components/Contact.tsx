@@ -1,9 +1,9 @@
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Phone, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import emailjs from '@emailjs/browser';
@@ -22,7 +22,6 @@ export const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isPhoneHovered, setIsPhoneHovered] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -78,41 +77,6 @@ export const Contact = () => {
         >
           <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
           <p className="text-muted-foreground">Let's discuss your next project</p>
-          
-          {/* Phone Number */}
-          <motion.div 
-            className="mt-4 inline-block relative cursor-none"
-            onHoverStart={() => setIsPhoneHovered(true)}
-            onHoverEnd={() => setIsPhoneHovered(false)}
-            whileHover={{ scale: 1.1 }}
-          >
-            <AnimatePresence mode="wait">
-              {!isPhoneHovered && (
-                <motion.div
-                  key="phone-default"
-                  initial={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="flex items-center gap-2 text-primary"
-                >
-                  <Phone className="w-5 h-5" />
-                  <span>Call Me</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <AnimatePresence>
-              {isPhoneHovered && (
-                <motion.div
-                  key="phone-number"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-primary font-medium whitespace-nowrap absolute top-0 left-1/2 -translate-x-1/2"
-                >
-                  +251 912 345 678
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
         </motion.div>
 
         <motion.div

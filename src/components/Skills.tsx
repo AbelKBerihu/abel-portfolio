@@ -3,11 +3,13 @@ import { motion } from "framer-motion";
 
 const skills = [
   { name: "React", level: 90 },
-  { name: "Node.js", level: 80 },
+  { name: "Node.js", level: 85 },
+  { name: "TypeScript", level: 88 },
   { name: "Motion Graphics", level: 85 },
   { name: "Adobe Photoshop", level: 85 },
   { name: "Adobe Premiere Pro", level: 88 },
   { name: "After Effects", level: 82 },
+  { name: "UI/UX Design", level: 80 },
 ];
 
 export const Skills = () => {

@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -136,7 +135,7 @@ export const Contact = () => {
                 whileTap={{ scale: 0.98 }}
               >
                 <Button
-                  className="w-full glass hover:bg-primary/20 transition-all duration-300 cursor-none"
+                  className="w-full bg-primary/80 hover:bg-primary transition-all duration-300 cursor-none text-primary-foreground font-semibold"
                   type="submit"
                   disabled={isSubmitting}
                 >

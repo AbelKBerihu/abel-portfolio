@@ -8,6 +8,7 @@ export const Hero = () => {
   const text = "ABEL KEBEDE";
   const characters = Array.from(text);
   const [isPhoneHovered, setIsPhoneHovered] = useState(false);
+  const [isUpworkHovered, setIsUpworkHovered] = useState(false);
 
   const nameVariants = {
     animate: {
@@ -118,7 +119,9 @@ export const Hero = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="glass hover:bg-[#14A800]/10 transition-all duration-500 text-lg h-[48px] cursor-none"
+                onMouseEnter={() => setIsUpworkHovered(true)}
+                onMouseLeave={() => setIsUpworkHovered(false)}
+                className="glass hover:bg-[#14A800]/10 transition-all duration-500 text-lg h-[48px] cursor-none relative overflow-hidden"
                 asChild
               >
                 <a 
@@ -127,7 +130,23 @@ export const Hero = () => {
                   rel="noopener noreferrer"
                   className="text-[#14A800] hover:text-[#14A800]"
                 >
-                  <span>Hire me on Upwork</span>
+                  <AnimatePresence mode="wait">
+                    {!isUpworkHovered ? (
+                      <motion.span
+                        initial={{ y: 0 }}
+                        exit={{ y: -30 }}
+                      >
+                        Hire me on Upwork
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        initial={{ y: 30 }}
+                        animate={{ y: 0 }}
+                      >
+                        Let's talk!
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                 </a>
               </Button>
 

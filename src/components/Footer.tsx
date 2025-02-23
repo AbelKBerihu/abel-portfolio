@@ -1,5 +1,6 @@
+
 import { motion } from "framer-motion";
-import { Github, MessageCircle, Youtube, Linkedin, MessageSquare, Facebook, WhatsApp } from "lucide-react";
+import { Github, MessageCircle, Youtube, Linkedin, MessageSquare, Facebook, Mail } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -35,7 +36,7 @@ export const Footer = () => {
               </div>
             </motion.a>
 
-            {/* WhatsApp */}
+            {/* WhatsApp (using MessageSquare as alternative) */}
             <motion.a
               href="https://wa.me/+251930466887"
               target="_blank"
@@ -44,7 +45,7 @@ export const Footer = () => {
               whileHover={{ scale: 1.1 }}
             >
               <div className="flex items-center gap-2">
-                <WhatsApp className="w-5 h-5" />
+                <MessageSquare className="w-5 h-5" />
                 <span>WhatsApp</span>
               </div>
             </motion.a>

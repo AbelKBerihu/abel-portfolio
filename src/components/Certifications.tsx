@@ -48,7 +48,7 @@ export const Certifications = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.3 }}
           viewport={{ once: true }}
           className="text-center mb-12"
         >
@@ -63,17 +63,36 @@ export const Certifications = () => {
               href={cert.credentialURL}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              whileHover={{ 
+                scale: 1.05,
+                transition: { duration: 0.2, ease: "easeOut" }
+              }}
+              transition={{ 
+                duration: 0.3,
+                delay: index * 0.1 
+              }}
               viewport={{ once: true }}
-              className="group cursor-none"
+              className="group"
             >
-              <div className="p-6 rounded-lg glass hover:bg-primary/5 transition-all duration-300">
+              <motion.div 
+                className="p-6 rounded-lg glass bg-background/50 backdrop-blur-sm border border-primary/10"
+                whileHover={{ 
+                  backgroundColor: "rgba(var(--primary), 0.1)",
+                  transition: { duration: 0.2 }
+                }}
+              >
                 <div className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-primary/10">
+                  <motion.div 
+                    className="p-2 rounded-lg bg-primary/10"
+                    whileHover={{ 
+                      scale: 1.1,
+                      rotate: 5 
+                    }}
+                  >
                     <Award className="w-6 h-6 text-primary" />
-                  </div>
+                  </motion.div>
                   <div>
                     <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
                       {cert.title}
@@ -83,7 +102,7 @@ export const Certifications = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.a>
           ))}
         </div>

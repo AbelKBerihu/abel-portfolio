@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,7 +50,7 @@ export const Contact = () => {
         {
           from_name: formData.name,
           from_email: formData.email,
-          to_email: 'ks.abelkebede@gmail.com',
+          to_email: 'ks.avebina7@gmail.com',
           message: formData.message,
         },
         'RwhyRBgaROGXAK2j_'

@@ -1,8 +1,24 @@
+
 import { motion } from "framer-motion";
 import { ArrowDown, Phone, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
+
+// Custom Upwork Icon component since Lucide doesn't have an official one
+const UpworkIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 512 512"
+    width="1em"
+    height="1em"
+    fill="currentColor"
+    stroke="none"
+    {...props}
+  >
+    <path d="M357.2 296.9c-17 0-32.8-7.2-47.3-19l3.5-16.6.1-.6c3.2-17.6 13.1-47.2 43.6-47.2 22.9 0 41.5 18.6 41.5 41.5.1 23-18.5 41.9-41.4 41.9zm0-125.5c-40.9 0-72.7 26.5-85.6 70.1-19.8-29.7-34.8-65.4-43.7-95.3h-44.7v115.1c0 21.6-17.6 39.2-39.2 39.2s-39.2-17.6-39.2-39.2V146.2H60.2v115.1c0 46.1 37.5 83.8 83.7 83.8 46.1 0 83.7-37.7 83.7-83.8v-19.3c8.7 18.1 19.3 36.3 32.1 52.6l-27.2 128.2h45.8l19.8-93c17.3 11 37.1 18 58.2 18 49.3 0 89.4-40.1 89.4-89.4 0-49.4-40.2-89.5-89.5-89.5z" />
+  </svg>
+);
 
 export const Hero = () => {
   const text = "ABEL KEBEDE";
@@ -135,15 +151,19 @@ export const Hero = () => {
                       <motion.span
                         initial={{ y: 0 }}
                         exit={{ y: -30 }}
+                        className="flex items-center justify-center gap-2"
                       >
-                        Hire me on Upwork
+                        <UpworkIcon className="h-5 w-5" />
+                        <span>Upwork</span>
                       </motion.span>
                     ) : (
                       <motion.span
                         initial={{ y: 30 }}
                         animate={{ y: 0 }}
+                        className="flex items-center justify-center"
                       >
-                        Let's talk!
+                        <UpworkIcon className="h-5 w-5 mr-2" />
+                        <span>Let's talk!</span>
                       </motion.span>
                     )}
                   </AnimatePresence>

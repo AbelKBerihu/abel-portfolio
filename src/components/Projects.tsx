@@ -118,19 +118,24 @@ export const Projects = () => {
           {projects.map((project, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: index * 0.2 }}
               viewport={{ once: true }}
               className="group relative overflow-hidden rounded-lg"
             >
-              <div className="aspect-video overflow-hidden">
+              <motion.div 
+                className="aspect-video overflow-hidden"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: index * 0.2 }}
+              >
                 <img
                   src={project.image}
                   alt={project.title}
                   className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
                 />
-              </div>
+              </motion.div>
               <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="p-6 text-white h-full overflow-y-auto">
                   <div className="mb-4">

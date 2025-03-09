@@ -28,7 +28,7 @@ const tools = [
 
 export const Marquee = () => {
   return (
-    <div className="py-12 bg-secondary/20 overflow-hidden">
+    <div className="py-6 bg-secondary/20 overflow-hidden">
       <div className="flex">
         <div className="animate-marquee whitespace-nowrap flex gap-12">
           {[...tools, ...tools].map((tool, index) => (

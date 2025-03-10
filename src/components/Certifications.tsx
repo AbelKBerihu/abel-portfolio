@@ -1,47 +1,83 @@
 
-import { motion } from "framer-motion";
-import { Award } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Award, X } from "lucide-react";
+import CertificatePopup from "./CertificatePopup";
 
+// Certificate data with images
 const certifications = [
   {
     title: "Meta Front-End Developer",
     issuer: "Meta (Facebook)",
     date: "2024",
     credentialURL: "https://www.coursera.org/account/accomplishments/professional-cert/",
+    image: "/certificate-meta.png",
   },
   {
     title: "AWS Certified Solutions Architect",
     issuer: "Amazon Web Services",
     date: "2023",
     credentialURL: "https://www.credly.com/badges/",
+    image: "/certificate-aws.png",
   },
   {
     title: "Google UX Design",
     issuer: "Google",
     date: "2023",
     credentialURL: "https://www.coursera.org/account/accomplishments/professional-cert/",
+    image: "/certificate-google.png",
   },
   {
     title: "Microsoft Certified: Azure Developer",
     issuer: "Microsoft",
     date: "2023",
     credentialURL: "https://www.credly.com/badges/",
+    image: "/certificate-microsoft.png",
   },
   {
     title: "React Native Specialist",
     issuer: "Meta",
     date: "2023",
     credentialURL: "https://www.coursera.org/account/accomplishments/",
+    image: "/certificate-react-native.png",
+  },
+  {
+    title: "Graphic Design Specialist",
+    issuer: "Adobe",
+    date: "2023",
+    credentialURL: "https://www.adobe.com/certificates/",
+    image: "/certificate-graphic.png",
   },
   {
     title: "Advanced TypeScript Development",
     issuer: "Udacity",
     date: "2023",
     credentialURL: "https://confirm.udacity.com/",
+    image: "/certificate-typescript.png",
   },
 ];
 
+type Language = "English" | "Tigrigna" | "Amharic";
+
 export const Certifications = () => {
+  const [selectedCert, setSelectedCert] = useState<(typeof certifications)[0] | null>(null);
+  const [language, setLanguage] = useState<Language>("English");
+  
+  const getLocalizedTitles = {
+    "English": {
+      title: "Certifications",
+      subtitle: "Professional certifications and achievements"
+    },
+    "Tigrigna": {
+      title: "ምስክር ወረቐት",
+      subtitle: "ሞያዊ ምስክር ወረቐትን ስኽፍታታትን"
+    },
+    "Amharic": {
+      title: "የምስክር ወረቀቶች",
+      subtitle: "የሙያ ምስክር ወረቀቶች እና ውጤቶች"
+    }
+  };
+
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
@@ -52,33 +88,40 @@ export const Certifications = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold mb-4">Certifications</h2>
-          <p className="text-muted-foreground">Professional certifications and achievements</p>
+          <h2 className="text-3xl font-bold mb-4">{getLocalizedTitles[language].title}</h2>
+          <p className="text-muted-foreground">{getLocalizedTitles[language].subtitle}</p>
+          
+          <div className="flex justify-center mt-4 gap-2">
+            {(["English", "Tigrigna", "Amharic"] as Language[]).map((lang) => (
+              <button
+                key={lang}
+                onClick={() => setLanguage(lang)}
+                className={`px-3 py-1 rounded text-sm ${language === lang ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}
+              >
+                {lang}
+              </button>
+            ))}
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certifications.map((cert, index) => (
-            <motion.a
+            <motion.div
               key={index}
-              href={cert.credentialURL}
-              target="_blank"
-              rel="noopener noreferrer"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              whileHover={{ 
-                scale: 1.05,
-                transition: { duration: 0.2, ease: "easeOut" }
-              }}
               transition={{ 
                 duration: 0.3,
                 delay: index * 0.1 
               }}
               viewport={{ once: true }}
               className="group"
+              onClick={() => setSelectedCert(cert)}
             >
               <motion.div 
-                className="p-6 rounded-lg glass bg-background/50 backdrop-blur-sm border border-primary/10"
+                className="p-6 rounded-lg glass bg-background/50 backdrop-blur-sm border border-primary/10 cursor-pointer"
                 whileHover={{ 
+                  scale: 1.05,
                   backgroundColor: "rgba(var(--primary), 0.1)",
                   transition: { duration: 0.2 }
                 }}
@@ -103,10 +146,20 @@ export const Certifications = () => {
                   </div>
                 </div>
               </motion.div>
-            </motion.a>
+            </motion.div>
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {selectedCert && (
+          <CertificatePopup 
+            certificate={selectedCert} 
+            onClose={() => setSelectedCert(null)}
+            language={language}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 };

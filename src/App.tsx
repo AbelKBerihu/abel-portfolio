@@ -8,7 +8,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 const queryClient = new QueryClient();
 
@@ -19,6 +21,8 @@ const App = () => {
         <ThemeProvider defaultTheme="dark" attribute="class">
           <LanguageProvider>
             <TooltipProvider>
+              <ThemeToggle />
+              <LanguageSelector />
               <Toaster />
               <Sonner />
               <BrowserRouter>

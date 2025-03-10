@@ -1,8 +1,11 @@
 
 import { motion } from "framer-motion";
 import { Code } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const Header = () => {
+  const { t } = useLanguage();
+  
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -47,28 +50,28 @@ export const Header = () => {
                 className="text-sm hover:text-primary transition-colors cursor-none"
                 whileHover={{ scale: 1.05 }}
               >
-                Projects
+                {t("projects")}
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection('certifications')}
                 className="text-sm hover:text-primary transition-colors cursor-none"
                 whileHover={{ scale: 1.05 }}
               >
-                Certifications
+                {t("certifications")}
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection('skills')}
                 className="text-sm hover:text-primary transition-colors cursor-none"
                 whileHover={{ scale: 1.05 }}
               >
-                Skills
+                {t("skills")}
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection('contact')}
                 className="text-sm hover:text-primary transition-colors cursor-none"
                 whileHover={{ scale: 1.05 }}
               >
-                Contact
+                {t("contact")}
               </motion.button>
             </motion.nav>
           </div>

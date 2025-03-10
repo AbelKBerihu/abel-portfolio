@@ -1,8 +1,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Award, X } from "lucide-react";
+import { Award } from "lucide-react";
 import CertificatePopup from "./CertificatePopup";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Certificate data with images
 const certifications = [
@@ -57,27 +58,10 @@ const certifications = [
   },
 ];
 
-type Language = "English" | "Tigrigna" | "Amharic";
-
 export const Certifications = () => {
+  const { language, t } = useLanguage();
   const [selectedCert, setSelectedCert] = useState<(typeof certifications)[0] | null>(null);
-  const [language, setLanguage] = useState<Language>("English");
   
-  const getLocalizedTitles = {
-    "English": {
-      title: "Certifications",
-      subtitle: "Professional certifications and achievements"
-    },
-    "Tigrigna": {
-      title: "ምስክር ወረቐት",
-      subtitle: "ሞያዊ ምስክር ወረቐትን ስኽፍታታትን"
-    },
-    "Amharic": {
-      title: "የምስክር ወረቀቶች",
-      subtitle: "የሙያ ምስክር ወረቀቶች እና ውጤቶች"
-    }
-  };
-
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
@@ -88,20 +72,8 @@ export const Certifications = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold mb-4">{getLocalizedTitles[language].title}</h2>
-          <p className="text-muted-foreground">{getLocalizedTitles[language].subtitle}</p>
-          
-          <div className="flex justify-center mt-4 gap-2">
-            {(["English", "Tigrigna", "Amharic"] as Language[]).map((lang) => (
-              <button
-                key={lang}
-                onClick={() => setLanguage(lang)}
-                className={`px-3 py-1 rounded text-sm ${language === lang ? 'bg-primary text-primary-foreground' : 'bg-secondary'}`}
-              >
-                {lang}
-              </button>
-            ))}
-          </div>
+          <h2 className="text-3xl font-bold mb-4">{t("certificationsTitle")}</h2>
+          <p className="text-muted-foreground">{t("certificationsSubtitle")}</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

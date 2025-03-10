@@ -56,7 +56,7 @@ const CertificatePopup = ({ certificate, onClose, language }: CertificatePopupPr
         clearTimeout(autoCloseTimeout);
       }
     };
-  }, []);
+  }, [onClose]);
 
   const t = translations[language];
 

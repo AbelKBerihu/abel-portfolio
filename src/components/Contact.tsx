@@ -7,6 +7,7 @@ import { Send } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import emailjs from '@emailjs/browser';
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ContactForm {
   name: string;
@@ -15,6 +16,7 @@ interface ContactForm {
 }
 
 export const Contact = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<ContactForm>({
     name: "",
     email: "",
@@ -56,11 +58,11 @@ export const Contact = () => {
         'RwhyRBgaROGXAK2j_'
       );
 
-      toast.success("Message sent successfully!");
+      toast.success(t("messageSent"));
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       console.error("Error sending message:", error);
-      toast.error("Failed to send message. Please try again.");
+      toast.error(t("messageFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -76,8 +78,8 @@ export const Contact = () => {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold mb-4">Get in Touch</h2>
-          <p className="text-muted-foreground">Let's discuss your next project</p>
+          <h2 className="text-3xl font-bold mb-4">{t("contactTitle")}</h2>
+          <p className="text-muted-foreground">{t("contactSubtitle")}</p>
         </motion.div>
 
         <motion.div
@@ -95,7 +97,7 @@ export const Contact = () => {
                 transition={{ duration: 0.3 }}
               >
                 <Input
-                  placeholder="Your Name"
+                  placeholder={t("yourName")}
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
@@ -109,7 +111,7 @@ export const Contact = () => {
                 transition={{ duration: 0.3, delay: 0.1 }}
               >
                 <Input
-                  placeholder="Email Address"
+                  placeholder={t("emailAddress")}
                   type="email"
                   name="email"
                   value={formData.email}
@@ -124,7 +126,7 @@ export const Contact = () => {
                 transition={{ duration: 0.3, delay: 0.2 }}
               >
                 <Textarea
-                  placeholder="Your Message"
+                  placeholder={t("yourMessage")}
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
@@ -142,7 +144,7 @@ export const Contact = () => {
                   disabled={isSubmitting}
                 >
                   {!isMobile && <Send className="w-4 h-4 mr-2" />}
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? t("sending") : t("sendMessage")}
                 </Button>
               </motion.div>
             </form>

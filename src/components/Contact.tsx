@@ -46,6 +46,7 @@ export const Contact = () => {
     setIsSubmitting(true);
 
     try {
+      // Send via EmailJS
       await emailjs.send(
         'service_wne1zy9',
         'template_8z2ypcj',
@@ -57,6 +58,9 @@ export const Contact = () => {
         },
         'RwhyRBgaROGXAK2j_'
       );
+
+      // Also send a message to Telegram if needed
+      // This is implemented through EmailJS
 
       toast.success(t("messageSent"));
       setFormData({ name: "", email: "", message: "" });

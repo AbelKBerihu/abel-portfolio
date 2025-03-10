@@ -55,7 +55,16 @@ const translations = {
     
     // Footer
     "copyright": "© 2024 Abel. All rights reserved.",
-    "designedBy": "Designed and built by Abel"
+    "designedBy": "Designed and built by Abel",
+    "github": "GitHub",
+    "facebook": "Facebook",
+    "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn",
+    "tiktok": "TikTok", 
+    "telegram": "Telegram",
+    "youtube": "YouTube",
+    "email": "Email",
+    "discord": "Discord"
   },
   "Tigrigna": {
     // Header
@@ -102,7 +111,16 @@ const translations = {
     
     // Footer
     "copyright": "© 2024 ኣቤል። ኩሎም መሰላት ዝተሓለዉ እዮም።",
-    "designedBy": "ብ ኣቤል ዝተዳለወን ዝተሃንጸን"
+    "designedBy": "ብ ኣቤል ዝተዳለወን ዝተሃንጸን",
+    "github": "GitHub",
+    "facebook": "Facebook",
+    "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn",
+    "tiktok": "TikTok", 
+    "telegram": "Telegram",
+    "youtube": "YouTube",
+    "email": "ኢሜይል",
+    "discord": "Discord"
   },
   "Amharic": {
     // Header
@@ -149,7 +167,16 @@ const translations = {
     
     // Footer
     "copyright": "© 2024 አቤል። ሁሉም መብቶች የተጠበቁ ናቸው።",
-    "designedBy": "በ አቤል የተነደፈ እና የተገነባ"
+    "designedBy": "በ አቤል የተነደፈ እና የተገነባ",
+    "github": "GitHub",
+    "facebook": "Facebook",
+    "whatsapp": "WhatsApp",
+    "linkedin": "LinkedIn",
+    "tiktok": "TikTok", 
+    "telegram": "Telegram",
+    "youtube": "YouTube",
+    "email": "ኢሜይል",
+    "discord": "Discord"
   }
 };
 

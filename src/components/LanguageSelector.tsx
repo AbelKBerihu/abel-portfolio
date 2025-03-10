@@ -7,6 +7,13 @@ export const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
 
   const languages: Language[] = ["English", "Tigrigna", "Amharic"];
+  
+  // Language names in their native language
+  const nativeNames: Record<Language, string> = {
+    "English": "English",
+    "Tigrigna": "ትግርኛ",
+    "Amharic": "አማርኛ"
+  };
 
   return (
     <motion.div
@@ -33,7 +40,7 @@ export const LanguageSelector = () => {
                 language === lang ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
               } transition-colors cursor-none`}
             >
-              {lang}
+              {nativeNames[lang]}
             </button>
           ))}
         </div>

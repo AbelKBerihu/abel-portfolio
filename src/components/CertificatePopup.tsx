@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
-
-type Language = "English" | "Tigrigna" | "Amharic";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Certificate {
   title: string;
@@ -16,31 +15,10 @@ interface Certificate {
 interface CertificatePopupProps {
   certificate: Certificate;
   onClose: () => void;
-  language: Language;
 }
 
-const translations = {
-  "English": {
-    view: "View Certificate",
-    issuer: "Issuer",
-    date: "Date",
-    close: "Close"
-  },
-  "Tigrigna": {
-    view: "ምስክር ወረቀት ርአ",
-    issuer: "ወሃቢ",
-    date: "ዕለት",
-    close: "ዕጸው"
-  },
-  "Amharic": {
-    view: "የምስክር ወረቀት ይመልከቱ",
-    issuer: "አሰጣጣሪ",
-    date: "ቀን",
-    close: "ዝጋ"
-  }
-};
-
-const CertificatePopup = ({ certificate, onClose, language }: CertificatePopupProps) => {
+const CertificatePopup = ({ certificate, onClose }: CertificatePopupProps) => {
+  const { t } = useLanguage();
   const [autoCloseTimeout, setAutoCloseTimeout] = useState<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
@@ -57,8 +35,6 @@ const CertificatePopup = ({ certificate, onClose, language }: CertificatePopupPr
       }
     };
   }, [onClose]);
-
-  const t = translations[language];
 
   return (
     <motion.div
@@ -82,7 +58,7 @@ const CertificatePopup = ({ certificate, onClose, language }: CertificatePopupPr
             <button 
               onClick={onClose}
               className="p-2 rounded-full hover:bg-muted transition-colors"
-              aria-label={t.close}
+              aria-label="Close"
             >
               <X className="w-5 h-5" />
             </button>
@@ -90,10 +66,10 @@ const CertificatePopup = ({ certificate, onClose, language }: CertificatePopupPr
           
           <div className="mb-6">
             <p className="text-muted-foreground mb-1">
-              <span className="font-medium">{t.issuer}:</span> {certificate.issuer}
+              <span className="font-medium">{t("issuer")}:</span> {certificate.issuer}
             </p>
             <p className="text-muted-foreground">
-              <span className="font-medium">{t.date}:</span> {certificate.date}
+              <span className="font-medium">{t("date")}:</span> {certificate.date}
             </p>
           </div>
           
@@ -116,7 +92,7 @@ const CertificatePopup = ({ certificate, onClose, language }: CertificatePopupPr
               rel="noopener noreferrer"
               className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
             >
-              {t.view}
+              {t("view")}
             </a>
           </div>
         </div>

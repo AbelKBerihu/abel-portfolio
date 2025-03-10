@@ -59,7 +59,7 @@ const certifications = [
 ];
 
 export const Certifications = () => {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const [selectedCert, setSelectedCert] = useState<(typeof certifications)[0] | null>(null);
   
   return (
@@ -128,7 +128,6 @@ export const Certifications = () => {
           <CertificatePopup 
             certificate={selectedCert} 
             onClose={() => setSelectedCert(null)}
-            language={language}
           />
         )}
       </AnimatePresence>

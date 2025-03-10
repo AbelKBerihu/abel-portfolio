@@ -82,6 +82,21 @@
     animation: marquee 30s linear infinite;
   }
 
+  .mobile-friendly-text {
+    font-size: clamp(0.875rem, 4vw, 1rem);
+  }
+
+  .responsive-heading {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+  }
+
+  .responsive-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
   @keyframes slideUp {
     from {
       opacity: 0;

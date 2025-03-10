@@ -20,7 +20,7 @@ export const LanguageSelector = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="fixed top-4 right-14 z-50"
+      className="fixed top-4 right-4 md:right-14 z-50"
     >
       <div className="relative group">
         <button

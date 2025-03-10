@@ -10,19 +10,37 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Certifications } from "@/components/Certifications";
 import { Marquee } from "@/components/Marquee";
+import { useEffect, useState } from "react";
 
 const Index = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add event listener
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <AnimatePresence mode="wait">
       <motion.div 
-        className="min-h-screen font-jetbrains relative"
+        className="min-h-screen font-jetbrains relative overflow-x-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
         <div className="relative z-10">
-          <CustomCursor />
+          {!isMobile && <CustomCursor />}
           <ThemeToggle />
           <Header />
           <div id="home">

@@ -2,9 +2,26 @@
 import { motion } from "framer-motion";
 import { Globe } from "lucide-react";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
+import { useEffect, useState } from "react";
 
 export const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add event listener
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const languages: Language[] = ["English", "Tigrigna", "Amharic"];
   
@@ -20,7 +37,7 @@ export const LanguageSelector = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="fixed top-4 right-4 z-50"
+      className={`fixed ${isMobile ? 'top-4 right-16' : 'top-4 right-4'} z-50`}
     >
       <div className="relative group">
         <button

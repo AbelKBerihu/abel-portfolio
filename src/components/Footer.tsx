@@ -63,7 +63,7 @@ export const Footer = () => {
       hoverColor: "hover:text-[#0A66C2]"
     },
     {
-      name: "X (Twitter)",
+      name: t("twitter"),
       icon: <X className="w-5 h-5" />,
       href: "https://twitter.com/yourusername",
       hoverColor: "hover:text-[#000000] dark:hover:text-white"

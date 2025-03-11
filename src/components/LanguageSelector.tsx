@@ -1,6 +1,5 @@
 
 import { motion } from "framer-motion";
-import { Globe } from "lucide-react";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { useEffect, useState } from "react";
 
@@ -25,6 +24,13 @@ export const LanguageSelector = () => {
 
   const languages: Language[] = ["English", "Tigrigna", "Amharic"];
   
+  // Language abbreviations
+  const languageAbbr: Record<Language, string> = {
+    "English": "En",
+    "Tigrigna": "ትግ",
+    "Amharic": "ኣማ"
+  };
+  
   // Language names in their native language
   const nativeNames: Record<Language, string> = {
     "English": "English",
@@ -37,14 +43,14 @@ export const LanguageSelector = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className={`fixed ${isMobile ? 'top-4 right-16' : 'top-4 right-4'} z-50`}
+      className={`fixed ${isMobile ? 'top-4 right-4' : 'top-4 right-16'} z-50`}
     >
       <div className="relative group">
         <button
           className="p-2 rounded-full bg-background/80 backdrop-blur border border-border transition-transform hover:scale-110 cursor-none flex items-center justify-center shadow-md"
           aria-label="Change language"
         >
-          <Globe className="h-[1.2rem] w-[1.2rem]" />
+          <span className="text-sm font-medium">{languageAbbr[language]}</span>
           <span className="sr-only">Toggle language</span>
         </button>
         

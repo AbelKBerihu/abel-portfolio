@@ -77,40 +77,56 @@ export const Header = () => {
                 )}
               </motion.button>
             ) : (
-              <motion.nav
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-8"
-              >
-                <motion.button
-                  onClick={() => scrollToSection('projects')}
-                  className="text-sm hover:text-primary transition-colors cursor-none"
-                  whileHover={{ scale: 1.05 }}
+              <div className="flex items-center">
+                <motion.nav
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-center gap-8 mr-8"
                 >
-                  {t("projects")}
-                </motion.button>
+                  <motion.button
+                    onClick={() => scrollToSection('projects')}
+                    className="text-sm hover:text-primary transition-colors cursor-none"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    {t("projects")}
+                  </motion.button>
+                  <motion.button
+                    onClick={() => scrollToSection('certifications')}
+                    className="text-sm hover:text-primary transition-colors cursor-none"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    {t("certifications")}
+                  </motion.button>
+                  <motion.button
+                    onClick={() => scrollToSection('skills')}
+                    className="text-sm hover:text-primary transition-colors cursor-none"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    {t("skills")}
+                  </motion.button>
+                  <motion.button
+                    onClick={() => scrollToSection('contact')}
+                    className="text-sm hover:text-primary transition-colors cursor-none"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    {t("contact")}
+                  </motion.button>
+                </motion.nav>
+                
                 <motion.button
-                  onClick={() => scrollToSection('certifications')}
-                  className="text-sm hover:text-primary transition-colors cursor-none"
-                  whileHover={{ scale: 1.05 }}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="p-2 hidden"
+                  aria-label="Toggle menu"
                 >
-                  {t("certifications")}
+                  {isMobileMenuOpen ? (
+                    <X className="w-6 h-6" />
+                  ) : (
+                    <Menu className="w-6 h-6" />
+                  )}
                 </motion.button>
-                <motion.button
-                  onClick={() => scrollToSection('skills')}
-                  className="text-sm hover:text-primary transition-colors cursor-none"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  {t("skills")}
-                </motion.button>
-                <motion.button
-                  onClick={() => scrollToSection('contact')}
-                  className="text-sm hover:text-primary transition-colors cursor-none"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  {t("contact")}
-                </motion.button>
-              </motion.nav>
+              </div>
             )}
           </div>
         </div>

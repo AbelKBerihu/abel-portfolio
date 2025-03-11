@@ -11,7 +11,7 @@ export const ThemeToggle = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="fixed md:top-4 md:right-4 bottom-4 right-4 z-50"
+      className="fixed md:top-4 md:right-28 bottom-4 right-4 z-50"
     >
       <button
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}

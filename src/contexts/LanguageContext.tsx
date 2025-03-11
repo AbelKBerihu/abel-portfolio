@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export type Language = "English" | "Tigrigna" | "Amharic";
@@ -64,7 +63,8 @@ const translations = {
     "telegram": "Telegram",
     "youtube": "YouTube",
     "email": "Email",
-    "discord": "Discord"
+    "discord": "Discord",
+    "twitter": "X (Twitter)"
   },
   "Tigrigna": {
     // Header
@@ -120,7 +120,8 @@ const translations = {
     "telegram": "Telegram",
     "youtube": "YouTube",
     "email": "ኢሜይል",
-    "discord": "Discord"
+    "discord": "Discord",
+    "twitter": "X (ትዊተር)"
   },
   "Amharic": {
     // Header
@@ -176,7 +177,8 @@ const translations = {
     "telegram": "Telegram",
     "youtube": "YouTube",
     "email": "ኢሜይል",
-    "discord": "Discord"
+    "discord": "Discord",
+    "twitter": "X (ትዊተር)"
   }
 };
 

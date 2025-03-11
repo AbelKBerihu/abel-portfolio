@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { Github, MessageCircle, Youtube, Linkedin, Facebook, Mail, Twitter } from "lucide-react";
+import { Github, MessageCircle, Youtube, Linkedin, Facebook, Mail, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 // Custom icons as components
@@ -63,10 +63,10 @@ export const Footer = () => {
       hoverColor: "hover:text-[#0A66C2]"
     },
     {
-      name: t("twitter"),
-      icon: <Twitter className="w-5 h-5" />,
+      name: "X (Twitter)",
+      icon: <X className="w-5 h-5" />,
       href: "https://twitter.com/yourusername",
-      hoverColor: "hover:text-[#1DA1F2]"
+      hoverColor: "hover:text-[#000000] dark:hover:text-white"
     },
     {
       name: t("telegram"),

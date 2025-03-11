@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import { ArrowDown, Phone, Upload } from "lucide-react";
+import { ArrowDown, DownloadIcon, Phone } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
@@ -181,7 +181,7 @@ export const Hero = () => {
                   download 
                   className="flex items-center gap-2"
                 >
-                  <Upload className="h-5 w-5" />
+                  <ArrowDown className="h-5 w-5" />
                   <span>Download CV</span>
                 </a>
               </Button>

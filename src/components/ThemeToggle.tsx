@@ -15,7 +15,7 @@ export const ThemeToggle = () => {
     >
       <button
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        className="p-2 rounded-full bg-background/80 backdrop-blur border border-border transition-transform hover:scale-110 cursor-none shadow-md"
+        className="p-2 rounded-full transition-transform hover:scale-110 cursor-none"
       >
         {theme === 'dark' ? (
           <Sun className="h-[1.2rem] w-[1.2rem] text-white" />

@@ -47,7 +47,7 @@ export const LanguageSelector = () => {
     >
       <div className="relative group">
         <button
-          className="p-2 rounded-full bg-background/80 backdrop-blur border border-border transition-transform hover:scale-110 cursor-none flex items-center justify-center shadow-md"
+          className="p-2 rounded-full transition-transform hover:scale-110 cursor-none flex items-center justify-center"
           aria-label="Change language"
         >
           <span className="text-sm font-medium">{languageAbbr[language]}</span>

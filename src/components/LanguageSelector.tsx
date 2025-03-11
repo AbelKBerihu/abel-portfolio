@@ -20,11 +20,11 @@ export const LanguageSelector = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="fixed top-4 right-4 md:right-14 z-50"
+      className="fixed top-4 right-4 z-50"
     >
       <div className="relative group">
         <button
-          className="p-2 rounded-full transition-transform hover:scale-110 cursor-none flex items-center justify-center"
+          className="p-2 rounded-full bg-background/80 backdrop-blur border border-border transition-transform hover:scale-110 cursor-none flex items-center justify-center shadow-md"
           aria-label="Change language"
         >
           <Globe className="h-[1.2rem] w-[1.2rem]" />

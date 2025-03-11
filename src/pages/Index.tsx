@@ -7,7 +7,6 @@ import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { Certifications } from "@/components/Certifications";
 import { Marquee } from "@/components/Marquee";
 import { useEffect, useState } from "react";
@@ -41,7 +40,6 @@ const Index = () => {
       >
         <div className="relative z-10">
           {!isMobile && <CustomCursor />}
-          <ThemeToggle />
           <Header />
           <div id="home">
             <Hero />

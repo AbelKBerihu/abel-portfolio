@@ -9,7 +9,7 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { LanguageProvider } from "@/contexts/LanguageContext";
+import { LanguageProvider } from "@/contexts/language";
 
 const queryClient = new QueryClient();
 

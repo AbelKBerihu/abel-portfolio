@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Code, Menu, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useState, useEffect } from "react";
+import { LanguageSelector } from "./LanguageSelector";
+import { ThemeToggle } from "./ThemeToggle";
 
 export const Header = () => {
   const { t } = useLanguage();
@@ -63,19 +65,47 @@ export const Header = () => {
           
           <div className="flex items-center">
             {isMobile ? (
-              <motion.button
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2"
-                aria-label="Toggle menu"
-              >
-                {isMobileMenuOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
-              </motion.button>
+              <div className="flex items-center">
+                {/* Mobile Layout: Language Selector to the left of Hamburger Menu */}
+                <div className="mr-2">
+                  <div className="relative group">
+                    <button
+                      className="p-2 rounded-full transition-transform hover:scale-110 cursor-none flex items-center justify-center"
+                      aria-label="Change language"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Toggle language dropdown logic if needed
+                      }}
+                    >
+                      <span className="text-sm font-medium">
+                        {(() => {
+                          const { language } = useLanguage();
+                          const languageAbbr: Record<Language, string> = {
+                            "English": "En",
+                            "Tigrigna": "ትግ",
+                            "Amharic": "ኣማ"
+                          };
+                          return languageAbbr[language];
+                        })()}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                
+                <motion.button
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="p-2"
+                  aria-label="Toggle menu"
+                >
+                  {isMobileMenuOpen ? (
+                    <X className="w-6 h-6" />
+                  ) : (
+                    <Menu className="w-6 h-6" />
+                  )}
+                </motion.button>
+              </div>
             ) : (
               <div className="flex items-center">
                 <motion.nav

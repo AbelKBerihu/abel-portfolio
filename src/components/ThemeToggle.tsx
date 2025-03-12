@@ -2,16 +2,33 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add event listener
+    window.addEventListener('resize', checkMobile);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="fixed md:top-4 md:right-28 bottom-4 right-4 z-50"
+      className={`${isMobile ? 'hidden' : 'fixed md:top-4 md:right-28 bottom-4 right-4 z-50'}`}
     >
       <button
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}

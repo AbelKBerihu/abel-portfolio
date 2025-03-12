@@ -43,7 +43,7 @@ export const LanguageSelector = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className={`fixed ${isMobile ? 'top-4 right-4' : 'top-4 right-16'} z-50`}
+      className={`${isMobile ? 'fixed top-4 right-16 z-50' : 'fixed top-4 right-16 z-50'}`}
     >
       <div className="relative group">
         <button

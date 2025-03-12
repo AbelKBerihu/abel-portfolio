@@ -64,7 +64,7 @@ export const Hero = () => {
           className="text-center"
         >
           <span className="text-primary/80 font-medium tracking-wider uppercase">
-            Web Developer & Video Editor
+            Web Developer | Graphics Designer
           </span>
           <motion.h1 
             variants={nameVariants}
@@ -89,7 +89,7 @@ export const Hero = () => {
             />
           </motion.h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            I create engaging web experiences and compelling video content that
+            I create engaging web experiences and compelling visual content that
             captivate audiences and drive results.
           </p>
 

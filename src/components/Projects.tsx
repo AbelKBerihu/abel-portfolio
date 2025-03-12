@@ -1,100 +1,64 @@
-
 import { motion } from "framer-motion";
-import { Code, Film, Globe, ShoppingBag, Music, Coffee, Star } from "lucide-react";
+import { Code, Film, Globe, ShoppingBag, Music, Coffee, Star, Layers, Palette } from "lucide-react";
 
 const projects = [
   {
-    title: "E-Commerce Platform",
-    description: "A modern e-commerce solution built with React and Node.js. Features include real-time inventory management, secure payment processing, and an intuitive admin dashboard.",
-    type: "web",
+    title: "Brand Identity Design",
+    description: "Complete brand identity design including logo, color palette, typography, and brand guidelines for a tech startup.",
+    type: "design",
     image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d",
+    icon: Palette,
+    rating: 4.9,
+    comments: [
+      {
+        name: "Sarah Johnson",
+        comment: "Exceptional brand design that perfectly captures our company vision.",
+        rating: 5
+      }
+    ]
+  },
+  {
+    title: "E-Commerce Platform",
+    description: "Modern e-commerce website with custom product showcase, real-time inventory, and integrated payment processing.",
+    type: "web",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
     icon: ShoppingBag,
     rating: 4.8,
     comments: [
       {
-        name: "Sarah Johnson",
-        comment: "Incredibly user-friendly interface and smooth checkout process.",
-        rating: 5
-      },
-      {
-        name: "Mike Chen",
-        comment: "Best e-commerce platform I've used for my business.",
-        rating: 4.5
-      }
-    ]
-  },
-  {
-    title: "Brand Campaign",
-    description: "Cinematic video production for a major brand, incorporating stunning visual effects and compelling storytelling to create an unforgettable marketing campaign.",
-    type: "video",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
-    icon: Film,
-    rating: 4.9,
-    comments: [
-      {
-        name: "Emma Davis",
-        comment: "The quality of the video production exceeded our expectations.",
+        name: "David Chen",
+        comment: "The UI design and functionality exceeded our expectations.",
         rating: 5
       }
     ]
   },
   {
-    title: "Music Streaming App",
-    description: "A Spotify-like music streaming platform with features like playlist creation, social sharing, and AI-powered music recommendations.",
-    type: "web",
+    title: "UI/UX Design System",
+    description: "Comprehensive design system including components, patterns, and guidelines for a large-scale web application.",
+    type: "design",
     image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
-    icon: Music,
+    icon: Layers,
     rating: 4.7,
     comments: [
       {
         name: "Alex Turner",
-        comment: "Amazing app with great music discovery features!",
+        comment: "The design system greatly improved our development workflow!",
         rating: 4.5
       }
     ]
   },
   {
-    title: "Restaurant Website",
-    description: "Modern website with online ordering system, table reservations, and real-time kitchen management dashboard.",
+    title: "Portfolio Website",
+    description: "Custom portfolio website with interactive animations and responsive design for a professional photographer.",
     type: "web",
     image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    icon: Coffee,
-    rating: 4.6,
-    comments: [
-      {
-        name: "David Lee",
-        comment: "Streamlined our entire ordering process.",
-        rating: 4.5
-      }
-    ]
-  },
-  {
-    title: "Portfolio Platform",
-    description: "Showcase platform for creative professionals with custom portfolio templates and integrated analytics.",
-    type: "web",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
     icon: Globe,
     rating: 4.8,
     comments: [
       {
-        name: "Lisa Wang",
-        comment: "Perfect platform for showcasing my work!",
+        name: "Emma Davis",
+        comment: "Beautiful design and smooth performance.",
         rating: 5
-      }
-    ]
-  },
-  {
-    title: "Social Network",
-    description: "Community platform with real-time features, video chat, and content sharing capabilities.",
-    type: "web",
-    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
-    icon: Code,
-    rating: 4.7,
-    comments: [
-      {
-        name: "Tom Wilson",
-        comment: "Great community features and smooth performance.",
-        rating: 4.5
       }
     ]
   }

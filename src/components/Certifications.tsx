@@ -1,60 +1,37 @@
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Award } from "lucide-react";
 import CertificatePopup from "./CertificatePopup";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// Certificate data with images
 const certifications = [
   {
-    title: "Meta Front-End Developer",
-    issuer: "Meta (Facebook)",
+    title: "Adobe Certified Professional",
+    issuer: "Adobe",
     date: "2024",
-    credentialURL: "https://www.coursera.org/account/accomplishments/professional-cert/",
-    image: "/certificate-meta.png",
+    credentialURL: "https://www.adobe.com/certificates/",
+    image: "/certificate-adobe.png",
   },
   {
-    title: "AWS Certified Solutions Architect",
-    issuer: "Amazon Web Services",
-    date: "2023",
-    credentialURL: "https://www.credly.com/badges/",
-    image: "/certificate-aws.png",
-  },
-  {
-    title: "Google UX Design",
+    title: "UI/UX Design Professional Certificate",
     issuer: "Google",
     date: "2023",
     credentialURL: "https://www.coursera.org/account/accomplishments/professional-cert/",
     image: "/certificate-google.png",
   },
   {
-    title: "Microsoft Certified: Azure Developer",
-    issuer: "Microsoft",
-    date: "2023",
-    credentialURL: "https://www.credly.com/badges/",
-    image: "/certificate-microsoft.png",
-  },
-  {
-    title: "React Native Specialist",
+    title: "Web Design & Development",
     issuer: "Meta",
     date: "2023",
     credentialURL: "https://www.coursera.org/account/accomplishments/",
-    image: "/certificate-react-native.png",
+    image: "/certificate-meta.png",
   },
   {
-    title: "Graphic Design Specialist",
-    issuer: "Adobe",
+    title: "Graphic Design Specialization",
+    issuer: "Coursera",
     date: "2023",
-    credentialURL: "https://www.adobe.com/certificates/",
+    credentialURL: "https://www.coursera.org/account/accomplishments/specialization/",
     image: "/certificate-graphic.png",
-  },
-  {
-    title: "Advanced TypeScript Development",
-    issuer: "Udacity",
-    date: "2023",
-    credentialURL: "https://confirm.udacity.com/",
-    image: "/certificate-typescript.png",
   },
 ];
 

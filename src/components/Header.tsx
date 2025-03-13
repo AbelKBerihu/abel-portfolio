@@ -9,20 +9,22 @@ export const Header = () => {
   const { t } = useLanguage();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 640);
+      setIsTablet(window.innerWidth > 640 && window.innerWidth <= 768);
     };
     
     // Initial check
-    checkMobile();
+    checkScreenSize();
     
     // Add event listener
-    window.addEventListener('resize', checkMobile);
+    window.addEventListener('resize', checkScreenSize);
     
     // Cleanup
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
   
   const scrollToSection = (id: string) => {

@@ -7,28 +7,42 @@ import { useEffect, useState } from "react";
 export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth <= 640);
+      setIsTablet(window.innerWidth > 640 && window.innerWidth <= 768);
     };
     
     // Initial check
-    checkMobile();
+    checkScreenSize();
     
     // Add event listener
-    window.addEventListener('resize', checkMobile);
+    window.addEventListener('resize', checkScreenSize);
     
     // Cleanup
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  // Determine position based on screen size
+  const getPositionClass = () => {
+    if (isTablet) {
+      return "fixed bottom-4 right-4 z-50";
+    } else if (isMobile) {
+      return "fixed bottom-4 right-4 z-50";
+    } else {
+      // Desktop
+      return "fixed top-4 right-28 z-50";
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="fixed bottom-4 right-4 z-50"
+      className={getPositionClass()}
     >
       <button
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}

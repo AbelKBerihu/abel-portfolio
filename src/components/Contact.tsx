@@ -55,6 +55,8 @@ export const Contact = () => {
 
   // Function to send message to Telegram
   const sendToTelegram = async (data: ContactFormValues) => {
+    console.log("Starting Telegram send process");
+    
     const text = `
 📧 New Contact Form Submission 📧
 
@@ -65,6 +67,9 @@ export const Contact = () => {
 
     const telegramApiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
     
+    console.log("Sending to Telegram API:", telegramApiUrl);
+    console.log("Using chat ID:", telegramChatId);
+    
     try {
       const response = await fetch(telegramApiUrl, {
         method: "POST",
@@ -74,13 +79,14 @@ export const Contact = () => {
         body: JSON.stringify({
           chat_id: telegramChatId,
           text: text,
-          parse_mode: "HTML",
         }),
       });
 
+      const responseData = await response.json();
+      console.log("Telegram API response:", responseData);
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.description || "Failed to send to Telegram");
+        throw new Error(responseData.description || "Failed to send to Telegram");
       }
       
       return true;
@@ -130,6 +136,7 @@ export const Contact = () => {
       try {
         await sendToTelegram(data);
         messageSent = true;
+        console.log("Message sent successfully to Telegram");
       } catch (telegramError) {
         console.error("Telegram sending failed:", telegramError);
       }
@@ -139,6 +146,7 @@ export const Contact = () => {
         const emailSent = await sendViaEmailJS(data);
         if (emailSent) {
           messageSent = true;
+          console.log("Message sent successfully via EmailJS");
         }
       } catch (emailError) {
         console.error("Email sending failed:", emailError);

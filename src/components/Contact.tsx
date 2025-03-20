@@ -26,7 +26,7 @@ export const Contact = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [telegramBotToken] = useState("7016841695:AAE_6o9pE62kaZbnEBeaoqtF3ElCpd_E76M");
+  const [telegramBotToken] = useState("7753468504:AAHaciLonL3pW9YjDgbij1BK4L4R2qcxVFE");
   const [telegramChatId] = useState("7566668762");
   
   // EmailJS credentials - update these with your actual EmailJS credentials
@@ -55,7 +55,7 @@ export const Contact = () => {
 
   // Function to send message to Telegram
   const sendToTelegram = async (data: ContactFormValues) => {
-    console.log("Starting Telegram send process");
+    console.log("Starting Telegram send process with new token");
     
     const text = `
 📧 New Contact Form Submission 📧

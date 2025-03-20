@@ -26,8 +26,13 @@ export const Contact = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [telegramBotToken, setTelegramBotToken] = useState("7016841695:AAE_6o9pE62kaZbnEBeaoqtF3ElCpd_E76M"); // Updated with your bot token
-  const [telegramChatId, setTelegramChatId] = useState("7566668762"); // Updated with your chat ID
+  const [telegramBotToken] = useState("7016841695:AAE_6o9pE62kaZbnEBeaoqtF3ElCpd_E76M");
+  const [telegramChatId] = useState("7566668762");
+  
+  // EmailJS credentials - update these with your actual EmailJS credentials
+  const [emailJSServiceId] = useState("YOUR_EMAILJS_SERVICE_ID"); // Replace with your Service ID
+  const [emailJSTemplateId] = useState("YOUR_EMAILJS_TEMPLATE_ID"); // Replace with your Template ID
+  const [emailJSPublicKey] = useState("YOUR_EMAILJS_PUBLIC_KEY"); // Replace with your Public Key
 
   // Initialize form with validation
   const form = useForm<ContactFormValues>({
@@ -85,28 +90,67 @@ export const Contact = () => {
     }
   };
 
-  const onSubmit = async (data: ContactFormValues) => {
-    setIsSubmitting(true);
-
+  // Function to send email via EmailJS
+  const sendViaEmailJS = async (data: ContactFormValues) => {
     try {
-      // Send via EmailJS
-      await emailjs.send(
-        'service_wne1zy9',
-        'template_8z2ypcj',
+      // Skip EmailJS if credentials are not set
+      if (emailJSServiceId === "YOUR_EMAILJS_SERVICE_ID" || 
+          emailJSTemplateId === "YOUR_EMAILJS_TEMPLATE_ID" || 
+          emailJSPublicKey === "YOUR_EMAILJS_PUBLIC_KEY") {
+        console.log("EmailJS credentials not set, skipping email send");
+        return false;
+      }
+      
+      const response = await emailjs.send(
+        emailJSServiceId,
+        emailJSTemplateId,
         {
           from_name: data.name,
           from_email: data.email,
           to_email: 'ks.avebina7@gmail.com',
           message: data.message,
         },
-        'RwhyRBgaROGXAK2j_'
+        emailJSPublicKey
       );
+      
+      console.log("EmailJS response:", response);
+      return true;
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      return false;
+    }
+  };
 
-      // Also send to Telegram
-      await sendToTelegram(data);
+  const onSubmit = async (data: ContactFormValues) => {
+    setIsSubmitting(true);
+    let messageSent = false;
 
-      toast.success(t("messageSent"));
-      form.reset();
+    try {
+      // Try to send via Telegram
+      try {
+        await sendToTelegram(data);
+        messageSent = true;
+      } catch (telegramError) {
+        console.error("Telegram sending failed:", telegramError);
+      }
+
+      // Also try to send via EmailJS if credentials are set
+      try {
+        const emailSent = await sendViaEmailJS(data);
+        if (emailSent) {
+          messageSent = true;
+        }
+      } catch (emailError) {
+        console.error("Email sending failed:", emailError);
+      }
+
+      // Show success message if at least one method worked
+      if (messageSent) {
+        toast.success(t("messageSent"));
+        form.reset();
+      } else {
+        toast.error(t("messageFailed"));
+      }
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error(t("messageFailed"));

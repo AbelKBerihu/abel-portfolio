@@ -26,8 +26,8 @@ export const Contact = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [telegramBotToken, setTelegramBotToken] = useState("YOUR_BOT_TOKEN"); // Replace with your bot token
-  const [telegramChatId, setTelegramChatId] = useState("YOUR_CHAT_ID"); // Replace with your chat ID
+  const [telegramBotToken, setTelegramBotToken] = useState("7016841695:AAE_6o9pE62kaZbnEBeaoqtF3ElCpd_E76M"); // Updated with your bot token
+  const [telegramChatId, setTelegramChatId] = useState("7566668762"); // Updated with your chat ID
 
   // Initialize form with validation
   const form = useForm<ContactFormValues>({

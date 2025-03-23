@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
+import { Send, Phone } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import emailjs from '@emailjs/browser';
@@ -17,6 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z.string().optional(),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
 });
 
@@ -40,6 +41,7 @@ export const Contact = () => {
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
       message: "",
     },
   });
@@ -62,6 +64,7 @@ export const Contact = () => {
 
 👤 Name: ${data.name}
 📩 Email: ${data.email}
+📱 Phone: ${data.phone || "Not provided"}
 💬 Message: ${data.message}
     `;
 
@@ -113,6 +116,7 @@ export const Contact = () => {
         {
           from_name: data.name,
           from_email: data.email,
+          phone: data.phone || "Not provided",
           to_email: 'ks.avebina7@gmail.com',
           message: data.message,
         },
@@ -231,6 +235,33 @@ export const Contact = () => {
                             className="bg-white/50"
                             {...field}
                           />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.15 }}
+                >
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              placeholder={t("phoneNumber") || "Phone Number (optional)"}
+                              type="tel"
+                              className="bg-white/50 pl-9"
+                              {...field}
+                            />
+                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

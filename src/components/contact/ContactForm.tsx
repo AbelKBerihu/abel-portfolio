@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { toast } from "sonner";
 import emailjs from '@emailjs/browser';
@@ -165,7 +164,11 @@ export const ContactForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <ContactFormFields />
-          <ContactSubmitButton isSubmitting={isSubmitting} isMobile={isMobile} />
+          <ContactSubmitButton 
+            isSubmitting={isSubmitting} 
+            isMobile={isMobile}
+            setValue={form.setValue}
+          />
         </form>
       </Form>
     </div>

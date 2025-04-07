@@ -82,11 +82,11 @@ export const Header = () => {
                 </motion.button>
               </div>
             ) : (
-              <div className="flex items-center">
+              <div className="flex items-center gap-4">
                 <motion.nav
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-8 mr-8"
+                  className="flex items-center gap-8"
                 >
                   <motion.button
                     onClick={() => scrollToSection('projects')}

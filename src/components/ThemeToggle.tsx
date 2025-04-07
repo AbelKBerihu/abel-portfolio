@@ -32,8 +32,8 @@ export const ThemeToggle = () => {
     } else if (isMobile) {
       return "fixed bottom-4 right-4 z-50";
     } else {
-      // Desktop
-      return "fixed top-4 right-28 z-50";
+      // Desktop - positioned at the right side of the header
+      return "fixed top-4 right-20 z-50";
     }
   };
 

@@ -14,38 +14,36 @@ export const LanguageSelector = () => {
       setIsTablet(window.innerWidth > 640 && window.innerWidth <= 768);
     };
     
-    // Initial check
     checkScreenSize();
     
-    // Add event listener
     window.addEventListener('resize', checkScreenSize);
     
-    // Cleanup
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   const languages: Language[] = ["English", "Tigrigna", "Amharic"];
   
-  // Language abbreviations
   const languageAbbr: Record<Language, string> = {
     "English": "En",
     "Tigrigna": "ትግ",
     "Amharic": "ኣማ"
   };
   
-  // Language names in their native language
   const nativeNames: Record<Language, string> = {
     "English": "English",
     "Tigrigna": "ትግርኛ",
     "Amharic": "አማርኛ"
   };
 
+  // Hide on mobile
+  if (isMobile) {
+    return null;
+  }
+
   // Determine position based on screen size
   const getPositionClass = () => {
     if (isTablet) {
       return "fixed top-4 right-4 z-50";
-    } else if (isMobile) {
-      return "fixed top-4 right-16 z-50";
     } else {
       // Desktop
       return "fixed top-4 right-4 z-50";

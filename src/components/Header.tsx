@@ -1,7 +1,6 @@
-
 import { motion, AnimatePresence } from "framer-motion";
 import { Code, Menu, X } from "lucide-react";
-import { useLanguage, Language } from "@/contexts/LanguageContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { useState, useEffect } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -17,13 +16,10 @@ export const Header = () => {
       setIsTablet(window.innerWidth > 640 && window.innerWidth <= 768);
     };
     
-    // Initial check
     checkScreenSize();
     
-    // Add event listener
     window.addEventListener('resize', checkScreenSize);
     
-    // Cleanup
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
   
@@ -48,7 +44,7 @@ export const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-sm border-b">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 relative">
           <motion.button
             onClick={() => scrollToSection('home')}
             initial={{ opacity: 0, x: -20 }}
@@ -64,7 +60,7 @@ export const Header = () => {
             <span className="text-base md:text-lg font-bold tracking-wider">ABEL.DEV</span>
           </motion.button>
           
-          <div className="flex items-center">
+          <div className="flex items-center space-x-4">
             {isMobile ? (
               <div className="flex items-center">
                 <motion.button
@@ -82,11 +78,11 @@ export const Header = () => {
                 </motion.button>
               </div>
             ) : (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center space-x-8">
                 <motion.nav
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center gap-8"
+                  className="flex items-center space-x-6"
                 >
                   <motion.button
                     onClick={() => scrollToSection('projects')}
@@ -117,13 +113,16 @@ export const Header = () => {
                     {t("contact")}
                   </motion.button>
                 </motion.nav>
+                
+                <div className="ml-4">
+                  <ThemeToggle />
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
       
-      {/* Mobile Menu */}
       {isMobile && (
         <AnimatePresence>
           {isMobileMenuOpen && (

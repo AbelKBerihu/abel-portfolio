@@ -1,4 +1,3 @@
-
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
@@ -15,25 +14,20 @@ export const ThemeToggle = () => {
       setIsTablet(window.innerWidth > 640 && window.innerWidth <= 768);
     };
     
-    // Initial check
     checkScreenSize();
     
-    // Add event listener
     window.addEventListener('resize', checkScreenSize);
     
-    // Cleanup
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // Determine position based on screen size
   const getPositionClass = () => {
     if (isTablet) {
-      return "fixed bottom-4 right-4 z-50";
+      return "fixed top-4 right-4 z-50";
     } else if (isMobile) {
-      return "fixed bottom-4 right-4 z-50";
+      return "fixed top-4 right-16 z-50";
     } else {
-      // Desktop - positioned at the right side of the header
-      return "fixed top-4 right-20 z-50";
+      return "relative";
     }
   };
 

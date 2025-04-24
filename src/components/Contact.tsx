@@ -1,33 +1,11 @@
+
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Send, Phone, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import emailjs from '@emailjs/browser';
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-
-// Contact form schema
-const contactFormSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  phone: z.string().optional(),
-  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
-  preferredDate: z.date({
-    required_error: "Please select a preferred contact date.",
-  }),
-});
-
-type ContactFormValues = z.infer<typeof contactFormSchema>;
+import { MessagingService } from "./Contact/messaging-service";
+import { ContactForm } from "./Contact/ContactForm";
+import type { ContactFormValues } from "./Contact/schema";
 
 export const Contact = () => {
   const { t } = useLanguage();
@@ -35,23 +13,9 @@ export const Contact = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [telegramBotToken] = useState("7753468504:AAHaciLonL3pW9YjDgbij1BK4L4R2qcxVFE");
   const [telegramChatId] = useState("7566668762");
-  
-  // EmailJS credentials - update these with your actual EmailJS credentials
-  const [emailJSServiceId] = useState("YOUR_EMAILJS_SERVICE_ID"); // Replace with your Service ID
-  const [emailJSTemplateId] = useState("YOUR_EMAILJS_TEMPLATE_ID"); // Replace with your Template ID
-  const [emailJSPublicKey] = useState("YOUR_EMAILJS_PUBLIC_KEY"); // Replace with your Public Key
-
-  // Initialize form with validation
-  const form = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-      preferredDate: undefined,
-    },
-  });
+  const [emailJSServiceId] = useState("YOUR_EMAILJS_SERVICE_ID");
+  const [emailJSTemplateId] = useState("YOUR_EMAILJS_TEMPLATE_ID");
+  const [emailJSPublicKey] = useState("YOUR_EMAILJS_PUBLIC_KEY");
 
   useEffect(() => {
     const checkMobile = () => {
@@ -62,82 +26,13 @@ export const Contact = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Function to send message to Telegram
-  const sendToTelegram = async (data: ContactFormValues) => {
-    console.log("Starting Telegram send process with new token");
-    
-    const text = `
-📧 New Contact Form Submission 📧
-
-👤 Name: ${data.name}
-📩 Email: ${data.email}
-📱 Phone: ${data.phone || "Not provided"}
-📅 Preferred Contact Date: ${format(data.preferredDate, "PPP")}
-💬 Message: ${data.message}
-    `;
-
-    const telegramApiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
-    
-    console.log("Sending to Telegram API:", telegramApiUrl);
-    console.log("Using chat ID:", telegramChatId);
-    
-    try {
-      const response = await fetch(telegramApiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          chat_id: telegramChatId,
-          text: text,
-        }),
-      });
-
-      const responseData = await response.json();
-      console.log("Telegram API response:", responseData);
-
-      if (!response.ok) {
-        throw new Error(responseData.description || "Failed to send to Telegram");
-      }
-      
-      return true;
-    } catch (error) {
-      console.error("Telegram API error:", error);
-      throw error;
-    }
-  };
-
-  // Function to send email via EmailJS
-  const sendViaEmailJS = async (data: ContactFormValues) => {
-    try {
-      // Skip EmailJS if credentials are not set
-      if (emailJSServiceId === "YOUR_EMAILJS_SERVICE_ID" || 
-          emailJSTemplateId === "YOUR_EMAILJS_TEMPLATE_ID" || 
-          emailJSPublicKey === "YOUR_EMAILJS_PUBLIC_KEY") {
-        console.log("EmailJS credentials not set, skipping email send");
-        return false;
-      }
-      
-      const response = await emailjs.send(
-        emailJSServiceId,
-        emailJSTemplateId,
-        {
-          from_name: data.name,
-          from_email: data.email,
-          phone: data.phone || "Not provided",
-          to_email: 'ks.avebina7@gmail.com',
-          message: data.message,
-        },
-        emailJSPublicKey
-      );
-      
-      console.log("EmailJS response:", response);
-      return true;
-    } catch (error) {
-      console.error("EmailJS error:", error);
-      return false;
-    }
-  };
+  const messagingService = new MessagingService(
+    telegramBotToken,
+    telegramChatId,
+    emailJSServiceId,
+    emailJSTemplateId,
+    emailJSPublicKey
+  );
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
@@ -146,7 +41,7 @@ export const Contact = () => {
     try {
       // Try to send via Telegram
       try {
-        await sendToTelegram(data);
+        await messagingService.sendToTelegram(data);
         messageSent = true;
         console.log("Message sent successfully to Telegram");
       } catch (telegramError) {
@@ -155,7 +50,7 @@ export const Contact = () => {
 
       // Also try to send via EmailJS if credentials are set
       try {
-        const emailSent = await sendViaEmailJS(data);
+        const emailSent = await messagingService.sendViaEmailJS(data);
         if (emailSent) {
           messageSent = true;
           console.log("Message sent successfully via EmailJS");
@@ -167,7 +62,6 @@ export const Contact = () => {
       // Show success message if at least one method worked
       if (messageSent) {
         toast.success(t("messageSent"));
-        form.reset();
       } else {
         toast.error(t("messageFailed"));
       }
@@ -201,166 +95,11 @@ export const Contact = () => {
           className="max-w-md mx-auto"
         >
           <div className="glass rounded-lg p-6 shadow-lg backdrop-blur-lg">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            placeholder={t("yourName")}
-                            className="bg-white/50"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                >
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            placeholder={t("emailAddress")}
-                            type="email"
-                            className="bg-white/50"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.15 }}
-                >
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <Input
-                              placeholder={t("phoneNumber") || "Phone Number (optional)"}
-                              type="tel"
-                              className="bg-white/50 pl-9"
-                              {...field}
-                            />
-                            <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.2 }}
-                >
-                  <FormField
-                    control={form.control}
-                    name="preferredDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant="outline"
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Select preferred contact date</span>
-                                )}
-                                <Calendar className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <CalendarComponent
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date < new Date()}
-                              initialFocus
-                              className={cn("p-3 pointer-events-auto")}
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </motion.div>
-                
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.25 }}
-                >
-                  <FormField
-                    control={form.control}
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Textarea
-                            placeholder={t("yourMessage")}
-                            className="bg-white/50 min-h-[120px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </motion.div>
-                
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Button
-                    className="w-full bg-primary/80 hover:bg-primary transition-all duration-300 cursor-none text-primary-foreground font-semibold"
-                    type="submit"
-                    disabled={isSubmitting}
-                  >
-                    {!isMobile && <Send className="w-4 h-4 mr-2" />}
-                    {isSubmitting ? t("sending") : t("sendMessage")}
-                  </Button>
-                </motion.div>
-              </form>
-            </Form>
+            <ContactForm
+              onSubmit={onSubmit}
+              isSubmitting={isSubmitting}
+              isMobile={isMobile}
+            />
           </div>
         </motion.div>
       </div>

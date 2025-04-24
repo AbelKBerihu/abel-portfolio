@@ -3,6 +3,13 @@ import { ContactFormValues } from './schema';
 import emailjs from '@emailjs/browser';
 import { format } from "date-fns";
 
+export interface TelegramResponse {
+  ok: boolean;
+  result?: {
+    message_id: number;
+  };
+}
+
 export class MessagingService {
   constructor(
     private telegramBotToken: string,
@@ -12,17 +19,24 @@ export class MessagingService {
     private emailJSPublicKey: string
   ) {}
 
-  async sendToTelegram(data: ContactFormValues): Promise<boolean> {
-    console.log("Starting Telegram send process with new token");
-    
+  async sendToTelegram(data: ContactFormValues): Promise<TelegramResponse> {
+    const approvalButtons = JSON.stringify({
+      inline_keyboard: [[
+        { text: "✅ Approve", callback_data: `approve_${data.email}` },
+        { text: "❌ Decline", callback_data: `decline_${data.email}` }
+      ]]
+    });
+
     const text = `
-📧 New Contact Form Submission 📧
+📧 New Contact Request (Pending Approval) 📧
 
 👤 Name: ${data.name}
 📩 Email: ${data.email}
 📱 Phone: ${data.phone || "Not provided"}
 📅 Preferred Contact Date: ${format(data.preferredDate, "PPP")}
 💬 Message: ${data.message}
+
+Please approve or decline this request:
     `;
 
     const telegramApiUrl = `https://api.telegram.org/bot${this.telegramBotToken}/sendMessage`;
@@ -36,6 +50,7 @@ export class MessagingService {
         body: JSON.stringify({
           chat_id: this.telegramChatId,
           text: text,
+          reply_markup: approvalButtons
         }),
       });
 
@@ -45,7 +60,7 @@ export class MessagingService {
         throw new Error(responseData.description || "Failed to send to Telegram");
       }
       
-      return true;
+      return responseData;
     } catch (error) {
       console.error("Telegram API error:", error);
       throw error;
@@ -55,9 +70,7 @@ export class MessagingService {
   async sendViaEmailJS(data: ContactFormValues): Promise<boolean> {
     try {
       // Skip EmailJS if credentials are not set
-      if (this.emailJSServiceId === "YOUR_EMAILJS_SERVICE_ID" || 
-          this.emailJSTemplateId === "YOUR_EMAILJS_TEMPLATE_ID" || 
-          this.emailJSPublicKey === "YOUR_EMAILJS_PUBLIC_KEY") {
+      if (!this.emailJSServiceId || !this.emailJSTemplateId || !this.emailJSPublicKey) {
         console.log("EmailJS credentials not set, skipping email send");
         return false;
       }
@@ -69,7 +82,7 @@ export class MessagingService {
           from_name: data.name,
           from_email: data.email,
           phone: data.phone || "Not provided",
-          to_email: 'ks.avebina7@gmail.com',
+          preferred_date: format(data.preferredDate, "PPP"),
           message: data.message,
         },
         this.emailJSPublicKey

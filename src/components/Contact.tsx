@@ -1,9 +1,8 @@
-
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Phone } from "lucide-react";
+import { Send, Phone, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import emailjs from '@emailjs/browser';
@@ -12,6 +11,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 // Contact form schema
 const contactFormSchema = z.object({
@@ -19,6 +22,9 @@ const contactFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   phone: z.string().optional(),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+  preferredDate: z.date({
+    required_error: "Please select a preferred contact date.",
+  }),
 });
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
@@ -43,6 +49,7 @@ export const Contact = () => {
       email: "",
       phone: "",
       message: "",
+      preferredDate: undefined,
     },
   });
 
@@ -65,6 +72,7 @@ export const Contact = () => {
 👤 Name: ${data.name}
 📩 Email: ${data.email}
 📱 Phone: ${data.phone || "Not provided"}
+📅 Preferred Contact Date: ${format(data.preferredDate, "PPP")}
 💬 Message: ${data.message}
     `;
 
@@ -273,6 +281,52 @@ export const Contact = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: 0.2 }}
+                >
+                  <FormField
+                    control={form.control}
+                    name="preferredDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Select preferred contact date</span>
+                                )}
+                                <Calendar className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <CalendarComponent
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) => date < new Date()}
+                              initialFocus
+                              className={cn("p-3 pointer-events-auto")}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.25 }}
                 >
                   <FormField
                     control={form.control}

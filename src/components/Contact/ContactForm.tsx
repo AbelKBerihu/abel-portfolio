@@ -1,3 +1,4 @@
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -7,14 +8,9 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Phone, Calendar as CalendarIcon, Send } from "lucide-react";
+import { Phone, Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { contactFormSchema, type ContactFormValues } from './schema';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormValues) => Promise<void>;
@@ -126,54 +122,6 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
           >
             <FormField
               control={form.control}
-              name="preferredDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "w-full pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Select preferred contact date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) => 
-                          date < new Date() || !isDayAvailable(date)
-                        }
-                        initialFocus
-                        className={cn("p-3 pointer-events-auto")}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.25 }}
-          >
-            <FormField
-              control={form.control}
               name="message"
               render={({ field }) => (
                 <FormItem>
@@ -207,12 +155,23 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
 
         <div className="w-full md:w-[350px] bg-white/50 rounded-lg p-4 shadow-lg">
           <h3 className="text-lg font-semibold mb-4">Available Dates</h3>
+          <div className="text-sm text-muted-foreground mb-2">
+            {form.watch("preferredDate") ? (
+              <p>Selected date: {format(form.watch("preferredDate"), "PPP")}</p>
+            ) : (
+              <p>Please select a date from the calendar</p>
+            )}
+          </div>
           <Calendar
             mode="single"
             selected={form.watch("preferredDate")}
             onSelect={(date) => form.setValue("preferredDate", date)}
             disabled={(date) => date < new Date() || !isDayAvailable(date)}
-            className={cn("w-full border rounded-md bg-white pointer-events-auto")}
+            className={cn(
+              "w-full border rounded-md bg-white pointer-events-auto",
+              "rdp-day_selected:bg-primary rdp-day_selected:text-primary-foreground",
+              "rdp-day_disabled:bg-gray-900 rdp-day_disabled:text-white"
+            )}
           />
         </div>
       </div>

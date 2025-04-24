@@ -4,12 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Send } from "lucide-react";
+import { Phone, Calendar as CalendarIcon, Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { contactFormSchema, type ContactFormValues } from './schema';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormValues) => Promise<void>;
@@ -31,7 +36,7 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
   });
 
   const isDayAvailable = (date: Date) => {
-    return availableDates.some(availableDate => 
+    return availableDates.length === 0 || availableDates.some(availableDate => 
       availableDate.toDateString() === date.toDateString()
     );
   };
@@ -139,16 +144,18 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
                           ) : (
                             <span>Select preferred contact date</span>
                           )}
-                          <Calendar className="ml-auto h-4 w-4 opacity-50" />
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <CalendarComponent
+                      <Calendar
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) => date < new Date()}
+                        disabled={(date) => 
+                          date < new Date() || !isDayAvailable(date)
+                        }
                         initialFocus
                         className={cn("p-3 pointer-events-auto")}
                       />
@@ -199,16 +206,13 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
         </form>
 
         <div className="w-full md:w-[350px] bg-white/50 rounded-lg p-4 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">Select Available Date</h3>
-          <CalendarComponent
+          <h3 className="text-lg font-semibold mb-4">Available Dates</h3>
+          <Calendar
             mode="single"
             selected={form.watch("preferredDate")}
             onSelect={(date) => form.setValue("preferredDate", date)}
             disabled={(date) => date < new Date() || !isDayAvailable(date)}
-            className={cn("w-full border rounded-md bg-white", 
-              "& .rdp-day_selected { background-color: white !important; color: black !important; }",
-              "& .rdp-day_disabled { background-color: black !important; color: white !important; }"
-            )}
+            className={cn("w-full border rounded-md bg-white pointer-events-auto")}
           />
         </div>
       </div>

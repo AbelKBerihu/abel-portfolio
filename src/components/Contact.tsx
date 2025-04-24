@@ -7,12 +7,22 @@ import { MessagingService } from "./Contact/messaging-service";
 import { ContactForm } from "./Contact/ContactForm";
 import type { ContactFormValues } from "./Contact/schema";
 
+// These would typically come from your backend/API
+const AVAILABLE_DATES = [
+  new Date(2024, 3, 25),  // April 25, 2024
+  new Date(2024, 3, 26),  // April 26, 2024
+  new Date(2024, 3, 29),  // April 29, 2024
+  new Date(2024, 4, 1),   // May 1, 2024
+];
+
 export const Contact = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [telegramBotToken] = useState("7753468504:AAHaciLonL3pW9YjDgbij1BK4L4R2qcxVFE");
-  const [telegramChatId] = useState("7566668762");
+  
+  // Replace these with your actual credentials
+  const [telegramBotToken] = useState("YOUR_BOT_TOKEN");
+  const [telegramChatId] = useState("YOUR_CHAT_ID");
   const [emailJSServiceId] = useState("YOUR_EMAILJS_SERVICE_ID");
   const [emailJSTemplateId] = useState("YOUR_EMAILJS_TEMPLATE_ID");
   const [emailJSPublicKey] = useState("YOUR_EMAILJS_PUBLIC_KEY");
@@ -92,13 +102,14 @@ export const Contact = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
-          className="max-w-md mx-auto"
+          className="max-w-4xl mx-auto"
         >
           <div className="glass rounded-lg p-6 shadow-lg backdrop-blur-lg">
             <ContactForm
               onSubmit={onSubmit}
               isSubmitting={isSubmitting}
               isMobile={isMobile}
+              availableDates={AVAILABLE_DATES}
             />
           </div>
         </motion.div>

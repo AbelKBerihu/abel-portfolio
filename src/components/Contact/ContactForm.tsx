@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -153,11 +152,11 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
           </motion.div>
         </form>
 
-        <div className="w-full md:w-[350px] bg-white/50 rounded-lg p-4 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">Available Dates</h3>
-          <div className="text-sm text-muted-foreground mb-2">
+        <div className="w-full md:w-[350px] bg-black/80 rounded-lg p-4 shadow-lg">
+          <h3 className="text-lg font-semibold mb-4 text-white">Available Dates</h3>
+          <div className="text-sm text-gray-300 mb-2">
             {form.watch("preferredDate") ? (
-              <p>Selected date: {format(form.watch("preferredDate"), "PPP")}</p>
+              <p>Selected date: <span className="text-white">{format(form.watch("preferredDate"), "PPP")}</span></p>
             ) : (
               <p>Please select a date from the calendar</p>
             )}
@@ -168,10 +167,17 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
             onSelect={(date) => form.setValue("preferredDate", date)}
             disabled={(date) => date < new Date() || !isDayAvailable(date)}
             className={cn(
-              "w-full border rounded-md bg-white pointer-events-auto",
-              "rdp-day_selected:bg-primary rdp-day_selected:text-primary-foreground",
-              "rdp-day_disabled:bg-gray-900 rdp-day_disabled:text-white"
+              "w-full border rounded-md bg-black pointer-events-auto",
+              "rdp-day_selected:bg-white rdp-day_selected:text-black",
+              "rdp-day_disabled:bg-gray-800 rdp-day_disabled:text-gray-500",
+              "text-white"
             )}
+            classNames={{
+              day_today: "bg-gray-700 text-white",
+              head_cell: "text-gray-400",
+              nav_button: "text-white hover:bg-gray-700",
+              day: "hover:bg-gray-700 hover:text-white"
+            }}
           />
         </div>
       </div>

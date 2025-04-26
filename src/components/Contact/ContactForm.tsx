@@ -152,9 +152,9 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
           </motion.div>
         </form>
 
-        <div className="w-full md:w-[350px] bg-black/80 rounded-lg p-4 shadow-lg">
-          <h3 className="text-lg font-semibold mb-4 text-white">Available Dates</h3>
-          <div className="text-sm text-gray-300 mb-2">
+        <div className="w-full md:w-[350px] bg-black/80 rounded-lg p-4 shadow-lg flex flex-col items-center">
+          <h3 className="text-lg font-semibold mb-4 text-white text-center w-full">Available Dates</h3>
+          <div className="text-sm text-gray-300 mb-2 text-center w-full">
             {form.watch("preferredDate") ? (
               <p>Selected date: <span className="text-white">{format(form.watch("preferredDate"), "PPP")}</span></p>
             ) : (
@@ -174,9 +174,11 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
             )}
             classNames={{
               day_today: "bg-gray-700 text-white",
-              head_cell: "text-gray-400",
+              head_cell: "text-gray-400 text-center",
               nav_button: "text-white hover:bg-gray-700",
-              day: "hover:bg-gray-700 hover:text-white"
+              day: "hover:bg-gray-700 hover:text-white text-center",
+              month: "w-full",
+              months: "w-full"
             }}
           />
         </div>

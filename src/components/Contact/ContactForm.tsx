@@ -1,3 +1,4 @@
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -168,17 +169,17 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
             disabled={(date) => date < new Date() || !isDayAvailable(date)}
             className={cn(
               "w-full border rounded-md bg-black pointer-events-auto",
-              "rdp-day_selected:bg-white rdp-day_selected:text-black",
-              "rdp-day_disabled:bg-gray-800 rdp-day_disabled:text-gray-500",
               "text-white"
             )}
             classNames={{
               day_today: "bg-gray-700 text-white",
-              head_cell: "text-gray-400 text-center",
+              head_cell: "text-gray-400 text-center justify-center",
               nav_button: "text-white hover:bg-gray-700",
-              day: "hover:bg-gray-700 hover:text-white text-center",
+              day: "hover:bg-gray-700 hover:text-white text-center justify-center",
               month: "w-full",
-              months: "w-full"
+              months: "w-full",
+              row: "flex justify-center w-full",
+              cell: "flex items-center justify-center"
             }}
           />
         </div>

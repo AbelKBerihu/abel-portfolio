@@ -30,12 +30,6 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
     },
   });
 
-  const isDayAvailable = (date: Date) => {
-    return availableDates.length === 0 || availableDates.some(availableDate => 
-      availableDate.toDateString() === date.toDateString()
-    );
-  };
-
   return (
     <Form {...form}>
       <div className="flex flex-col md:flex-row gap-6">
@@ -153,7 +147,7 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
         </form>
 
         <div className="w-full md:w-[350px] bg-black/80 rounded-lg p-4 shadow-lg flex flex-col items-center">
-          <h3 className="text-lg font-semibold mb-4 text-white text-center">Available Dates</h3>
+          <h3 className="text-lg font-semibold mb-4 text-white text-center">Select a Date</h3>
           <div className="text-sm text-gray-300 mb-2 text-center">
             {form.watch("preferredDate") ? (
               <p>Selected date: <span className="text-white">{format(form.watch("preferredDate"), "PPP")}</span></p>
@@ -165,7 +159,7 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
             mode="single"
             selected={form.watch("preferredDate")}
             onSelect={(date) => form.setValue("preferredDate", date)}
-            disabled={(date) => date < new Date() || !isDayAvailable(date)}
+            disabled={(date) => date < new Date()} // Only disable past dates
             className="border rounded-md bg-black pointer-events-auto text-white"
           />
         </div>

@@ -1,4 +1,3 @@
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -154,8 +153,8 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
         </form>
 
         <div className="w-full md:w-[350px] bg-black/80 rounded-lg p-4 shadow-lg flex flex-col items-center">
-          <h3 className="text-lg font-semibold mb-4 text-white text-center w-full">Available Dates</h3>
-          <div className="text-sm text-gray-300 mb-2 text-center w-full">
+          <h3 className="text-lg font-semibold mb-4 text-white text-center">Available Dates</h3>
+          <div className="text-sm text-gray-300 mb-2 text-center">
             {form.watch("preferredDate") ? (
               <p>Selected date: <span className="text-white">{format(form.watch("preferredDate"), "PPP")}</span></p>
             ) : (
@@ -167,20 +166,7 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
             selected={form.watch("preferredDate")}
             onSelect={(date) => form.setValue("preferredDate", date)}
             disabled={(date) => date < new Date() || !isDayAvailable(date)}
-            className={cn(
-              "w-full border rounded-md bg-black pointer-events-auto",
-              "text-white"
-            )}
-            classNames={{
-              day_today: "bg-gray-700 text-white",
-              head_cell: "text-gray-400 text-center justify-center",
-              nav_button: "text-white hover:bg-gray-700",
-              day: "hover:bg-gray-700 hover:text-white text-center justify-center",
-              month: "w-full",
-              months: "w-full",
-              row: "flex justify-center w-full",
-              cell: "flex items-center justify-center"
-            }}
+            className="border rounded-md bg-black pointer-events-auto text-white"
           />
         </div>
       </div>

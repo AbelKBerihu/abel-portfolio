@@ -20,6 +20,12 @@ export class MessagingService {
   ) {}
 
   async sendToTelegram(data: ContactFormValues): Promise<TelegramResponse> {
+    // Skip if using placeholder values
+    if (this.telegramBotToken === "YOUR_BOT_TOKEN" || this.telegramChatId === "YOUR_CHAT_ID") {
+      console.log("Using placeholder Telegram credentials, skipping Telegram message");
+      throw new Error("Telegram credentials not configured");
+    }
+    
     const approvalButtons = JSON.stringify({
       inline_keyboard: [[
         { text: "✅ Approve", callback_data: `approve_${data.email}` },
@@ -33,7 +39,7 @@ export class MessagingService {
 👤 Name: ${data.name}
 📩 Email: ${data.email}
 📱 Phone: ${data.phone || "Not provided"}
-📅 Preferred Contact Date: ${format(data.preferredDate, "PPP")}
+📅 Preferred Contact Date: ${data.preferredDate ? format(data.preferredDate, "PPP") : "Not selected"}
 💬 Message: ${data.message}
 
 Please approve or decline this request:
@@ -69,10 +75,17 @@ Please approve or decline this request:
 
   async sendViaEmailJS(data: ContactFormValues): Promise<boolean> {
     try {
-      // Skip EmailJS if credentials are not set
-      if (!this.emailJSServiceId || !this.emailJSTemplateId || !this.emailJSPublicKey) {
-        console.log("EmailJS credentials not set, skipping email send");
-        return false;
+      // Skip EmailJS if credentials are placeholder values
+      if (
+        !this.emailJSServiceId || 
+        !this.emailJSTemplateId || 
+        !this.emailJSPublicKey ||
+        this.emailJSServiceId === "YOUR_EMAILJS_SERVICE_ID" ||
+        this.emailJSTemplateId === "YOUR_EMAILJS_TEMPLATE_ID" ||
+        this.emailJSPublicKey === "YOUR_EMAILJS_PUBLIC_KEY"
+      ) {
+        console.log("EmailJS credentials not properly configured, skipping email send");
+        throw new Error("EmailJS credentials not configured");
       }
       
       const response = await emailjs.send(
@@ -82,7 +95,7 @@ Please approve or decline this request:
           from_name: data.name,
           from_email: data.email,
           phone: data.phone || "Not provided",
-          preferred_date: format(data.preferredDate, "PPP"),
+          preferred_date: data.preferredDate ? format(data.preferredDate, "PPP") : "Not selected",
           message: data.message,
         },
         this.emailJSPublicKey
@@ -92,7 +105,7 @@ Please approve or decline this request:
       return true;
     } catch (error) {
       console.error("EmailJS error:", error);
-      return false;
+      throw error;
     }
   }
 }

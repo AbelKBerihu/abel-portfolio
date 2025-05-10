@@ -28,13 +28,13 @@ const tools = [
 
 export const Marquee = () => {
   return (
-    <div className="py-6 bg-secondary/20 overflow-hidden">
+    <div className="py-3 bg-secondary/20 overflow-hidden">
       <div className="flex">
-        <div className="animate-marquee whitespace-nowrap flex gap-12">
+        <div className="animate-marquee whitespace-nowrap flex gap-8">
           {[...tools, ...tools].map((tool, index) => (
             <motion.div
               key={index}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-background/50 backdrop-blur-sm border"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/50 backdrop-blur-sm border"
               whileHover={{ scale: 1.05 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -43,8 +43,8 @@ export const Marquee = () => {
                 delay: index * 0.05 
               }}
             >
-              {tool.icon && <tool.icon className="w-5 h-5" />}
-              <span>{tool.name}</span>
+              {tool.icon && <tool.icon className="w-4 h-4" />}
+              <span className="text-sm">{tool.name}</span>
             </motion.div>
           ))}
         </div>

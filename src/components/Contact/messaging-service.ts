@@ -33,13 +33,16 @@ export class MessagingService {
       ]]
     });
 
+    // Format the date safely with a null check
+    const formattedDate = data.preferredDate ? format(data.preferredDate, "PPP") : "Not selected";
+
     const text = `
 📧 New Contact Request (Pending Approval) 📧
 
 👤 Name: ${data.name}
 📩 Email: ${data.email}
 📱 Phone: ${data.phone || "Not provided"}
-📅 Preferred Contact Date: ${data.preferredDate ? format(data.preferredDate, "PPP") : "Not selected"}
+📅 Preferred Contact Date: ${formattedDate}
 💬 Message: ${data.message}
 
 Please approve or decline this request:
@@ -88,6 +91,9 @@ Please approve or decline this request:
         throw new Error("EmailJS credentials not configured");
       }
       
+      // Format the date safely with a null check
+      const formattedDate = data.preferredDate ? format(data.preferredDate, "PPP") : "Not selected";
+      
       const response = await emailjs.send(
         this.emailJSServiceId,
         this.emailJSTemplateId,
@@ -95,7 +101,7 @@ Please approve or decline this request:
           from_name: data.name,
           from_email: data.email,
           phone: data.phone || "Not provided",
-          preferred_date: data.preferredDate ? format(data.preferredDate, "PPP") : "Not selected",
+          preferred_date: formattedDate,
           message: data.message,
         },
         this.emailJSPublicKey

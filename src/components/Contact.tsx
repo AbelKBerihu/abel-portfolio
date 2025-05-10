@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -14,9 +15,9 @@ export const Contact = () => {
   // Updated with real credentials
   const [telegramBotToken] = useState("7753468504:AAHaciLonL3pW9YjDgbij1BK4L4R2qcxVFE");
   const [telegramChatId] = useState("7566668762");
-  const [emailJSServiceId] = useState("YOUR_EMAILJS_SERVICE_ID");
-  const [emailJSTemplateId] = useState("YOUR_EMAILJS_TEMPLATE_ID");
-  const [emailJSPublicKey] = useState("YOUR_EMAILJS_PUBLIC_KEY");
+  const [emailJSServiceId] = useState("service_ogkb0kd");
+  const [emailJSTemplateId] = useState("template_5ye8huc");
+  const [emailJSPublicKey] = useState("BTvPy-Xmd6EnmeXGn");
 
   useEffect(() => {
     const checkMobile = () => {
@@ -41,7 +42,7 @@ export const Contact = () => {
     let demoMode = false;
 
     try {
-      // Check if we're in demo mode (placeholder EmailJS credentials but real Telegram)
+      // Check if we're in demo mode (All credentials should now be real)
       if (emailJSServiceId === "YOUR_EMAILJS_SERVICE_ID") {
         demoMode = true;
       }
@@ -55,8 +56,8 @@ export const Contact = () => {
         console.error("Telegram sending failed:", telegramError);
       }
 
-      // Also try to send via EmailJS if Telegram failed
-      if (!messageSent && !demoMode) {
+      // Also try to send via EmailJS (we now have real credentials)
+      if (!messageSent || emailJSServiceId === "service_ogkb0kd") {
         try {
           const emailSent = await messagingService.sendViaEmailJS(data);
           if (emailSent) {
@@ -68,8 +69,7 @@ export const Contact = () => {
         }
       }
 
-      // For demo mode with real Telegram credentials, we already attempted to send
-      // If Telegram succeeded, messageSent will be true
+      // Show success message if any method succeeded
       if (messageSent) {
         toast.success(t("messageSent"));
       } else {
@@ -77,8 +77,8 @@ export const Contact = () => {
         if (!demoMode) {
           toast.error(t("messageFailed"));
         } else {
-          // In demo mode with real Telegram credentials but failed to send
-          // Still show success if messageSent is false (to improve UX)
+          // In demo mode with real credentials but failed to send
+          // Still show success to improve UX
           toast.success(t("messageSent"));
         }
       }

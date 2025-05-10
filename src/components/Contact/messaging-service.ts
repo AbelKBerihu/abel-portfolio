@@ -78,7 +78,7 @@ Please approve or decline this request:
 
   async sendViaEmailJS(data: ContactFormValues): Promise<boolean> {
     try {
-      // Skip EmailJS if credentials are placeholder values
+      // Updated check for EmailJS credentials - now we expect real values
       if (
         !this.emailJSServiceId || 
         !this.emailJSTemplateId || 

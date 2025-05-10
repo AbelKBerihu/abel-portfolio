@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { MessagingService } from "./Contact/messaging-service";
+import { MessagingService, DateApprovalManager } from "./Contact/messaging-service";
 import { ContactForm } from "./Contact/ContactForm";
 import type { ContactFormValues } from "./Contact/schema";
 
@@ -11,6 +11,7 @@ export const Contact = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [availableDates, setAvailableDates] = useState<Date[]>([]);
   
   // Updated with real credentials
   const [telegramBotToken] = useState("7753468504:AAHaciLonL3pW9YjDgbij1BK4L4R2qcxVFE");
@@ -26,6 +27,20 @@ export const Contact = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    // Get available dates from our manager
+    const dateManager = DateApprovalManager.getInstance();
+    setAvailableDates(dateManager.getAvailableDates());
+    
+    // Set up a webhook listener to update dates when approvals happen
+    // For demo purposes, we'll just refresh every minute
+    const interval = setInterval(() => {
+      setAvailableDates(dateManager.getAvailableDates());
+    }, 60000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const messagingService = new MessagingService(
@@ -45,6 +60,19 @@ export const Contact = () => {
       // Check if we're in demo mode (All credentials should now be real)
       if (emailJSServiceId === "YOUR_EMAILJS_SERVICE_ID") {
         demoMode = true;
+      }
+
+      // Check if date is still available
+      if (data.preferredDate) {
+        const dateManager = DateApprovalManager.getInstance();
+        if (!dateManager.isDateAvailable(data.preferredDate)) {
+          toast.error(t("dateNoLongerAvailable"));
+          setIsSubmitting(false);
+          
+          // Refresh available dates
+          setAvailableDates(dateManager.getAvailableDates());
+          return;
+        }
       }
 
       // Try to send via Telegram
@@ -71,6 +99,15 @@ export const Contact = () => {
 
       // Show success message if any method succeeded
       if (messageSent) {
+        // In real implementation, you would record approval when the admin approves
+        // For demo purposes, we'll simulate an approval with 30% chance
+        if (Math.random() < 0.3 && data.preferredDate) {
+          const dateManager = DateApprovalManager.getInstance();
+          dateManager.recordApproval(data.preferredDate);
+          
+          // Refresh available dates
+          setAvailableDates(dateManager.getAvailableDates());
+        }
         toast.success(t("messageSent"));
       } else {
         // Only show error if both methods failed and we're not in demo mode
@@ -123,7 +160,7 @@ export const Contact = () => {
               onSubmit={onSubmit}
               isSubmitting={isSubmitting}
               isMobile={isMobile}
-              availableDates={[]}
+              availableDates={availableDates}
             />
           </div>
         </motion.div>

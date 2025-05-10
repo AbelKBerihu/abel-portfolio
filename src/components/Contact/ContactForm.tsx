@@ -1,3 +1,4 @@
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -7,15 +8,16 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Phone, Send } from "lucide-react";
+import { Phone, Send, Calendar as CalendarIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { contactFormSchema, type ContactFormValues } from './schema';
+import { DateApprovalManager } from './messaging-service';
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormValues) => Promise<void>;
   isSubmitting: boolean;
   isMobile: boolean;
-  availableDates?: Date[];
+  availableDates: Date[];
 }
 
 export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates = [] }: ContactFormProps) => {
@@ -29,6 +31,29 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
       preferredDate: undefined,
     },
   });
+
+  // If the selected date is no longer available, reset it
+  const selectedDate = form.watch("preferredDate");
+  if (selectedDate) {
+    const dateManager = DateApprovalManager.getInstance();
+    if (!dateManager.isDateAvailable(selectedDate)) {
+      form.setValue("preferredDate", undefined);
+    }
+  }
+
+  // Function to check if a date is disabled
+  const isDateDisabled = (date: Date) => {
+    // Disable past dates
+    if (date < new Date()) return true;
+    
+    // Check if date is in the availableDates array
+    return !availableDates.some(
+      availableDate => 
+        availableDate.getFullYear() === date.getFullYear() && 
+        availableDate.getMonth() === date.getMonth() && 
+        availableDate.getDate() === date.getDate()
+    );
+  };
 
   return (
     <Form {...form}>
@@ -150,18 +175,32 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates =
           <h3 className="text-lg font-semibold mb-4 text-white text-center">Select a Date</h3>
           <div className="text-sm text-gray-300 mb-2 text-center">
             {form.watch("preferredDate") ? (
-              <p>Selected date: <span className="text-white">{format(form.watch("preferredDate"), "PPP")}</span></p>
+              <div>
+                <p>Selected date: <span className="text-white">{format(form.watch("preferredDate"), "PPP")}</span></p>
+                {form.watch("preferredDate") && (
+                  <p className="text-xs mt-1">
+                    <CalendarIcon className="inline-block mr-1 h-3 w-3" />
+                    <span className="text-green-400">
+                      {DateApprovalManager.getInstance().getRemainingSlots(form.watch("preferredDate"))} slots remaining
+                    </span>
+                  </p>
+                )}
+              </div>
             ) : (
-              <p>Please select a date from the calendar</p>
+              <p>Please select an available date</p>
             )}
           </div>
           <Calendar
             mode="single"
             selected={form.watch("preferredDate")}
             onSelect={(date) => form.setValue("preferredDate", date)}
-            disabled={(date) => date < new Date()} // Only disable past dates
+            disabled={isDateDisabled} 
             className="border rounded-md bg-black pointer-events-auto text-white"
           />
+          <div className="text-xs text-gray-400 mt-3 text-center">
+            <p>Each date has a maximum of 10 slots.</p>
+            <p>Dates that are not selectable have reached their limit.</p>
+          </div>
         </div>
       </div>
     </Form>

@@ -78,8 +78,8 @@ const CertificatePopup = ({ certificate, onClose }: CertificatePopupProps) => {
               src={certificate.image}
               alt={certificate.title}
               className="w-full h-full object-contain"
+              loading="lazy"
               onError={(e) => {
-                // Fallback to placeholder if image fails to load
                 (e.target as HTMLImageElement).src = "/placeholder.svg";
               }}
             />

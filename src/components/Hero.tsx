@@ -70,7 +70,7 @@ export const Hero = () => {
             variants={nameVariants}
             initial="initial"
             animate="animate"
-            className="text-4xl md:text-6xl font-bold mt-4 mb-6 flex justify-center items-center gap-[2px]"
+            className="text-4xl md:text-6xl font-bold mt-4 mb-6 flex justify-center items-center gap-[2px] font-playfair"
           >
             {characters.map((char, index) => (
               <motion.span

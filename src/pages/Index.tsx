@@ -13,6 +13,31 @@ import { useEffect, useState } from "react";
 
 const Index = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const siteUrl = typeof window !== "undefined" ? window.location.origin : "";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Abel Kebede | Web Developer & Graphic Designer",
+    url: siteUrl,
+    sameAs: [
+      "https://github.com/abelkm99",
+      "https://www.linkedin.com/in/abel-ks",
+      "https://facebook.com/yourusername",
+      "https://youtube.com/your-channel"
+    ]
+  };
+
+  useEffect(() => {
+    const link: HTMLLinkElement = (document.querySelector('link[rel="canonical"]') as HTMLLinkElement) || document.createElement("link");
+    link.setAttribute("rel", "canonical");
+    link.setAttribute("href", window.location.href);
+    if (!link.parentElement) document.head.appendChild(link);
+
+    const ogUrl: HTMLMetaElement = (document.querySelector('meta[property="og:url"]') as HTMLMetaElement) || document.createElement("meta");
+    ogUrl.setAttribute("property", "og:url");
+    ogUrl.setAttribute("content", window.location.href);
+    if (!ogUrl.parentElement) document.head.appendChild(ogUrl);
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -39,6 +64,10 @@ const Index = () => {
         transition={{ duration: 0.3 }}
       >
         <div className="relative z-10">
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
           {!isMobile && <CustomCursor />}
           <Header />
           <div id="home">

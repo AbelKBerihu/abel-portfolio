@@ -19,7 +19,7 @@ interface CertificatePopupProps {
 
 const CertificatePopup = ({ certificate, onClose }: CertificatePopupProps) => {
   const { t } = useLanguage();
-  const [autoCloseTimeout, setAutoCloseTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [autoCloseTimeout, setAutoCloseTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   
   useEffect(() => {
     // Auto close after 30 seconds

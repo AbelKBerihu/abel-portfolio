@@ -27,9 +27,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        inter: ["Inter", "sans-serif"],
+        sans: ["Work Sans", "sans-serif"],
+        inter: ["Work Sans", "sans-serif"],
         jetbrains: ["JetBrains Mono", "monospace"],
-        playfair: ["Playfair Display", "serif"],
+        playfair: ["JetBrains Mono", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",

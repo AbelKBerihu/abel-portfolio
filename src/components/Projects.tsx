@@ -1,181 +1,51 @@
-
-import { motion } from "framer-motion";
-import { Code, Film, Globe, ShoppingBag, Music, Coffee, Star, Layers, Palette } from "lucide-react";
-import { useState, useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, Layers, Palette, ShoppingBag, Globe } from "lucide-react";
+import { useState } from "react";
+import brandImage from "@/assets/projects/brand.jpg";
+import commerceImage from "@/assets/projects/commerce.jpg";
+import systemImage from "@/assets/projects/system.jpg";
+import portfolioImage from "@/assets/projects/portfolio.jpg";
 
 const projects = [
-  {
-    title: "Brand Identity Design",
-    description: "Complete brand identity design including logo, color palette, typography, and brand guidelines for a tech startup.",
-    type: "design",
-    image: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=600&q=60",
-    icon: Palette,
-    rating: 4.9,
-    comments: [
-      {
-        name: "Sarah Johnson",
-        comment: "Exceptional brand design that perfectly captures our company vision.",
-        rating: 5
-      }
-    ]
-  },
-  {
-    title: "E-Commerce Platform",
-    description: "Modern e-commerce website with custom product showcase, real-time inventory, and integrated payment processing.",
-    type: "web",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=600&q=60",
-    icon: ShoppingBag,
-    rating: 4.8,
-    comments: [
-      {
-        name: "David Chen",
-        comment: "The UI design and functionality exceeded our expectations.",
-        rating: 5
-      }
-    ]
-  },
-  {
-    title: "UI/UX Design System",
-    description: "Comprehensive design system including components, patterns, and guidelines for a large-scale web application.",
-    type: "design",
-    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=600&q=60",
-    icon: Layers,
-    rating: 4.7,
-    comments: [
-      {
-        name: "Alex Turner",
-        comment: "The design system greatly improved our development workflow!",
-        rating: 4.5
-      }
-    ]
-  },
-  {
-    title: "Portfolio Website",
-    description: "Custom portfolio website with interactive animations and responsive design for a professional photographer.",
-    type: "web",
-    image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=60",
-    icon: Globe,
-    rating: 4.8,
-    comments: [
-      {
-        name: "Emma Davis",
-        comment: "Beautiful design and smooth performance.",
-        rating: 5
-      }
-    ]
-  }
+  { title: "Brand Identity Design", discipline: "Identity / Direction", description: "A complete visual identity system spanning mark, palette, typography, and practical brand guidelines.", image: brandImage, icon: Palette },
+  { title: "E-Commerce Platform", discipline: "Product / Web", description: "A modern storefront concept focused on clear product discovery, inventory visibility, and frictionless purchase flows.", image: commerceImage, icon: ShoppingBag },
+  { title: "UI/UX Design System", discipline: "Systems / Interface", description: "A scalable interface language bringing reusable components, patterns, and product guidance into one system.", image: systemImage, icon: Layers },
+  { title: "Portfolio Website", discipline: "Creative development", description: "A responsive photographer portfolio where expressive transitions support the work instead of competing with it.", image: portfolioImage, icon: Globe },
 ];
 
 export const Projects = () => {
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
-
-  useEffect(() => {
-    // Check if it's a touch device
-    const checkTouchDevice = () => {
-      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-    };
-    
-    checkTouchDevice();
-  }, []);
-
-  const handleProjectClick = (index: number) => {
-    if (isTouchDevice) {
-      // Toggle the project details on touch
-      setHoveredProject(hoveredProject === index ? null : index);
-    }
-  };
+  const [active, setActive] = useState<number | null>(null);
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="py-20 bg-secondary/50">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl font-bold mb-4">Featured Projects</h2>
-          <p className="text-muted-foreground">Some of my recent work</p>
-        </motion.div>
-        <div className="grid md:grid-cols-2 gap-8">
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: index * 0.05 }}
-              viewport={{ once: true }}
-              className="group relative overflow-hidden rounded-lg cursor-pointer"
-              onClick={() => handleProjectClick(index)}
-            >
-              <motion.div 
-                className="aspect-video overflow-hidden"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-              >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </motion.div>
-              <div 
-                className={`absolute inset-0 bg-black/80 transition-opacity duration-300 ${
-                  isTouchDevice 
-                    ? hoveredProject === index ? 'opacity-100' : 'opacity-0' 
-                    : 'opacity-0 group-hover:opacity-100'
-                }`}
-              >
-                <div className="p-6 text-white h-full overflow-y-auto">
-                  <div className="mb-4">
-                    <project.icon className="w-8 h-8 mx-auto mb-2" />
-                    <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                    <p className="text-gray-300 mb-4">{project.description}</p>
-                    <div className="flex items-center justify-center gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(project.rating)
-                              ? "text-yellow-400 fill-yellow-400"
-                              : "text-gray-400"
-                          }`}
-                        />
-                      ))}
-                      <span className="ml-2 text-sm">{project.rating}</span>
-                    </div>
+    <section className="section-rule bg-card/35 py-24" aria-labelledby="projects-title">
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="mb-14 grid gap-6 md:grid-cols-[1fr_auto] md:items-end">
+          <div><p className="editorial-kicker">01 / Selected work</p><h2 id="projects-title" className="mt-3 text-4xl font-bold md:text-6xl">Projects with a point of view.</h2></div>
+          <p className="max-w-sm text-muted-foreground">Digital products and visual systems shaped for clarity, speed, and memorable interaction.</p>
+        </div>
+
+        <div className="grid gap-x-8 gap-y-14 md:grid-cols-2">
+          {projects.map((project, index) => {
+            const Icon = project.icon;
+            const expanded = active === index;
+            return (
+              <motion.article key={project.title} initial={{ opacity: 0, y: 34 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.2 }} transition={{ delay: index * 0.06 }} className={index % 2 ? "md:mt-20" : ""}>
+                <button type="button" onClick={() => setActive(expanded ? null : index)} className="group block w-full text-left" aria-expanded={expanded}>
+                  <div className="relative aspect-[4/3] overflow-hidden border border-border bg-secondary">
+                    <motion.img src={project.image} alt="" loading="lazy" className="h-full w-full object-cover opacity-80" whileHover={reduceMotion ? undefined : { scale: 1.04 }} transition={{ duration: 0.6 }} />
+                    <span className="absolute left-4 top-4 border border-border bg-background/85 px-3 py-1 font-jetbrains text-xs text-primary backdrop-blur">0{index + 1}</span>
+                    <span className="absolute bottom-4 right-4 grid h-11 w-11 place-items-center bg-primary text-primary-foreground"><ArrowUpRight /></span>
                   </div>
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-lg">Client Reviews</h4>
-                    {project.comments.map((comment, i) => (
-                      <div key={i} className="border-t border-white/20 pt-4">
-                        <p className="italic text-sm mb-2">"{comment.comment}"</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-300">{comment.name}</span>
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <Star
-                                key={i}
-                                className={`w-3 h-3 ${
-                                  i < Math.floor(comment.rating)
-                                    ? "text-yellow-400 fill-yellow-400"
-                                    : "text-gray-400"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                  <div className="border-b border-border py-5">
+                    <div className="flex items-center justify-between gap-4"><p className="editorial-kicker">{project.discipline}</p><Icon className="h-5 w-5 text-muted-foreground" /></div>
+                    <h3 className="mt-2 text-2xl font-semibold transition-colors group-hover:text-primary">{project.title}</h3>
+                    <motion.p initial={false} animate={{ height: expanded ? "auto" : 0, opacity: expanded ? 1 : 0 }} className="max-w-xl overflow-hidden pt-3 leading-relaxed text-muted-foreground">{project.description}</motion.p>
                   </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                </button>
+              </motion.article>
+            );
+          })}
         </div>
       </div>
     </section>

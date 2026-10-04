@@ -1,54 +1,31 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 
 export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-  
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 640);
-      setIsTablet(window.innerWidth > 640 && window.innerWidth <= 768);
-    };
-    
-    checkScreenSize();
-    
-    window.addEventListener('resize', checkScreenSize);
-    
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
-
-  const getPositionClass = () => {
-    if (isTablet) {
-      return "fixed top-4 right-4 z-50";
-    } else if (isMobile) {
-      return "fixed top-4 right-16 z-50";
-    } else {
-      return "relative";
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className={getPositionClass()}
+      className="relative"
     >
-      <button
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        className="p-2 rounded-full transition-transform hover:scale-110 cursor-none"
+        aria-label="Toggle color theme"
       >
         {theme === 'dark' ? (
-          <Sun className="h-[1.2rem] w-[1.2rem] text-white" />
+          <Sun className="h-[1.2rem] w-[1.2rem]" />
         ) : (
-          <Moon className="h-[1.2rem] w-[1.2rem] text-black" />
+          <Moon className="h-[1.2rem] w-[1.2rem]" />
         )}
         <span className="sr-only">Toggle theme</span>
-      </button>
+      </Button>
     </motion.div>
   );
 };

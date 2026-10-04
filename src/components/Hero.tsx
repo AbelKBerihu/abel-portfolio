@@ -1,202 +1,72 @@
-
-import { motion } from "framer-motion";
-import { ArrowDown, DownloadIcon, Phone } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowDownRight, ArrowUpRight, Phone } from "lucide-react";
 import { Button } from "./ui/button";
-import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import projectPreview from "@/assets/projects/portfolio.jpg";
 
-// Custom Upwork Icon component since Lucide doesn't have an official one
-const UpworkIcon = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 512 512"
-    width="1em"
-    height="1em"
-    fill="currentColor"
-    stroke="none"
-    {...props}
-  >
-    <path d="M357.2 296.9c-17 0-32.8-7.2-47.3-19l3.5-16.6.1-.6c3.2-17.6 13.1-47.2 43.6-47.2 22.9 0 41.5 18.6 41.5 41.5.1 23-18.5 41.9-41.4 41.9zm0-125.5c-40.9 0-72.7 26.5-85.6 70.1-19.8-29.7-34.8-65.4-43.7-95.3h-44.7v115.1c0 21.6-17.6 39.2-39.2 39.2s-39.2-17.6-39.2-39.2V146.2H60.2v115.1c0 46.1 37.5 83.8 83.7 83.8 46.1 0 83.7-37.7 83.7-83.8v-19.3c8.7 18.1 19.3 36.3 32.1 52.6l-27.2 128.2h45.8l19.8-93c17.3 11 37.1 18 58.2 18 49.3 0 89.4-40.1 89.4-89.4 0-49.4-40.2-89.5-89.5-89.5z" />
-  </svg>
-);
+const reveal = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export const Hero = () => {
-  const text = "ABEL KEBEDE";
-  const characters = Array.from(text);
-  const [isPhoneHovered, setIsPhoneHovered] = useState(false);
-  const [isUpworkHovered, setIsUpworkHovered] = useState(false);
-
-  const nameVariants = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1,
-        repeat: Infinity,
-        repeatDelay: 3,
-      },
-    },
-  };
-
-  const letterVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-      },
-    },
-  };
+  const reduceMotion = useReducedMotion();
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
 
   return (
-    <motion.section 
-      id="home"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.8 }}
-      className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16"
-    >
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <span className="text-primary/80 font-medium tracking-wider uppercase">
-            Web Developer | Graphics Designer
-          </span>
-          <motion.h1 
-            variants={nameVariants}
-            initial="initial"
-            animate="animate"
-            className="text-4xl md:text-6xl font-bold mt-4 mb-6 flex justify-center items-center gap-[2px] font-playfair"
-          >
-            {characters.map((char, index) => (
-              <motion.span
-                key={index}
-                variants={letterVariants}
-                className="inline-block"
-              >
-                {char === " " ? "\u00A0" : char}
-              </motion.span>
-            ))}
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-              className="inline-block w-[4px] h-[40px] md:h-[60px] bg-primary ml-2"
-            />
+    <section className="relative min-h-[92vh] overflow-hidden pt-24 md:pt-28">
+      <div className="container relative mx-auto grid min-h-[calc(92vh-7rem)] items-center gap-14 px-4 pb-12 lg:grid-cols-[minmax(0,1fr)_380px] lg:px-8">
+        <motion.div initial="hidden" animate="visible" transition={{ staggerChildren: 0.1 }} className="relative z-10 max-w-4xl">
+          <motion.div variants={reveal} className="editorial-kicker mb-8 flex items-center gap-3">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+            </span>
+            Available for selected projects
+          </motion.div>
+
+          <motion.h1 variants={reveal} className="max-w-5xl text-5xl font-extrabold leading-[0.95] md:text-7xl lg:text-8xl">
+            Building digital experiences that <span className="text-primary">matter.</span>
           </motion.h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-            I create engaging web experiences and compelling visual content that
-            captivate audiences and drive results.
-          </p>
 
-          <div className="flex flex-col gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="flex flex-wrap justify-center gap-4"
-            >
-              <Button
-                variant="outline"
-                size="lg"
-                onMouseEnter={() => setIsPhoneHovered(true)}
-                onMouseLeave={() => setIsPhoneHovered(false)}
-                className="glass hover:bg-primary/10 transition-all duration-500 ease-in-out transform hover:scale-110 text-lg w-48 h-[48px] relative overflow-hidden cursor-none"
-                asChild
-              >
-                <a href="tel:+251 930 466 887">
-                  <AnimatePresence mode="wait">
-                    {!isPhoneHovered ? (
-                      <motion.div
-                        initial={{ y: 0 }}
-                        exit={{ y: -30 }}
-                        className="flex items-center justify-center gap-2 absolute inset-0"
-                      >
-                        <Phone className="h-6 w-6" />
-                        <span>Call Me</span>
-                      </motion.div>
-                    ) : (
-                      <motion.span
-                        initial={{ y: 30 }}
-                        animate={{ y: 0 }}
-                        className="absolute inset-0 flex items-center justify-center"
-                      >
-                        +251 930 466 887
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </a>
-              </Button>
+          <motion.p variants={reveal} className="mt-8 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+            I’m Abel Kebede — a web developer and graphic designer creating fast, expressive interfaces where code and visual identity move together.
+          </motion.p>
 
-              <Button
-                variant="outline"
-                size="lg"
-                onMouseEnter={() => setIsUpworkHovered(true)}
-                onMouseLeave={() => setIsUpworkHovered(false)}
-                className="glass hover:bg-[#14A800]/10 transition-all duration-500 text-lg h-[48px] cursor-none relative overflow-hidden"
-                asChild
-              >
-                <a 
-                  href="https://www.upwork.com/your-profile" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-[#14A800] hover:text-[#14A800]"
-                >
-                  <AnimatePresence mode="wait">
-                    {!isUpworkHovered ? (
-                      <motion.span
-                        initial={{ y: 0 }}
-                        exit={{ y: -30 }}
-                        className="flex items-center justify-center gap-2"
-                      >
-                        <UpworkIcon className="h-5 w-5" />
-                        <span>Upwork</span>
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        initial={{ y: 30 }}
-                        animate={{ y: 0 }}
-                        className="flex items-center justify-center"
-                      >
-                        <UpworkIcon className="h-5 w-5 mr-2" />
-                        <span>Let's talk!</span>
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </a>
-              </Button>
+          <motion.div variants={reveal} className="mt-10 flex flex-wrap gap-3">
+            <Button size="lg" onClick={() => scrollTo("projects")} className="h-12 px-6 font-semibold">
+              View selected work <ArrowDownRight />
+            </Button>
+            <Button size="lg" variant="outline" asChild className="h-12 px-6">
+              <a href="tel:+251930466887"><Phone /> Let’s talk</a>
+            </Button>
+          </motion.div>
 
-              <Button
-                variant="outline"
-                size="lg"
-                className="glass hover:bg-primary/10 transition-all duration-500 text-lg h-[48px] cursor-none"
-                asChild
-              >
-                <a 
-                  href="/resume.pdf" 
-                  download 
-                  className="flex items-center gap-2"
-                >
-                  <ArrowDown className="h-5 w-5" />
-                  <span>Download CV</span>
-                </a>
-              </Button>
-            </motion.div>
-          </div>
+          <motion.div variants={reveal} className="mt-20 flex items-center gap-4 text-xs uppercase text-muted-foreground">
+            <span className="h-12 w-px bg-gradient-to-b from-primary to-transparent" />
+            Scroll to explore
+          </motion.div>
         </motion.div>
+
+        <motion.button
+          type="button"
+          onClick={() => scrollTo("projects")}
+          initial={{ opacity: 0, x: 40, rotate: 4 }}
+          animate={{ opacity: 1, x: 0, rotate: 2 }}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          whileHover={reduceMotion ? undefined : { rotate: 0, y: -8 }}
+          className="group relative hidden aspect-[4/5] overflow-hidden border border-border bg-card text-left shadow-2xl lg:block"
+          aria-label="View featured portfolio project"
+        >
+          <img src={projectPreview} alt="Featured portfolio website project" className="h-[58%] w-full object-cover opacity-80 transition duration-700 group-hover:scale-105 group-hover:opacity-100" />
+          <div className="absolute inset-x-0 top-0 h-1 bg-primary" />
+          <div className="p-6">
+            <p className="editorial-kicker">Featured / 04</p>
+            <h2 className="mt-3 text-2xl font-semibold">Portfolio Website</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">Interactive direction, responsive build, and a focused visual system.</p>
+            <span className="mt-6 inline-flex items-center gap-2 text-xs uppercase text-primary">Explore project <ArrowUpRight className="h-4 w-4" /></span>
+          </div>
+        </motion.button>
       </div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-      >
-        <ArrowDown className="animate-bounce" />
-      </motion.div>
-    </motion.section>
+    </section>
   );
 };

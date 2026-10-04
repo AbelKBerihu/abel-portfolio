@@ -1,174 +1,55 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { Code, Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
+import { Button } from "./ui/button";
 
 export const Header = () => {
   const { t } = useLanguage();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-  
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth <= 640);
-      setIsTablet(window.innerWidth > 640 && window.innerWidth <= 768);
-    };
-    
-    checkScreenSize();
-    
-    window.addEventListener('resize', checkScreenSize);
-    
-    return () => window.removeEventListener('resize', checkScreenSize);
-  }, []);
-  
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-      
-      if (isMobileMenuOpen) {
-        setIsMobileMenuOpen(false);
-      }
-    }
+  const [open, setOpen] = useState(false);
+  const links = [["projects", t("projects")], ["certifications", t("certifications")], ["skills", t("skills")]];
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    setOpen(false);
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-sm border-b">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 relative">
-          <motion.button
-            onClick={() => scrollToSection('home')}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className={`flex items-center gap-2 ${isMobile ? '' : 'cursor-none'}`}
-          >
-            <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Code className="w-6 h-6 md:w-8 md:h-8 text-primary" />
-            </motion.div>
-            <span className="text-base md:text-lg font-bold tracking-wider">ABEL.DEV</span>
-          </motion.button>
-          
-          <div className="flex items-center space-x-4">
-            {isMobile ? (
-              <div className="flex items-center">
-                <motion.button
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2"
-                  aria-label="Toggle menu"
-                >
-                  {isMobileMenuOpen ? (
-                    <X className="w-6 h-6" />
-                  ) : (
-                    <Menu className="w-6 h-6" />
-                  )}
-                </motion.button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-8">
-                <motion.nav
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center space-x-6"
-                >
-                  <motion.button
-                    onClick={() => scrollToSection('projects')}
-                    className="text-sm hover:text-primary transition-colors cursor-none"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {t("projects")}
-                  </motion.button>
-                  <motion.button
-                    onClick={() => scrollToSection('certifications')}
-                    className="text-sm hover:text-primary transition-colors cursor-none"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {t("certifications")}
-                  </motion.button>
-                  <motion.button
-                    onClick={() => scrollToSection('skills')}
-                    className="text-sm hover:text-primary transition-colors cursor-none"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {t("skills")}
-                  </motion.button>
-                  <motion.button
-                    onClick={() => scrollToSection('contact')}
-                    className="text-sm hover:text-primary transition-colors cursor-none"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {t("contact")}
-                  </motion.button>
-                </motion.nav>
-                
-                <div className="ml-4">
-                  <ThemeToggle />
-                </div>
-              </div>
-            )}
-          </div>
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/85 backdrop-blur-xl">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
+        <button type="button" onClick={() => scrollTo("home")} className="font-jetbrains text-base font-extrabold uppercase md:text-lg">
+          ABEL<span className="text-primary">.</span>DEV
+        </button>
+
+        <div className="hidden items-center gap-7 md:flex">
+          <nav className="flex items-center gap-7" aria-label="Main navigation">
+            {links.map(([id, label]) => (
+              <button key={id} type="button" onClick={() => scrollTo(id)} className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+                {label}
+              </button>
+            ))}
+          </nav>
+          <ThemeToggle />
+          <Button size="sm" onClick={() => scrollTo("contact")}>{t("contact")}</Button>
         </div>
+
+        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setOpen((value) => !value)} aria-label={open ? "Close menu" : "Open menu"}>
+          {open ? <X /> : <Menu />}
+        </Button>
       </div>
-      
-      {isMobile && (
-        <AnimatePresence>
-          {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-background border-b overflow-hidden"
-            >
-              <div className="container mx-auto px-4 py-4">
-                <div className="flex flex-col space-y-4">
-                  <motion.button
-                    onClick={() => scrollToSection('projects')}
-                    className="py-2 text-sm hover:text-primary transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {t("projects")}
-                  </motion.button>
-                  <motion.button
-                    onClick={() => scrollToSection('certifications')}
-                    className="py-2 text-sm hover:text-primary transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {t("certifications")}
-                  </motion.button>
-                  <motion.button
-                    onClick={() => scrollToSection('skills')}
-                    className="py-2 text-sm hover:text-primary transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {t("skills")}
-                  </motion.button>
-                  <motion.button
-                    onClick={() => scrollToSection('contact')}
-                    className="py-2 text-sm hover:text-primary transition-colors"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {t("contact")}
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      )}
+
+      <AnimatePresence>
+        {open && (
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-t border-border bg-background md:hidden">
+            <nav className="container mx-auto flex flex-col px-4 py-4" aria-label="Mobile navigation">
+              {[...links, ["contact", t("contact")]].map(([id, label]) => (
+                <button key={id} type="button" onClick={() => scrollTo(id)} className="border-b border-border py-4 text-left text-sm uppercase last:border-0">{label}</button>
+              ))}
+              <div className="mt-3"><ThemeToggle /></div>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

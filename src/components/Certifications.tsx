@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Award } from "lucide-react";
 import CertificatePopup from "./CertificatePopup";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -39,63 +39,44 @@ export const Certifications = () => {
   const { t } = useLanguage();
   const [selectedCert, setSelectedCert] = useState<(typeof certifications)[0] | null>(null);
   
+  const reduce = useReducedMotion();
   return (
-    <section className="py-20">
+    <section className="py-24 md:py-32 border-t border-border">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduce ? false : { opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-12 max-w-3xl"
         >
-          <h2 className="text-3xl font-bold mb-4">{t("certificationsTitle")}</h2>
-          <p className="text-muted-foreground">{t("certificationsSubtitle")}</p>
+          <p className="editorial-kicker mb-4">03 — Credentials</p>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">{t("certificationsTitle")}</h2>
+          <p className="text-muted-foreground text-lg">{t("certificationsSubtitle")}</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 border-t border-l border-border">
           {certifications.map((cert, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ 
-                duration: 0.3,
-                delay: index * 0.1 
-              }}
+            <motion.button
+              type="button"
+              key={cert.title}
+              initial={reduce ? false : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+              whileInView={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+              transition={{ duration: 0.8, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
               viewport={{ once: true }}
-              className="group"
               onClick={() => setSelectedCert(cert)}
+              className="group relative text-left p-6 md:p-8 border-r border-b border-border overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <motion.div 
-                className="p-6 rounded-lg glass bg-background/50 backdrop-blur-sm border border-primary/10 cursor-pointer"
-                whileHover={{ 
-                  scale: 1.05,
-                  backgroundColor: "rgba(var(--primary), 0.1)",
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <div className="flex items-start gap-4">
-                  <motion.div 
-                    className="p-2 rounded-lg bg-primary/10"
-                    whileHover={{ 
-                      scale: 1.1,
-                      rotate: 5 
-                    }}
-                  >
-                    <Award className="w-6 h-6 text-primary" />
-                  </motion.div>
-                  <div>
-                    <h3 className="font-semibold mb-1 group-hover:text-primary transition-colors">
-                      {cert.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {cert.issuer} • {cert.date}
-                    </p>
-                  </div>
+              <span className="absolute inset-0 bg-primary origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover:scale-y-100 motion-reduce:transition-none" />
+              <div className="relative flex items-start gap-5 transition-colors duration-300 group-hover:text-primary-foreground">
+                <span className="font-jetbrains text-sm opacity-60 tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-1">{cert.title}</h3>
+                  <p className="text-sm opacity-70">{cert.issuer} • {cert.date}</p>
                 </div>
-              </motion.div>
-            </motion.div>
+                <Award className="w-6 h-6 transition-transform duration-500 group-hover:rotate-[20deg] group-hover:scale-110" />
+              </div>
+            </motion.button>
           ))}
         </div>
       </div>

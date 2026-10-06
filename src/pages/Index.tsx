@@ -9,6 +9,7 @@ import { Header } from "@/components/Header";
 import { CustomCursor } from "@/components/CustomCursor";
 import { Certifications } from "@/components/Certifications";
 import { Marquee } from "@/components/Marquee";
+import { ScrollProgress } from "@/components/ScrollProgress";
 import { useEffect, useState } from "react";
 
 const Index = () => {
@@ -69,6 +70,7 @@ const Index = () => {
             dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
           />
           {!isMobile && <CustomCursor />}
+          <ScrollProgress />
           <Header />
           <div id="home">
             <Hero />

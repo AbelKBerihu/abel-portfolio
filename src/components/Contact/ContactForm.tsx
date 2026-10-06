@@ -1,206 +1,84 @@
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { Phone, Send, Calendar as CalendarIcon } from "lucide-react";
-import { motion } from "framer-motion";
-import { contactFormSchema, type ContactFormValues } from './schema';
-import { DateApprovalManager } from './messaging-service';
+import { format, startOfDay } from "date-fns";
+import { Phone, Send, Loader2 } from "lucide-react";
+import { contactFormSchema, type ContactFormValues } from "./schema";
 
 interface ContactFormProps {
-  onSubmit: (data: ContactFormValues) => Promise<void>;
+  onSubmit: (data: ContactFormValues) => Promise<boolean>;
   isSubmitting: boolean;
   isMobile: boolean;
-  availableDates: Date[];
 }
 
-export const ContactForm = ({ onSubmit, isSubmitting, isMobile, availableDates = [] }: ContactFormProps) => {
+export const ContactForm = ({ onSubmit, isSubmitting, isMobile }: ContactFormProps) => {
   const form = useForm<ContactFormValues>({
     resolver: zodResolver(contactFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-      preferredDate: undefined,
-    },
+    defaultValues: { name: "", email: "", phone: "", projectNeeds: "", message: "", preferredDate: undefined },
   });
+  const selected = form.watch("preferredDate");
 
-  // If the selected date is no longer available, reset it
-  const selectedDate = form.watch("preferredDate");
-  if (selectedDate) {
-    const dateManager = DateApprovalManager.getInstance();
-    if (!dateManager.isDateAvailable(selectedDate)) {
-      form.setValue("preferredDate", undefined);
-    }
-  }
-
-  // Function to check if a date is disabled
-  const isDateDisabled = (date: Date) => {
-    // Disable past dates
-    if (date < new Date()) return true;
-    
-    // Check if date is in the availableDates array
-    return !availableDates.some(
-      availableDate => 
-        availableDate.getFullYear() === date.getFullYear() && 
-        availableDate.getMonth() === date.getMonth() && 
-        availableDate.getDate() === date.getDate()
-    );
+  const submit = async (data: ContactFormValues) => {
+    if (await onSubmit(data)) form.reset();
   };
+
+  const fieldClass = "bg-background/60 border-border focus-visible:ring-primary";
 
   return (
     <Form {...form}>
-      <div className="flex flex-col md:flex-row gap-6">
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-4">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Your Name"
-                      className="bg-white/50"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-          >
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Email Address"
-                      type="email"
-                      className="bg-white/50"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-          >
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        placeholder="Phone Number (optional)"
-                        type="tel"
-                        className="bg-white/50 pl-9"
-                        {...field}
-                      />
-                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-          >
-            <FormField
-              control={form.control}
-              name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Your Message"
-                      className="bg-white/50 min-h-[120px]"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </motion.div>
-          
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Button
-              className="w-full bg-primary/80 hover:bg-primary transition-all duration-300 text-primary-foreground font-semibold"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {!isMobile && <Send className="w-4 h-4 mr-2" />}
-              {isSubmitting ? "Sending..." : "Send Message"}
-            </Button>
-          </motion.div>
+      <div className="flex flex-col md:flex-row gap-8">
+        <form onSubmit={form.handleSubmit(submit)} className="flex-1 space-y-4">
+          <div className="grid sm:grid-cols-2 gap-4">
+            <FormField control={form.control} name="name" render={({ field }) => (
+              <FormItem><FormControl><Input placeholder="Your Name" className={fieldClass} {...field} /></FormControl><FormMessage /></FormItem>
+            )} />
+            <FormField control={form.control} name="email" render={({ field }) => (
+              <FormItem><FormControl><Input type="email" placeholder="Email Address" className={fieldClass} {...field} /></FormControl><FormMessage /></FormItem>
+            )} />
+          </div>
+          <FormField control={form.control} name="phone" render={({ field }) => (
+            <FormItem><FormControl>
+              <div className="relative">
+                <Input type="tel" placeholder="Phone Number (optional)" className={`${fieldClass} pl-9`} {...field} />
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              </div>
+            </FormControl><FormMessage /></FormItem>
+          )} />
+          <FormField control={form.control} name="projectNeeds" render={({ field }) => (
+            <FormItem>
+              <FormLabel className="editorial-kicker">Project needs (optional)</FormLabel>
+              <FormControl><Textarea placeholder="Goals, features, timeline, budget…" className={`${fieldClass} min-h-[100px]`} {...field} /></FormControl>
+              <FormMessage />
+            </FormItem>
+          )} />
+          <FormField control={form.control} name="message" render={({ field }) => (
+            <FormItem><FormControl><Textarea placeholder="Your Message" className={`${fieldClass} min-h-[110px]`} {...field} /></FormControl><FormMessage /></FormItem>
+          )} />
+          <Button type="submit" disabled={isSubmitting} className="w-full font-semibold transition-transform active:scale-[0.98]">
+            {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : !isMobile && <Send className="w-4 h-4 mr-2" />}
+            {isSubmitting ? "Sending & drafting brief…" : "Send Message"}
+          </Button>
         </form>
 
-        <div className="w-full md:w-[350px] bg-black/80 rounded-lg p-4 shadow-lg flex flex-col items-center">
-          <h3 className="text-lg font-semibold mb-4 text-white text-center">Select a Date</h3>
-          <div className="text-sm text-gray-300 mb-2 text-center">
-            {form.watch("preferredDate") ? (
-              <div>
-                <p>Selected date: <span className="text-white">{format(form.watch("preferredDate"), "PPP")}</span></p>
-                {form.watch("preferredDate") && (
-                  <p className="text-xs mt-1">
-                    <CalendarIcon className="inline-block mr-1 h-3 w-3" />
-                    <span className="text-green-400">
-                      {DateApprovalManager.getInstance().getRemainingSlots(form.watch("preferredDate"))} slots remaining
-                    </span>
-                  </p>
-                )}
-              </div>
-            ) : (
-              <p>Please select an available date</p>
-            )}
-          </div>
+        <div className="w-full md:w-[340px] rounded-lg border border-border bg-card p-4 flex flex-col items-center">
+          <h3 className="text-base font-semibold mb-2 text-center">Select a Date</h3>
+          <p className="text-sm text-muted-foreground mb-2 text-center">
+            {selected ? <>Selected: <span className="text-primary">{format(selected, "PPP")}</span></> : "Pick a day to get in touch"}
+          </p>
           <Calendar
             mode="single"
-            selected={form.watch("preferredDate")}
-            onSelect={(date) => form.setValue("preferredDate", date)}
-            disabled={isDateDisabled} 
-            className="border rounded-md bg-black pointer-events-auto text-white"
+            selected={selected}
+            onSelect={(d) => d && form.setValue("preferredDate", d, { shouldValidate: true })}
+            disabled={(d) => d < startOfDay(new Date())}
+            className="rounded-md border border-border pointer-events-auto"
           />
-          <div className="text-xs text-gray-400 mt-3 text-center">
-            <p>Each date has a maximum of 10 slots.</p>
-            <p>Dates that are not selectable have reached their limit.</p>
-          </div>
+          {form.formState.errors.preferredDate && (
+            <p className="text-sm text-destructive mt-2">{form.formState.errors.preferredDate.message}</p>
+          )}
         </div>
       </div>
     </Form>

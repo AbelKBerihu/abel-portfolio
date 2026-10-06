@@ -1,0 +1,1 @@
+ALTER TABLE public.contact_submissions ADD COLUMN project_needs TEXT, ADD COLUMN ai_brief TEXT, ADD COLUMN telegram_delivered BOOLEAN NOT NULL DEFAULT false;

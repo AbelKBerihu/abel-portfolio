@@ -1,11 +1,11 @@
-
 import { z } from "zod";
 
 export const contactFormSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  phone: z.string().optional(),
-  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+  name: z.string().trim().min(2, { message: "Name must be at least 2 characters." }).max(100),
+  email: z.string().trim().email({ message: "Please enter a valid email address." }).max(254),
+  phone: z.string().trim().max(40).optional(),
+  projectNeeds: z.string().trim().max(3000).optional(),
+  message: z.string().trim().min(10, { message: "Message must be at least 10 characters." }).max(3000),
   preferredDate: z.date({
     required_error: "Please select a preferred contact date.",
   }),

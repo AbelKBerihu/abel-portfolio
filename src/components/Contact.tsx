@@ -1,169 +1,116 @@
-
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { Sparkles, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { MessagingService, DateApprovalManager } from "./Contact/messaging-service";
 import { ContactForm } from "./Contact/ContactForm";
 import type { ContactFormValues } from "./Contact/schema";
 
 export const Contact = () => {
   const { t } = useLanguage();
+  const reduce = useReducedMotion();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [availableDates, setAvailableDates] = useState<Date[]>([]);
-  
-  // Updated with real credentials
-  const [telegramBotToken] = useState("7753468504:AAHaciLonL3pW9YjDgbij1BK4L4R2qcxVFE");
-  const [telegramChatId] = useState("7566668762");
-  const [emailJSServiceId] = useState("service_ogkb0kd");
-  const [emailJSTemplateId] = useState("template_5ye8huc");
-  const [emailJSPublicKey] = useState("BTvPy-Xmd6EnmeXGn");
+  const [brief, setBrief] = useState<string | null>(null);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
   }, []);
 
-  useEffect(() => {
-    // Get available dates from our manager
-    const dateManager = DateApprovalManager.getInstance();
-    setAvailableDates(dateManager.getAvailableDates());
-    
-    // Set up a webhook listener to update dates when approvals happen
-    // For demo purposes, we'll just refresh every minute
-    const interval = setInterval(() => {
-      setAvailableDates(dateManager.getAvailableDates());
-    }, 60000);
-    
-    return () => clearInterval(interval);
-  }, []);
-
-  const messagingService = new MessagingService(
-    telegramBotToken,
-    telegramChatId,
-    emailJSServiceId,
-    emailJSTemplateId,
-    emailJSPublicKey
-  );
-
-  const onSubmit = async (data: ContactFormValues) => {
+  const onSubmit = async (data: ContactFormValues): Promise<boolean> => {
     setIsSubmitting(true);
-    let messageSent = false;
-    let demoMode = false;
-
     try {
-      // Check if we're in demo mode (All credentials should now be real)
-      if (emailJSServiceId === "YOUR_EMAILJS_SERVICE_ID") {
-        demoMode = true;
-      }
-
-      // Check if date is still available
-      if (data.preferredDate) {
-        const dateManager = DateApprovalManager.getInstance();
-        if (!dateManager.isDateAvailable(data.preferredDate)) {
-          toast.error(t("dateNoLongerAvailable"));
-          setIsSubmitting(false);
-          
-          // Refresh available dates
-          setAvailableDates(dateManager.getAvailableDates());
-          return;
-        }
-      }
-
-      // Try to send via Telegram
-      try {
-        await messagingService.sendToTelegram(data);
-        messageSent = true;
-        console.log("Message sent successfully to Telegram");
-      } catch (telegramError) {
-        console.error("Telegram sending failed:", telegramError);
-      }
-
-      // Also try to send via EmailJS (we now have real credentials)
-      if (!messageSent || emailJSServiceId === "service_ogkb0kd") {
+      const { data: result, error } = await supabase.functions.invoke("send-contact", {
+        body: {
+          name: data.name,
+          email: data.email,
+          phone: data.phone ?? "",
+          projectNeeds: data.projectNeeds ?? "",
+          message: data.message,
+          preferredDate: format(data.preferredDate, "yyyy-MM-dd"),
+        },
+      });
+      if (error) {
+        let msg = t("messageFailed");
         try {
-          const emailSent = await messagingService.sendViaEmailJS(data);
-          if (emailSent) {
-            messageSent = true;
-            console.log("Message sent successfully via EmailJS");
-          }
-        } catch (emailError) {
-          console.error("Email sending failed:", emailError);
-        }
+          const body = await (error as { context?: Response }).context?.json();
+          if (body?.error) msg = body.error;
+          if (body?.brief) setBrief(body.brief);
+        } catch { /* keep default */ }
+        toast.error(msg);
+        return false;
       }
-
-      // Show success message if any method succeeded
-      if (messageSent) {
-        // In real implementation, you would record approval when the admin approves
-        // For demo purposes, we'll simulate an approval with 30% chance
-        if (Math.random() < 0.3 && data.preferredDate) {
-          const dateManager = DateApprovalManager.getInstance();
-          dateManager.recordApproval(data.preferredDate);
-          
-          // Refresh available dates
-          setAvailableDates(dateManager.getAvailableDates());
-        }
-        toast.success(t("messageSent"));
-      } else {
-        // Only show error if both methods failed and we're not in demo mode
-        if (!demoMode) {
-          toast.error(t("messageFailed"));
-        } else {
-          // In demo mode with real credentials but failed to send
-          // Still show success to improve UX
-          toast.success(t("messageSent"));
-        }
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-      
-      // In demo mode, still show success
-      if (demoMode) {
-        toast.success(t("messageSent"));
-        console.log("Demo mode: Message submission simulated");
-      } else {
-        toast.error(t("messageFailed"));
-      }
+      if (result?.brief) setBrief(result.brief);
+      toast.success(t("messageSent"));
+      return true;
+    } catch (e) {
+      console.error("Contact submission failed", e);
+      toast.error(t("messageFailed"));
+      return false;
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section className="py-20 bg-primary/5">
+    <section className="py-24 md:py-32 border-t border-border">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduce ? false : { opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-12 max-w-3xl"
         >
-          <h2 className="text-3xl font-bold mb-4">{t("contactTitle")}</h2>
-          <p className="text-muted-foreground">{t("contactSubtitle")}</p>
+          <p className="editorial-kicker mb-4">05 — Contact</p>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">{t("contactTitle")}</h2>
+          <p className="text-muted-foreground text-lg">
+            Describe what you need — an AI assistant turns it into a clear project brief with next steps.
+          </p>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduce ? false : { opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto"
+          className="max-w-5xl"
         >
-          <div className="glass rounded-lg p-6 shadow-lg backdrop-blur-lg">
-            <ContactForm
-              onSubmit={onSubmit}
-              isSubmitting={isSubmitting}
-              isMobile={isMobile}
-              availableDates={availableDates}
-            />
+          <div className="glass rounded-lg p-6 md:p-8">
+            <ContactForm onSubmit={onSubmit} isSubmitting={isSubmitting} isMobile={isMobile} />
           </div>
         </motion.div>
+
+        <AnimatePresence>
+          {brief && (
+            <motion.div
+              initial={reduce ? false : { opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="max-w-5xl mt-6 rounded-lg border border-primary/40 bg-primary/5 p-6 md:p-8 relative"
+              role="status"
+            >
+              <button
+                onClick={() => setBrief(null)}
+                aria-label="Dismiss brief"
+                className="absolute right-4 top-4 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <p className="editorial-kicker mb-3 flex items-center gap-2">
+                <Sparkles className="h-3.5 w-3.5 text-primary" /> Your project brief
+              </p>
+              <pre className="whitespace-pre-wrap font-sans text-sm md:text-base leading-relaxed text-foreground">{brief}</pre>
+              <p className="mt-4 text-xs text-muted-foreground">Abel received this brief on Telegram and will follow up.</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

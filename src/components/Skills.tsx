@@ -1,5 +1,4 @@
-
-import { motion, animate } from "framer-motion";
+import { motion, animate, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 
 const skills = [
@@ -16,40 +15,38 @@ const skills = [
 ];
 
 const SkillItem = ({ name, level, index }: { name: string; level: number; index: number }) => {
-  const [display, setDisplay] = useState(0);
+  const reduce = useReducedMotion();
+  const [display, setDisplay] = useState(reduce ? level : 0);
   const [started, setStarted] = useState(false);
 
   const handleEnter = () => {
-    if (started) return;
+    if (started || reduce) return;
     setStarted(true);
-    animate(0, level, {
-      duration: 1,
-      delay: 0.5,
-      ease: 'easeInOut',
-      onUpdate: (v) => setDisplay(Math.round(v)),
-    });
+    animate(0, level, { duration: 1.2, delay: 0.2 + (index % 2) * 0.1, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => setDisplay(Math.round(v)) });
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      viewport={{ once: true }}
-      className="mb-6"
+      initial={reduce ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: (index % 2) * 0.08 }}
+      viewport={{ once: true, margin: "-60px" }}
       onViewportEnter={handleEnter}
+      className="group border-b border-border py-5"
     >
-      <div className="flex justify-between mb-2">
-        <span className="font-medium">{name}</span>
-        <span className="text-muted-foreground">{display}%</span>
+      <div className="flex items-baseline justify-between gap-4 mb-3">
+        <span className="font-jetbrains text-sm text-muted-foreground tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+        <span className="flex-1 font-medium text-lg transition-transform duration-300 group-hover:translate-x-2">{name}</span>
+        <span className="font-jetbrains text-2xl font-bold tabular-nums text-primary">{display}%</span>
       </div>
-      <div className="h-2 bg-secondary rounded-full overflow-hidden">
+      <div className="h-[3px] bg-secondary overflow-hidden">
         <motion.div
-          initial={{ width: 0 }}
-          whileInView={{ width: `${level}%` }}
-          transition={{ duration: 1, delay: 0.5 }}
+          initial={reduce ? { scaleX: level / 100 } : { scaleX: 0 }}
+          whileInView={{ scaleX: level / 100 }}
+          transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
-          className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
+          style={{ originX: 0 }}
+          className="h-full bg-primary"
         />
       </div>
     </motion.div>
@@ -57,23 +54,23 @@ const SkillItem = ({ name, level, index }: { name: string; level: number; index:
 };
 
 export const Skills = () => {
+  const reduce = useReducedMotion();
   return (
-    <section className="py-20">
+    <section className="py-24 md:py-32 border-t border-border">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={reduce ? false : { opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-12 max-w-3xl"
         >
-          <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Skills & Expertise</h2>
-          <p className="text-muted-foreground">Technologies and tools I work with</p>
+          <p className="editorial-kicker mb-4">04 — Skills</p>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">Skills & Expertise</h2>
+          <p className="text-muted-foreground text-lg">Technologies and tools I work with</p>
         </motion.div>
-        <div className="max-w-3xl mx-auto">
-          {skills.map((skill, index) => (
-            <SkillItem key={skill.name} name={skill.name} level={skill.level} index={index} />
-          ))}
+        <div className="grid md:grid-cols-2 gap-x-12">
+          {skills.map((s, i) => <SkillItem key={s.name} {...s} index={i} />)}
         </div>
       </div>
     </section>

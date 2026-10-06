@@ -1,5 +1,5 @@
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useVelocity, useSpring, useTransform, useReducedMotion } from "framer-motion";
 import { Github, MessageCircle, Youtube, Linkedin, Facebook, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -89,49 +89,51 @@ export const Footer = () => {
   ];
   
   return (
-    <footer className="py-8 bg-background/50 backdrop-blur-sm border-t">
-      <div className="container mx-auto px-4">
+    <footer className="border-t border-border overflow-hidden">
+      <KineticWord />
+      <div className="container mx-auto px-4 py-10">
         <div className="flex flex-col items-center justify-center gap-6">
-          <motion.h3
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-xl font-bold text-center"
-          >
-            Follow Me
-          </motion.h3>
-          
-          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-4">
-            {socialLinks.map((link, index) => (
-              <div key={link.name} className="flex items-center">
-                <motion.a
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`cursor-none ${link.hoverColor} transition-colors flex items-center gap-1.5 px-2 py-1 text-sm md:text-base`}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <span className="flex items-center gap-1.5">
-                    {link.icon}
-                    <span className="hidden xs:inline">{link.name}</span>
-                  </span>
-                </motion.a>
-                {index < socialLinks.length - 1 && (
-                  <span className="text-muted-foreground mx-1">|</span>
-                )}
-              </div>
+          <h3 className="text-xl font-bold text-center">Follow Me</h3>
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3">
+            {socialLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={link.name}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-full border border-border text-muted-foreground transition-all duration-300 hover:text-primary-foreground hover:bg-primary hover:border-primary hover:-translate-y-1 motion-reduce:hover:translate-y-0"
+              >
+                {link.icon}
+                <span className="hidden sm:inline">{link.name}</span>
+              </a>
             ))}
           </div>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-sm text-muted-foreground"
-          >
-            © {new Date().getFullYear()} Abel Kebede. All rights reserved.
-          </motion.p>
+          <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Abel Kebede. All rights reserved.</p>
         </div>
       </div>
     </footer>
+  );
+};
+
+const KineticWord = () => {
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  const velocity = useVelocity(scrollY);
+  const smooth = useSpring(velocity, { damping: 50, stiffness: 300 });
+  const skew = useTransform(smooth, [-2000, 0, 2000], [12, 0, -12]);
+  const x = useTransform(scrollY, (v) => `${-(v * 0.05) % 50}%`);
+  const word = "LET'S BUILD SOMETHING BOLD — ";
+  return (
+    <div className="py-8 md:py-12 border-b border-border select-none" aria-hidden="true">
+      <motion.div
+        style={reduce ? undefined : { x, skewX: skew }}
+        className="whitespace-nowrap font-jetbrains font-bold text-[14vw] md:text-[9vw] leading-none tracking-tighter"
+      >
+        <span className="text-primary">{word}</span>
+        <span className="text-transparent [-webkit-text-stroke:1px_hsl(var(--foreground))]">{word}</span>
+        <span className="text-primary">{word}</span>
+      </motion.div>
+    </div>
   );
 };

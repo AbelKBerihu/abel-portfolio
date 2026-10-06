@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       contact_submissions: {
         Row: {
+          ai_brief: string | null
           created_at: string
           email: string
           id: string
@@ -23,8 +24,11 @@ export type Database = {
           name: string
           phone: string | null
           preferred_date: string
+          project_needs: string | null
+          telegram_delivered: boolean
         }
         Insert: {
+          ai_brief?: string | null
           created_at?: string
           email: string
           id?: string
@@ -32,8 +36,11 @@ export type Database = {
           name: string
           phone?: string | null
           preferred_date: string
+          project_needs?: string | null
+          telegram_delivered?: boolean
         }
         Update: {
+          ai_brief?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -41,6 +48,8 @@ export type Database = {
           name?: string
           phone?: string | null
           preferred_date?: string
+          project_needs?: string | null
+          telegram_delivered?: boolean
         }
         Relationships: []
       }

@@ -22,6 +22,13 @@
       "when": 1791393599505,
       "tag": "0002_admin_portfolio_content",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791393618603,
+      "tag": "0003_portfolio_storage_policies",
+      "breakpoints": true
     }
   ]
 }

@@ -29,6 +29,13 @@
       "when": 1791393618603,
       "tag": "0003_portfolio_storage_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791393633096,
+      "tag": "0004_portfolio_storage_read",
+      "breakpoints": true
     }
   ]
 }

@@ -3,15 +3,42 @@ import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Award } from "lucide-react";
 import CertificatePopup from "./CertificatePopup";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useCertifications } from "@/lib/portfolio-content";
 
-type PopupCert = { title: string; issuer: string; date: string; credentialURL: string; image: string };
+const certifications = [
+  {
+    title: "Adobe Certified Professional",
+    issuer: "Adobe",
+    date: "2024",
+    credentialURL: "https://www.adobe.com/certificates/",
+    image: "/certificate-adobe.png",
+  },
+  {
+    title: "UI/UX Design Professional Certificate",
+    issuer: "Google",
+    date: "2023",
+    credentialURL: "https://www.coursera.org/account/accomplishments/professional-cert/",
+    image: "/certificate-google.png",
+  },
+  {
+    title: "Web Design & Development",
+    issuer: "Meta",
+    date: "2023",
+    credentialURL: "https://www.coursera.org/account/accomplishments/",
+    image: "/certificate-meta.png",
+  },
+  {
+    title: "Graphic Design Specialization",
+    issuer: "Coursera",
+    date: "2023",
+    credentialURL: "https://www.coursera.org/account/accomplishments/specialization/",
+    image: "/certificate-graphic.png",
+  },
+];
 
 export const Certifications = () => {
   const { t } = useLanguage();
-  const { data = [] } = useCertifications();
-  const certifications: PopupCert[] = data.map((c) => ({ title: c.title, issuer: c.issuer, date: c.date, credentialURL: c.credential_url ?? "", image: c.image ?? "" }));
-  const [selectedCert, setSelectedCert] = useState<PopupCert | null>(null);
+  const [selectedCert, setSelectedCert] = useState<(typeof certifications)[0] | null>(null);
+  
   const reduce = useReducedMotion();
   return (
     <section className="py-24 md:py-32 border-t border-border">
@@ -32,7 +59,7 @@ export const Certifications = () => {
           {certifications.map((cert, index) => (
             <motion.button
               type="button"
-              key={cert.title + index}
+              key={cert.title}
               initial={reduce ? false : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
               whileInView={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
               transition={{ duration: 0.8, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}

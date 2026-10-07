@@ -14,39 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      certifications: {
-        Row: {
-          created_at: string
-          credential_url: string | null
-          date: string
-          id: string
-          image_url: string | null
-          issuer: string
-          sort_order: number
-          title: string
-        }
-        Insert: {
-          created_at?: string
-          credential_url?: string | null
-          date?: string
-          id?: string
-          image_url?: string | null
-          issuer?: string
-          sort_order?: number
-          title: string
-        }
-        Update: {
-          created_at?: string
-          credential_url?: string | null
-          date?: string
-          id?: string
-          image_url?: string | null
-          issuer?: string
-          sort_order?: number
-          title?: string
-        }
-        Relationships: []
-      }
       contact_submissions: {
         Row: {
           ai_brief: string | null
@@ -86,96 +53,15 @@ export type Database = {
         }
         Relationships: []
       }
-      projects: {
-        Row: {
-          created_at: string
-          description: string
-          discipline: string
-          id: string
-          image_url: string | null
-          link_url: string | null
-          sort_order: number
-          title: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string
-          discipline?: string
-          id?: string
-          image_url?: string | null
-          link_url?: string | null
-          sort_order?: number
-          title: string
-        }
-        Update: {
-          created_at?: string
-          description?: string
-          discipline?: string
-          id?: string
-          image_url?: string | null
-          link_url?: string | null
-          sort_order?: number
-          title?: string
-        }
-        Relationships: []
-      }
-      skills: {
-        Row: {
-          created_at: string
-          id: string
-          level: number
-          name: string
-          sort_order: number
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          level?: number
-          name: string
-          sort_order?: number
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          level?: number
-          name?: string
-          sort_order?: number
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -302,8 +188,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "user"],
-    },
+    Enums: {},
   },
 } as const

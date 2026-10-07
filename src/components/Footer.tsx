@@ -109,7 +109,7 @@ export const Footer = () => {
               </a>
             ))}
           </div>
-          <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Abel Kebede. All rights reserved. <a href="/admin" className="ml-2 underline-offset-4 hover:text-primary hover:underline">Admin</a></p>
+          <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Abel Kebede. All rights reserved.</p>
         </div>
       </div>
     </footer>

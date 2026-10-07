@@ -15,6 +15,13 @@
       "when": 1791317675830,
       "tag": "0001_add_project_brief",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791393599505,
+      "tag": "0002_admin_portfolio_content",
+      "breakpoints": true
     }
   ]
 }

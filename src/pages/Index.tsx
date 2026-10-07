@@ -10,6 +10,7 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { Certifications } from "@/components/Certifications";
 import { Marquee } from "@/components/Marquee";
 import { ScrollProgress } from "@/components/ScrollProgress";
+import { BackgroundGrid } from "@/components/BackgroundGrid";
 import { useEffect, useState } from "react";
 
 const Index = () => {
@@ -64,6 +65,7 @@ const Index = () => {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
+        <BackgroundGrid />
         <div className="relative z-10">
           <script
             type="application/ld+json"

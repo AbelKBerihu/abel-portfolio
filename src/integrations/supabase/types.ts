@@ -86,6 +86,41 @@ export type Database = {
         }
         Relationships: []
       }
+      project_comments: {
+        Row: {
+          approved: boolean
+          comment: string
+          created_at: string
+          id: string
+          name: string
+          project_id: string
+        }
+        Insert: {
+          approved?: boolean
+          comment: string
+          created_at?: string
+          id?: string
+          name: string
+          project_id: string
+        }
+        Update: {
+          approved?: boolean
+          comment?: string
+          created_at?: string
+          id?: string
+          name?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_comments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           created_at: string
@@ -95,6 +130,7 @@ export type Database = {
           image_url: string | null
           link_url: string | null
           sort_order: number
+          tags: string[]
           title: string
         }
         Insert: {
@@ -105,6 +141,7 @@ export type Database = {
           image_url?: string | null
           link_url?: string | null
           sort_order?: number
+          tags?: string[]
           title: string
         }
         Update: {
@@ -115,12 +152,32 @@ export type Database = {
           image_url?: string | null
           link_url?: string | null
           sort_order?: number
+          tags?: string[]
           title?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
         }
         Relationships: []
       }
       skills: {
         Row: {
+          category: string
           created_at: string
           id: string
           level: number
@@ -128,6 +185,7 @@ export type Database = {
           sort_order: number
         }
         Insert: {
+          category?: string
           created_at?: string
           id?: string
           level?: number
@@ -135,11 +193,45 @@ export type Database = {
           sort_order?: number
         }
         Update: {
+          category?: string
           created_at?: string
           id?: string
           level?: number
           name?: string
           sort_order?: number
+        }
+        Relationships: []
+      }
+      timeline_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          kind: string
+          organization: string | null
+          period: string | null
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          organization?: string | null
+          period?: string | null
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          organization?: string | null
+          period?: string | null
+          sort_order?: number
+          title?: string
         }
         Relationships: []
       }

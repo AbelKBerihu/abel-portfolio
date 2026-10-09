@@ -1,18 +1,6 @@
 import { motion, animate, useReducedMotion } from "framer-motion";
 import { useState } from "react";
-
-const skills = [
-  { name: "React", level: 90 },
-  { name: "TypeScript", level: 88 },
-  { name: "Node.js", level: 85 },
-  { name: "Adobe Photoshop", level: 95 },
-  { name: "Adobe Illustrator", level: 92 },
-  { name: "Adobe XD", level: 88 },
-  { name: "Figma", level: 90 },
-  { name: "UI/UX Design", level: 85 },
-  { name: "Web Design", level: 88 },
-  { name: "Logo Design", level: 90 },
-];
+import { usePortfolio } from "@/hooks/use-portfolio";
 
 const SkillItem = ({ name, level, index }: { name: string; level: number; index: number }) => {
   const reduce = useReducedMotion();
@@ -39,7 +27,7 @@ const SkillItem = ({ name, level, index }: { name: string; level: number; index:
         <span className="flex-1 font-medium text-lg transition-transform duration-300 group-hover:translate-x-2">{name}</span>
         <span className="font-jetbrains text-2xl font-bold tabular-nums text-primary">{display}%</span>
       </div>
-      <div className="h-[3px] bg-secondary overflow-hidden">
+      <div role="progressbar" aria-label={name} aria-valuenow={level} aria-valuemin={0} aria-valuemax={100} className="h-[3px] bg-secondary overflow-hidden">
         <motion.div
           initial={reduce ? { scaleX: level / 100 } : { scaleX: 0 }}
           whileInView={{ scaleX: level / 100 }}
@@ -55,6 +43,7 @@ const SkillItem = ({ name, level, index }: { name: string; level: number; index:
 
 export const Skills = () => {
   const reduce = useReducedMotion();
+  const { data: skills = [], isError } = usePortfolio("skills");
   return (
     <section className="py-24 md:py-32 border-t border-border">
       <div className="container mx-auto px-4">
@@ -66,11 +55,12 @@ export const Skills = () => {
           className="mb-12 max-w-3xl"
         >
           <p className="editorial-kicker mb-4">04 — Skills</p>
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">Skills & Expertise</h2>
+          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">Skills & tools</h2>
           <p className="text-muted-foreground text-lg">Technologies and tools I work with</p>
         </motion.div>
         <div className="grid md:grid-cols-2 gap-x-12">
-          {skills.map((s, i) => <SkillItem key={s.name} {...s} index={i} />)}
+          {isError && <p role="alert">Skills are temporarily unavailable.</p>}
+          {skills.map((s, i) => <SkillItem key={s.id} {...s} index={i} />)}
         </div>
       </div>
     </section>

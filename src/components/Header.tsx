@@ -8,9 +8,9 @@ import { Button } from "./ui/button";
 export const Header = () => {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
-  const links = [["projects", t("projects")], ["certifications", t("certifications")], ["skills", t("skills")]];
+  const links = [["about", "About"], ["projects", t("projects")], ["certifications", t("certifications")], ["skills", t("skills")]];
   const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     setOpen(false);
   };
 
@@ -18,7 +18,7 @@ export const Header = () => {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/85 backdrop-blur-xl">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 lg:px-8">
         <button type="button" onClick={() => scrollTo("home")} className="font-jetbrains text-base font-extrabold uppercase md:text-lg">
-          ABEL<span className="text-primary">.</span>DEV
+          ABEL<span className="text-primary">.</span>K
         </button>
 
         <div className="hidden items-center gap-7 md:flex">

@@ -6,3 +6,8 @@
 - [x] Remove exposed bot credentials and simulated approvals.
 - [x] AI project brief from visitor's project needs.
 - [x] Reduced-motion support and signature scroll animations.
+- [ ] Connect public sections to saved CV content and remove placeholder claims.
+- [ ] Add owner-only editing for content, enquiries, images and project comment moderation.
+- [ ] Add Ethiopian/Gregorian clocks, one smooth cursor and lightweight cyber network.
+- [ ] Apply signature accent and repair the marked footer text.
+- [ ] Verify public and private flows, reduced motion and small-screen layout.

@@ -1,16 +1,10 @@
 import { Code, Film, Laptop, Youtube, Play, Layers, Database, Monitor, Figma, Globe } from "lucide-react";
 
 const tools = [
-  { name: "React", icon: Code },
-  { name: "TypeScript", icon: Laptop },
-  { name: "Node.js", icon: Database },
-  { name: "Next.js", icon: Globe },
-  { name: "Adobe Premiere", icon: Film },
-  { name: "After Effects", icon: Play },
-  { name: "DaVinci Resolve", icon: Monitor },
-  { name: "Final Cut Pro", icon: Youtube },
-  { name: "Figma", icon: Figma },
-  { name: "Adobe XD", icon: Layers },
+  { name: "Python", icon: Code }, { name: "Linux", icon: Monitor },
+  { name: "Scapy", icon: Layers }, { name: "Suricata", icon: Database },
+  { name: "Wazuh", icon: Laptop }, { name: "Networking", icon: Globe },
+  { name: "HTML / CSS", icon: Code }, { name: "Video editing", icon: Film },
 ];
 
 export const Marquee = () => (

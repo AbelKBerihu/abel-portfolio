@@ -70,7 +70,7 @@ export const Contact = () => {
           <p className="editorial-kicker mb-4">05 — Contact</p>
           <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">{t("contactTitle")}</h2>
           <p className="text-muted-foreground text-lg">
-            Describe what you need — an AI assistant turns it into a clear project brief with next steps.
+            Have an opportunity, a question, or something to build? Let’s talk.
           </p>
         </motion.div>
 

@@ -11,6 +11,9 @@ import { Certifications } from "@/components/Certifications";
 import { Marquee } from "@/components/Marquee";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { useEffect, useState } from "react";
+import { About } from "@/components/About";
+import { CyberBackground } from "@/components/CyberBackground";
+import { CalendarRails } from "@/components/CalendarRails";
 
 const Index = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -18,13 +21,11 @@ const Index = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Abel Kebede | Web Developer & Graphic Designer",
+    name: "Abel Kebede | Cybersecurity Student",
     url: siteUrl,
     sameAs: [
       "https://github.com/abelkm99",
-      "https://www.linkedin.com/in/abel-ks",
-      "https://facebook.com/yourusername",
-      "https://youtube.com/your-channel"
+      "https://www.linkedin.com/in/abel-ks"
     ]
   };
 
@@ -58,12 +59,14 @@ const Index = () => {
   return (
     <AnimatePresence mode="wait">
       <motion.div 
-        className="min-h-screen font-jetbrains relative overflow-x-hidden"
+        className="min-h-screen font-sans relative overflow-x-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
+        <CyberBackground />
+        <CalendarRails />
         <div className="relative z-10">
           <script
             type="application/ld+json"
@@ -75,6 +78,7 @@ const Index = () => {
           <div id="home">
             <Hero />
           </div>
+          <About />
           <div id="projects">
             <Projects />
           </div>

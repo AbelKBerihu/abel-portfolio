@@ -1,5 +1,5 @@
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
 import { Skills } from "@/components/Skills";
@@ -57,14 +57,12 @@ const Index = () => {
   }, []);
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div 
-        className="min-h-screen font-sans relative overflow-x-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      >
+    <motion.div 
+      className="min-h-screen font-sans relative overflow-x-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
         <CyberBackground />
         <CalendarRails />
         <div className="relative z-10">
@@ -95,7 +93,6 @@ const Index = () => {
           <Footer />
         </div>
       </motion.div>
-    </AnimatePresence>
   );
 };
 

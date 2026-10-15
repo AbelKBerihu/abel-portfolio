@@ -19,5 +19,5 @@ function KineticWord({ text }: { text: string }) {
   const smooth = useSpring(useVelocity(scrollY), { damping: 50, stiffness: 300 });
   const skew = useTransform(smooth, [-2000, 0, 2000], [4, 0, -4]);
   const x = useTransform(scrollY, v => -(v * .04) % 300);
-  return <div className="border-b border-border py-8 md:py-12"><motion.div style={reduced ? undefined : { x, skewX: skew }} className="flex w-max items-center gap-10 font-jetbrains text-3xl font-bold leading-tight md:text-5xl" aria-hidden="true">{[0, 1, 2, 3].map(i => <span key={i}>{text} <span className="text-primary">↗</span></span>)}</motion.div><span className="sr-only">{text}</span><Link to="/admin" className="absolute inset-0" aria-label="Owner access" tabIndex={-1}/></div>;
+  return <div className="relative border-b border-border py-8 md:py-12"><motion.div style={reduced ? undefined : { x, skewX: skew }} className="flex w-max items-center gap-10 font-jetbrains text-3xl font-bold leading-tight md:text-5xl" aria-hidden="true">{[0, 1, 2, 3].map(i => <span key={i}>{text} <span className="text-primary">↗</span></span>)}</motion.div><span className="sr-only">{text}</span><Link to="/admin" className="absolute inset-0 h-full w-full" aria-label="Owner access" tabIndex={-1}/></div>;
 }

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ContentEditor } from '@/components/admin/ContentEditor';
 import { Inbox } from '@/components/admin/Inbox';
-import { ArrowLeft, LogOut, ShieldCheck, Lock } from 'lucide-react';
+import { ArrowLeft, LogOut, ShieldCheck, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ContentTable } from '@/hooks/use-portfolio';
 
@@ -23,6 +23,7 @@ export default function Admin() {
   const [access, setAccess] = useState<'loading' | 'signedout' | 'denied' | 'admin'>('loading');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -97,15 +98,27 @@ export default function Admin() {
         </div>
         <div>
           <label className="mb-2 block text-sm font-medium" htmlFor="owner-password">Password</label>
-          <Input
-            id="owner-password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Your password"
-          />
+          <div className="relative">
+            <Input
+              id="owner-password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Your password"
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
         </div>
         <Button disabled={busy} className="w-full" type="submit">
           {busy ? 'Signing in…' : 'Sign in'}
@@ -147,7 +160,10 @@ export default function Admin() {
         <ShieldCheck className="h-5 w-5 text-primary" />
         <p className="editorial-kicker">Private workspace</p>
       </div>
-      <h1 className="mb-10 text-3xl font-bold">Your portfolio</h1>
+      <h1 className="mb-2 text-3xl font-bold">Your portfolio</h1>
+      <p className="mb-10 text-muted-foreground">
+        Manage your projects, skills, certificates, and site content. Use the eye icon to hide items from the public site without deleting them.
+      </p>
       <Tabs defaultValue="site_settings">
         <TabsList className="mb-8 flex h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0">
           {sections.map(([id, label]) => (

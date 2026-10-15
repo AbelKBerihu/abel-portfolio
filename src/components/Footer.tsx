@@ -1,5 +1,5 @@
 import { motion, useScroll, useVelocity, useSpring, useTransform, useReducedMotion } from 'framer-motion';
-import { Github, Linkedin, Send, Mail, ArrowUpRight } from 'lucide-react';
+import { Github, Linkedin, Send, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSettings, safeUrl } from '@/hooks/use-portfolio';
 import { Button } from './ui/button';
@@ -11,7 +11,7 @@ export const Footer = () => {
     { name: 'Telegram', icon: Send, href: safeUrl(settings.telegram_url || 'https://t.me/avebina7') },
     { name: 'Email', icon: Mail, href: `mailto:${settings.contact_email || 'ks.avebina7@gmail.com'}` },
   ];
-  return <footer className="overflow-hidden border-t border-border"><KineticWord text={settings.footer_banner || 'ALWAYS LEARNING. ALWAYS BUILDING.'}/><div className="container mx-auto px-4 py-10"><h3 className="text-center text-xl font-bold">Follow Me</h3><div className="mt-6 flex flex-wrap justify-center gap-3">{social.filter(s => s.href).map(s => <Button key={s.name} variant="outline" size="sm" asChild><a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name}><s.icon/>{s.name}</a></Button>)}</div><div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground"><p>© {new Date().getFullYear()} {settings.hero_name || 'Abel Kebede'}. All rights reserved.</p><Button variant="ghost" size="sm" asChild><Link to="/admin">Owner access <ArrowUpRight/></Link></Button></div></div></footer>;
+  return <footer className="overflow-hidden border-t border-border"><KineticWord text={settings.footer_banner || 'ALWAYS LEARNING. ALWAYS BUILDING.'}/><div className="container mx-auto px-4 py-10"><h3 className="text-center text-xl font-bold">Follow Me</h3><div className="mt-6 flex flex-wrap justify-center gap-3">{social.filter(s => s.href).map(s => <Button key={s.name} variant="outline" size="sm" asChild><a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name}><s.icon/>{s.name}</a></Button>)}</div><div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground"><p>© {new Date().getFullYear()} {settings.hero_name || 'Abel Kebede'}. All rights reserved.</p></div></div></footer>;
 };
 function KineticWord({ text }: { text: string }) {
   const reduced = useReducedMotion();
@@ -19,5 +19,5 @@ function KineticWord({ text }: { text: string }) {
   const smooth = useSpring(useVelocity(scrollY), { damping: 50, stiffness: 300 });
   const skew = useTransform(smooth, [-2000, 0, 2000], [4, 0, -4]);
   const x = useTransform(scrollY, v => -(v * .04) % 300);
-  return <div className="border-b border-border py-8 md:py-12"><motion.div style={reduced ? undefined : { x, skewX: skew }} className="flex w-max items-center gap-10 font-jetbrains text-3xl font-bold leading-tight md:text-5xl" aria-hidden="true">{[0, 1, 2, 3].map(i => <span key={i}>{text} <span className="text-primary">↗</span></span>)}</motion.div><span className="sr-only">{text}</span></div>;
+  return <div className="border-b border-border py-8 md:py-12"><motion.div style={reduced ? undefined : { x, skewX: skew }} className="flex w-max items-center gap-10 font-jetbrains text-3xl font-bold leading-tight md:text-5xl" aria-hidden="true">{[0, 1, 2, 3].map(i => <span key={i}>{text} <span className="text-primary">↗</span></span>)}</motion.div><span className="sr-only">{text}</span><Link to="/admin" className="absolute inset-0" aria-label="Owner access" tabIndex={-1}/></div>;
 }

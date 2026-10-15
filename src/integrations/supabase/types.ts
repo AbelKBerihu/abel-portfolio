@@ -21,6 +21,7 @@ export type Database = {
           date: string
           id: string
           image_url: string | null
+          is_visible: boolean
           issuer: string
           sort_order: number
           title: string
@@ -31,6 +32,7 @@ export type Database = {
           date?: string
           id?: string
           image_url?: string | null
+          is_visible?: boolean
           issuer?: string
           sort_order?: number
           title: string
@@ -41,6 +43,7 @@ export type Database = {
           date?: string
           id?: string
           image_url?: string | null
+          is_visible?: boolean
           issuer?: string
           sort_order?: number
           title?: string
@@ -128,6 +131,7 @@ export type Database = {
           discipline: string
           id: string
           image_url: string | null
+          is_visible: boolean
           link_url: string | null
           sort_order: number
           tags: string[]
@@ -139,6 +143,7 @@ export type Database = {
           discipline?: string
           id?: string
           image_url?: string | null
+          is_visible?: boolean
           link_url?: string | null
           sort_order?: number
           tags?: string[]
@@ -150,6 +155,7 @@ export type Database = {
           discipline?: string
           id?: string
           image_url?: string | null
+          is_visible?: boolean
           link_url?: string | null
           sort_order?: number
           tags?: string[]
@@ -180,6 +186,7 @@ export type Database = {
           category: string
           created_at: string
           id: string
+          is_visible: boolean
           level: number
           name: string
           sort_order: number
@@ -188,6 +195,7 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          is_visible?: boolean
           level?: number
           name: string
           sort_order?: number
@@ -196,6 +204,7 @@ export type Database = {
           category?: string
           created_at?: string
           id?: string
+          is_visible?: boolean
           level?: number
           name?: string
           sort_order?: number
@@ -207,6 +216,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_visible: boolean
           kind: string
           organization: string | null
           period: string | null
@@ -217,6 +227,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_visible?: boolean
           kind?: string
           organization?: string | null
           period?: string | null
@@ -227,6 +238,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_visible?: boolean
           kind?: string
           organization?: string | null
           period?: string | null

@@ -7,7 +7,11 @@ export function usePortfolio<T extends ContentTable>(table: T) {
   return useQuery({
     queryKey: ['portfolio', table],
     queryFn: async (): Promise<Tables<T>[]> => {
-      const { data, error } = await supabase.from(table).select('*').order(table === 'site_settings' ? 'key' : 'sort_order');
+      let query = supabase.from(table).select('*');
+      if (table !== 'site_settings') {
+        query = query.eq('is_visible', true);
+      }
+      const { data, error } = await query.order(table === 'site_settings' ? 'key' : 'sort_order');
       if (error) throw error;
       return (data ?? []) as unknown as Tables<T>[];
     },

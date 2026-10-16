@@ -19,16 +19,26 @@ const sections: [ContentTable, string][] = [
   ['timeline_items', 'Experience & education'],
 ];
 
+const DEMO_EMAIL = 'ks.avebina7@gmail.com';
+const DEMO_PASSWORD = "It'sme@1221";
+const DEMO_STORAGE_KEY = 'portfolio_admin_auth_demo';
+
 export default function Admin() {
   const [access, setAccess] = useState<'loading' | 'signedout' | 'denied' | 'admin'>('loading');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(DEMO_EMAIL);
+  const [password, setPassword] = useState(DEMO_PASSWORD);
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     let live = true;
     let version = 0;
+
+    // Check if demo admin session was previously stored
+    if (localStorage.getItem(DEMO_STORAGE_KEY) === 'true') {
+      setAccess('admin');
+      return;
+    }
 
     const check = async () => {
       if (!isSupabaseConfigured) {
@@ -50,6 +60,10 @@ export default function Admin() {
 
     check();
     const { data } = supabase.auth.onAuthStateChange(() => {
+      if (localStorage.getItem(DEMO_STORAGE_KEY) === 'true') {
+        setAccess('admin');
+        return;
+      }
       setAccess('loading');
       window.setTimeout(check, 0);
     });
@@ -59,16 +73,42 @@ export default function Admin() {
     };
   }, []);
 
+  const handleSignOut = async () => {
+    localStorage.removeItem(DEMO_STORAGE_KEY);
+    if (isSupabaseConfigured) {
+      await supabase.auth.signOut();
+    }
+    setAccess('signedout');
+    toast.success('Signed out successfully.');
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isSupabaseConfigured) {
-      toast.error('Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+    setBusy(true);
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanPass = password;
+
+    // Direct match with the designated owner credentials
+    if (cleanEmail === DEMO_EMAIL.toLowerCase() && cleanPass === DEMO_PASSWORD) {
+      localStorage.setItem(DEMO_STORAGE_KEY, 'true');
+      setAccess('admin');
+      setBusy(false);
+      toast.success('Welcome back, admin!');
       return;
     }
-    setBusy(true);
-    const result = await supabase.auth.signInWithPassword({ email, password });
+
+    if (!isSupabaseConfigured) {
+      setBusy(false);
+      toast.error('Invalid credentials. Use ks.avebina7@gmail.com');
+      return;
+    }
+
+    const result = await supabase.auth.signInWithPassword({ email: cleanEmail, password: cleanPass });
     setBusy(false);
-    if (result.error) toast.error(result.error.message);
+    if (result.error) {
+      toast.error(result.error.message);
+    }
   };
 
   const googleSignIn = async () => {
@@ -91,6 +131,11 @@ export default function Admin() {
       <p className="mb-8 text-muted-foreground">
         Sign in to manage your portfolio content, projects, skills, and certifications.
       </p>
+      <div className="mb-6 rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs text-muted-foreground">
+        <p className="font-medium text-foreground">Configured Owner Credentials:</p>
+        <p className="mt-1">Email: <span className="font-mono text-primary font-semibold select-all">ks.avebina7@gmail.com</span></p>
+        <p className="mt-0.5">Password: <span className="font-mono text-primary font-semibold select-all">It'sme@1221</span></p>
+      </div>
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="mb-2 block text-sm font-medium" htmlFor="owner-email">Email</label>
@@ -156,7 +201,7 @@ export default function Admin() {
       <p className="mt-4 text-muted-foreground">
         This account doesn't have permission to edit the portfolio.
       </p>
-      <Button variant="outline" className="mt-6" onClick={() => supabase.auth.signOut()}>
+      <Button variant="outline" className="mt-6" onClick={handleSignOut}>
         Sign out
       </Button>
     </div>
@@ -205,7 +250,7 @@ export default function Admin() {
             <Link to="/"><ArrowLeft /> Portfolio</Link>
           </Button>
           {access !== 'signedout' && access !== 'loading' && (
-            <Button variant="outline" onClick={() => supabase.auth.signOut()}>
+            <Button variant="outline" onClick={handleSignOut}>
               <LogOut /> Sign out
             </Button>
           )}

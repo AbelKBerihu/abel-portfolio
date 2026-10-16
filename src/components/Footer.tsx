@@ -1,5 +1,5 @@
 import { motion, useScroll, useVelocity, useSpring, useTransform, useReducedMotion } from 'framer-motion';
-import { Github, Linkedin, Send, Mail, ArrowUpRight, MessageCircle } from 'lucide-react';
+import { Github, Linkedin, Send, Mail, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useSettings, safeUrl } from '@/hooks/use-portfolio';
 import { Button } from './ui/button';
@@ -29,13 +29,6 @@ export const Footer = () => {
         </div>
         <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} {settings.hero_name || 'Abel Kebede'}. All rights reserved.</p>
-          <Link
-            to="/admin"
-            className="inline-flex items-center gap-1 text-muted-foreground/40 transition-colors hover:text-primary"
-            aria-label="Owner access"
-          >
-            <ArrowUpRight className="h-3.5 w-3.5" />
-          </Link>
         </div>
       </div>
     </footer>
@@ -55,7 +48,7 @@ function KineticWord({ text }: { text: string }) {
         className="flex w-max items-center gap-10 font-jetbrains text-3xl font-bold leading-tight md:text-5xl"
         aria-hidden="true"
       >
-        {[0, 1, 2, 3].map(i => <span key={i}>{text} <span className="text-primary">↗</span></span>)}
+        {[0, 1, 2, 3].map(i => <span key={i}>{text} <Link to="/admin" className="text-primary transition-opacity hover:opacity-60" aria-label="Owner access" tabIndex={-1}>↗</Link></span>)}
       </motion.div>
       <span className="sr-only">{text}</span>
     </div>

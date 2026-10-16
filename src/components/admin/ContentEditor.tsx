@@ -13,7 +13,7 @@ import type { ContentTable } from '@/hooks/use-portfolio';
 type Row = Record<string, unknown>;
 
 const columns: Record<ContentTable, string[]> = {
-  projects: ['title', 'discipline', 'description', 'tags', 'image_url', 'link_url', 'sort_order', 'is_visible'],
+  projects: ['title', 'discipline', 'description', 'status', 'tags', 'image_url', 'link_url', 'sort_order', 'is_visible'],
   skills: ['name', 'category', 'level', 'sort_order', 'is_visible'],
   certifications: ['title', 'issuer', 'date', 'credential_url', 'image_url', 'sort_order', 'is_visible'],
   timeline_items: ['kind', 'title', 'organization', 'period', 'description', 'sort_order', 'is_visible'],
@@ -21,7 +21,7 @@ const columns: Record<ContentTable, string[]> = {
 };
 
 const editableColumns: Record<ContentTable, string[]> = {
-  projects: ['title', 'discipline', 'description', 'tags', 'image_url', 'link_url', 'sort_order'],
+  projects: ['title', 'discipline', 'description', 'status', 'tags', 'image_url', 'link_url', 'sort_order'],
   skills: ['name', 'category', 'level', 'sort_order'],
   certifications: ['title', 'issuer', 'date', 'credential_url', 'image_url', 'sort_order'],
   timeline_items: ['kind', 'title', 'organization', 'period', 'description', 'sort_order'],
@@ -61,6 +61,7 @@ export function ContentEditor({ table }: { table: ContentTable }) {
         c === 'sort_order' ? 0
         : c === 'level' ? 80
         : c === 'kind' ? 'experience'
+        : c === 'status' ? 'completed'
         : c === 'is_visible' ? true
         : '',
       ]))
@@ -200,6 +201,14 @@ export function ContentEditor({ table }: { table: ContentTable }) {
                       <SelectTrigger id={`edit-${c}`}><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {['experience', 'education', 'learning'].map(k => <SelectItem key={k} value={k}>{k}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  ) : c === 'status' ? (
+                    <Select value={String(draft[c])} onValueChange={value => setDraft({ ...draft, [c]: value })}>
+                      <SelectTrigger id={`edit-${c}`}><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="completed">Completed</SelectItem>
+                        <SelectItem value="in_progress">In Progress</SelectItem>
                       </SelectContent>
                     </Select>
                   ) : ['description', 'value'].includes(c) ? (

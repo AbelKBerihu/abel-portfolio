@@ -134,6 +134,7 @@ export type Database = {
           is_visible: boolean
           link_url: string | null
           sort_order: number
+          status: string
           tags: string[]
           title: string
         }
@@ -146,6 +147,7 @@ export type Database = {
           is_visible?: boolean
           link_url?: string | null
           sort_order?: number
+          status?: string
           tags?: string[]
           title: string
         }
@@ -158,6 +160,7 @@ export type Database = {
           is_visible?: boolean
           link_url?: string | null
           sort_order?: number
+          status?: string
           tags?: string[]
           title?: string
         }

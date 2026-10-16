@@ -25,6 +25,7 @@ export type Database = {
           issuer: string
           sort_order: number
           title: string
+          coming_soon: boolean
         }
         Insert: {
           created_at?: string
@@ -36,6 +37,7 @@ export type Database = {
           issuer?: string
           sort_order?: number
           title: string
+          coming_soon?: boolean
         }
         Update: {
           created_at?: string
@@ -47,6 +49,7 @@ export type Database = {
           issuer?: string
           sort_order?: number
           title?: string
+          coming_soon?: boolean
         }
         Relationships: []
       }
@@ -137,6 +140,7 @@ export type Database = {
           status: string
           tags: string[]
           title: string
+          coming_soon: boolean
         }
         Insert: {
           created_at?: string
@@ -150,6 +154,7 @@ export type Database = {
           status?: string
           tags?: string[]
           title: string
+          coming_soon?: boolean
         }
         Update: {
           created_at?: string
@@ -163,6 +168,7 @@ export type Database = {
           status?: string
           tags?: string[]
           title?: string
+          coming_soon?: boolean
         }
         Relationships: []
       }
@@ -193,6 +199,7 @@ export type Database = {
           level: number
           name: string
           sort_order: number
+          coming_soon: boolean
         }
         Insert: {
           category?: string
@@ -202,6 +209,7 @@ export type Database = {
           level?: number
           name: string
           sort_order?: number
+          coming_soon?: boolean
         }
         Update: {
           category?: string
@@ -211,6 +219,7 @@ export type Database = {
           level?: number
           name?: string
           sort_order?: number
+          coming_soon?: boolean
         }
         Relationships: []
       }

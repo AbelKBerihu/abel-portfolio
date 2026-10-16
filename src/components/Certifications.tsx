@@ -19,6 +19,21 @@ export const Certifications = () => {
         <div className="grid md:grid-cols-2">
           {data.map((c, i) => {
             const link = safeUrl(c.credential_url), image = safeUrl(c.image_url);
+            const isComingSoon = Boolean(c.coming_soon);
+
+            if (isComingSoon) {
+              return (
+                <motion.article key={c.id} initial={reduced ? false : { opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .05 }} className="flex min-w-0 items-start gap-5 border-b border-border py-7 md:pr-8">
+                  <Sparkles className="mt-1 h-6 w-6 shrink-0 text-primary/50" />
+                  <div className="min-w-0">
+                    <h3 className="break-words text-lg font-semibold">{c.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{c.issuer}{c.date && c.date !== '—' ? ` · ${c.date}` : ''}</p>
+                    <span className="mt-3 inline-block font-jetbrains text-xs uppercase tracking-wider text-primary/60">Coming soon</span>
+                  </div>
+                </motion.article>
+              );
+            }
+
             return (
               <motion.article key={c.id} initial={reduced ? false : { opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .05 }} className="flex min-w-0 items-start gap-5 border-b border-border py-7 md:pr-8">
                 <Award className="mt-1 h-6 w-6 shrink-0 text-primary" />
@@ -35,14 +50,6 @@ export const Certifications = () => {
               </motion.article>
             );
           })}
-          {!isError && data.length === 0 && (
-            <div className="col-span-full flex min-h-[280px] flex-col items-center justify-center rounded-md border border-dashed border-border bg-card/50 p-12 text-center">
-              <Sparkles className="mb-4 h-10 w-10 text-primary/50" />
-              <p className="font-jetbrains text-sm uppercase tracking-wider text-muted-foreground">Coming soon</p>
-              <p className="mt-2 text-xl font-semibold">Certifications in progress</p>
-              <p className="mt-2 max-w-md text-sm text-muted-foreground">I'm currently pursuing industry certifications. Check back soon for updates.</p>
-            </div>
-          )}
         </div>
       </div>
       <ImageModal

@@ -13,17 +13,17 @@ import type { ContentTable } from '@/hooks/use-portfolio';
 type Row = Record<string, unknown>;
 
 const columns: Record<ContentTable, string[]> = {
-  projects: ['title', 'discipline', 'description', 'status', 'tags', 'image_url', 'link_url', 'sort_order', 'is_visible'],
-  skills: ['name', 'category', 'level', 'sort_order', 'is_visible'],
-  certifications: ['title', 'issuer', 'date', 'credential_url', 'image_url', 'sort_order', 'is_visible'],
+  projects: ['title', 'discipline', 'description', 'status', 'coming_soon', 'tags', 'image_url', 'link_url', 'sort_order', 'is_visible'],
+  skills: ['name', 'category', 'level', 'coming_soon', 'sort_order', 'is_visible'],
+  certifications: ['title', 'issuer', 'date', 'coming_soon', 'credential_url', 'image_url', 'sort_order', 'is_visible'],
   timeline_items: ['kind', 'title', 'organization', 'period', 'description', 'sort_order', 'is_visible'],
   site_settings: ['key', 'value'],
 };
 
 const editableColumns: Record<ContentTable, string[]> = {
-  projects: ['title', 'discipline', 'description', 'status', 'tags', 'image_url', 'link_url', 'sort_order'],
-  skills: ['name', 'category', 'level', 'sort_order'],
-  certifications: ['title', 'issuer', 'date', 'credential_url', 'image_url', 'sort_order'],
+  projects: ['title', 'discipline', 'description', 'status', 'coming_soon', 'tags', 'image_url', 'link_url', 'sort_order'],
+  skills: ['name', 'category', 'level', 'coming_soon', 'sort_order'],
+  certifications: ['title', 'issuer', 'date', 'coming_soon', 'credential_url', 'image_url', 'sort_order'],
   timeline_items: ['kind', 'title', 'organization', 'period', 'description', 'sort_order'],
   site_settings: ['key', 'value'],
 };
@@ -62,6 +62,7 @@ export function ContentEditor({ table }: { table: ContentTable }) {
         : c === 'level' ? 80
         : c === 'kind' ? 'experience'
         : c === 'status' ? 'completed'
+        : c === 'coming_soon' ? false
         : c === 'is_visible' ? true
         : '',
       ]))
@@ -95,7 +96,8 @@ export function ContentEditor({ table }: { table: ContentTable }) {
       c === 'tags'
         ? String(draft[c] || '').split(',').map((t: string) => t.trim()).filter(Boolean)
         : c.endsWith('_url') ? draft[c] || null
-        : c === 'is_visible' ? Boolean(draft[c]) : draft[c],
+        : c === 'is_visible' ? Boolean(draft[c])
+        : c === 'coming_soon' ? Boolean(draft[c]) : draft[c],
     ]));
     if (table === 'skills' && (Number(payload.level) < 0 || Number(payload.level) > 100)) {
       toast.error('Level must be between 0 and 100.');
@@ -211,6 +213,16 @@ export function ContentEditor({ table }: { table: ContentTable }) {
                         <SelectItem value="in_progress">In Progress</SelectItem>
                       </SelectContent>
                     </Select>
+                  ) : c === 'coming_soon' ? (
+                    <label className="flex cursor-pointer items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={Boolean(draft[c])}
+                        onChange={e => setDraft({ ...draft, [c]: e.target.checked })}
+                        className="h-4 w-4 rounded border-border accent-primary"
+                      />
+                      Mark as coming soon
+                    </label>
                   ) : ['description', 'value'].includes(c) ? (
                     <Textarea id={`edit-${c}`} value={String(draft[c] ?? '')} onChange={e => setDraft({ ...draft, [c]: e.target.value })} rows={5} />
                   ) : (

@@ -42,6 +42,30 @@ const SkillItem = ({ name, level, index }: { name: string; level: number; index:
   );
 };
 
+const ComingSoonSkill = ({ name, index }: { name: string; index: number }) => {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      initial={reduce ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: (index % 2) * 0.08 }}
+      viewport={{ once: true, margin: "-60px" }}
+      className="group border-b border-dashed border-border py-5"
+    >
+      <div className="flex items-baseline justify-between gap-4 mb-3">
+        <span className="font-jetbrains text-sm text-muted-foreground tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+        <span className="flex-1 font-medium text-lg text-muted-foreground">{name}</span>
+        <span className="inline-flex items-center gap-1.5 font-jetbrains text-xs text-primary/60">
+          <Sparkles className="h-3.5 w-3.5" /> Coming soon
+        </span>
+      </div>
+      <div className="h-[3px] bg-secondary overflow-hidden">
+        <div className="h-full w-0" />
+      </div>
+    </motion.div>
+  );
+};
+
 export const Skills = () => {
   const reduce = useReducedMotion();
   const { data: skills = [], isError } = usePortfolio("skills");
@@ -61,14 +85,10 @@ export const Skills = () => {
         </motion.div>
         <div className="grid md:grid-cols-2 gap-x-12">
           {isError && <p role="alert">Skills are temporarily unavailable.</p>}
-          {skills.map((s, i) => <SkillItem key={s.id} {...s} index={i} />)}
-          {!isError && skills.length === 0 && (
-            <div className="col-span-full flex min-h-[280px] flex-col items-center justify-center rounded-md border border-dashed border-border bg-card/50 p-12 text-center">
-              <Sparkles className="mb-4 h-10 w-10 text-primary/50" />
-              <p className="font-jetbrains text-sm uppercase tracking-wider text-muted-foreground">Coming soon</p>
-              <p className="mt-2 text-xl font-semibold">Skills in progress</p>
-              <p className="mt-2 max-w-md text-sm text-muted-foreground">I'm actively building my skill set. Check back soon for the full list.</p>
-            </div>
+          {skills.map((s, i) =>
+            s.coming_soon
+              ? <ComingSoonSkill key={s.id} name={s.name} index={i} />
+              : <SkillItem key={s.id} name={s.name} level={s.level} index={i} />
           )}
         </div>
       </div>

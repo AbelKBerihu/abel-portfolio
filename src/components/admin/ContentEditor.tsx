@@ -28,7 +28,7 @@ const editableColumns: Record<ContentTable, string[]> = {
   site_settings: ['key', 'value'],
 };
 
-const settingNames = ['hero_name', 'hero_role', 'hero_intro', 'about', 'status', 'languages', 'currently_learning', 'footer_banner', 'github_url', 'linkedin_url', 'telegram_url', 'contact_email'];
+const settingNames = ['hero_name', 'hero_role', 'hero_intro', 'about', 'status', 'languages', 'currently_learning', 'footer_banner', 'github_url', 'linkedin_url', 'telegram_url', 'whatsapp_url', 'contact_email'];
 
 export function ContentEditor({ table }: { table: ContentTable }) {
   const cache = useQueryClient();

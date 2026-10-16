@@ -57,6 +57,8 @@ const Index = () => {
   }, []);
 
   return (
+    <>
+    <CalendarRails />
     <motion.div 
       className="min-h-screen font-sans relative overflow-x-hidden"
       initial={{ opacity: 0 }}
@@ -64,7 +66,6 @@ const Index = () => {
       transition={{ duration: 0.3 }}
     >
         <CyberBackground />
-        <CalendarRails />
         <div className="relative z-10">
           <script
             type="application/ld+json"
@@ -93,6 +94,7 @@ const Index = () => {
           <Footer />
         </div>
       </motion.div>
+    </>
   );
 };
 

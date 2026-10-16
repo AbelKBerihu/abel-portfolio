@@ -43,7 +43,7 @@ export const ContactForm = ({ onSubmit, isSubmitting, isMobile }: ContactFormPro
           <FormField control={form.control} name="phone" render={({ field }) => (
             <FormItem><FormControl>
               <div className="relative">
-                <Input type="tel" placeholder="Phone Number (optional)" className={`${fieldClass} pl-9`} {...field} />
+                <Input type="tel" placeholder="Phone Number" className={`${fieldClass} pl-9`} {...field} />
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               </div>
             </FormControl><FormMessage /></FormItem>

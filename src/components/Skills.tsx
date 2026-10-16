@@ -1,5 +1,6 @@
 import { motion, animate, useReducedMotion } from "framer-motion";
 import { useState } from "react";
+import { Sparkles } from "lucide-react";
 import { usePortfolio } from "@/hooks/use-portfolio";
 
 const SkillItem = ({ name, level, index }: { name: string; level: number; index: number }) => {
@@ -34,7 +35,7 @@ const SkillItem = ({ name, level, index }: { name: string; level: number; index:
           transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           viewport={{ once: true }}
           style={{ originX: 0 }}
-          className="h-full bg-primary"
+          className={level >= 100 ? "h-full bg-emerald-500" : "h-full bg-amber-500"}
         />
       </div>
     </motion.div>
@@ -61,6 +62,14 @@ export const Skills = () => {
         <div className="grid md:grid-cols-2 gap-x-12">
           {isError && <p role="alert">Skills are temporarily unavailable.</p>}
           {skills.map((s, i) => <SkillItem key={s.id} {...s} index={i} />)}
+          {!isError && skills.length === 0 && (
+            <div className="col-span-full flex min-h-[280px] flex-col items-center justify-center rounded-md border border-dashed border-border bg-card/50 p-12 text-center">
+              <Sparkles className="mb-4 h-10 w-10 text-primary/50" />
+              <p className="font-jetbrains text-sm uppercase tracking-wider text-muted-foreground">Coming soon</p>
+              <p className="mt-2 text-xl font-semibold">Skills in progress</p>
+              <p className="mt-2 max-w-md text-sm text-muted-foreground">I'm actively building my skill set. Check back soon for the full list.</p>
+            </div>
+          )}
         </div>
       </div>
     </section>

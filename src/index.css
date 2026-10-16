@@ -67,10 +67,9 @@
   .hero-name { font-size: 3rem; }
   @media (min-width: 768px) { .hero-name { font-size: 5rem; } }
   @media (min-width: 1024px) { .hero-name { font-size: 6rem; } }
-  .calendar-rail { position: fixed; top: 40%; z-index: 20; writing-mode: vertical-rl; font-family: "JetBrains Mono", monospace; font-size: 10px; color: hsl(var(--muted-foreground)); }
-  .calendar-rail-left { left: 10px; transform: rotate(180deg); animation: railShift 16s ease-in-out infinite alternate; }
-  .calendar-rail-right { right: 10px; }
-  @keyframes railShift { from { transform: rotate(178deg); } to { transform: rotate(182deg); } }
+  .calendar-rail { position: fixed; top: 50%; transform: translateY(-50%); z-index: 20; writing-mode: vertical-rl; font-family: "JetBrains Mono", monospace; font-size: 10px; color: hsl(var(--muted-foreground)); white-space: nowrap; }
+  .calendar-rail-left { left: 0; transform: translateY(-50%) rotate(180deg); text-align: right; padding: 0 10px; }
+  .calendar-rail-right { right: 0; text-align: left; padding: 0 10px; }
   .project-grid { background-image: linear-gradient(hsl(var(--border)/.5) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border)/.5) 1px, transparent 1px); background-size: 32px 32px; }
   h1, h2, h3 { @apply font-jetbrains; }
 }

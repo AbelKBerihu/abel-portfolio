@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, isSupabaseConfigured } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
 
 export type ContentTable = 'projects' | 'skills' | 'certifications' | 'timeline_items' | 'site_settings';
@@ -7,15 +7,27 @@ export function usePortfolio<T extends ContentTable>(table: T) {
   return useQuery({
     queryKey: ['portfolio', table],
     queryFn: async (): Promise<Tables<T>[]> => {
-      let query = supabase.from(table).select('*');
-      if (table !== 'site_settings') {
-        query = query.eq('is_visible', true);
+      if (!isSupabaseConfigured) {
+        return [];
       }
-      const { data, error } = await query.order(table === 'site_settings' ? 'key' : 'sort_order');
-      if (error) throw error;
-      return (data ?? []) as unknown as Tables<T>[];
+      try {
+        let query = supabase.from(table).select('*') as any;
+        if (table !== 'site_settings') {
+          query = query.eq('is_visible', true);
+        }
+        const { data, error } = await query.order(table === 'site_settings' ? 'key' : 'sort_order');
+        if (error) {
+          console.warn(`Error querying ${table} from Supabase:`, error.message);
+          return [];
+        }
+        return (data ?? []) as unknown as Tables<T>[];
+      } catch (err) {
+        console.warn(`Failed to fetch from ${table}:`, err);
+        return [];
+      }
     },
     staleTime: 60_000,
+    retry: isSupabaseConfigured ? 1 : false,
   });
 }
 export function useSettings() {

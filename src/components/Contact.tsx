@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Sparkles, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ContactForm } from "./Contact/ContactForm";
 import type { ContactFormValues } from "./Contact/schema";
@@ -23,6 +23,10 @@ export const Contact = () => {
   }, []);
 
   const onSubmit = async (data: ContactFormValues): Promise<boolean> => {
+    if (!isSupabaseConfigured) {
+      toast.success(t("messageSent") + " (Preview mode)");
+      return true;
+    }
     setIsSubmitting(true);
     try {
       const { data: result, error } = await supabase.functions.invoke("send-contact", {

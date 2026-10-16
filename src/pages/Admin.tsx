@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, isSupabaseConfigured } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,6 +31,10 @@ export default function Admin() {
     let version = 0;
 
     const check = async () => {
+      if (!isSupabaseConfigured) {
+        setAccess('signedout');
+        return;
+      }
       const current = ++version;
       const { data, error } = await supabase.auth.getUser();
       if (!live || version !== current) return;
@@ -57,6 +61,10 @@ export default function Admin() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSupabaseConfigured) {
+      toast.error('Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+      return;
+    }
     setBusy(true);
     const result = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);

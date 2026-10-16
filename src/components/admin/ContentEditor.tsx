@@ -71,7 +71,7 @@ export function ContentEditor({ table }: { table: ContentTable }) {
 
   const toggleVisible = async (row: Row) => {
     const current = Boolean(row.is_visible);
-    const { error } = await supabase.from(table).update({ is_visible: !current }).eq(key, String(row[key]));
+    const { error } = await (supabase.from(table) as any).update({ is_visible: !current }).eq(key, String(row[key]));
     if (error) { toast.error('Could not update visibility.'); return; }
     refresh();
     toast.success(!current ? 'Item is now visible.' : 'Item hidden from public site.');
@@ -80,7 +80,7 @@ export function ContentEditor({ table }: { table: ContentTable }) {
   const remove = async (row: Row) => {
     if (!window.confirm('Remove this item? This cannot be undone.')) return;
     setBusy(true);
-    const { error } = await supabase.from(table).delete().eq(key, String(row[key]));
+    const { error } = await (supabase.from(table) as any).delete().eq(key, String(row[key]));
     setBusy(false);
     if (error) toast.error('Could not remove item.');
     else { refresh(); toast.success('Item removed.'); }
@@ -105,8 +105,8 @@ export function ContentEditor({ table }: { table: ContentTable }) {
       return;
     }
     const result = original
-      ? await supabase.from(table).update(payload).eq(key, original)
-      : await supabase.from(table).insert({ ...payload, is_visible: true } as never);
+      ? await (supabase.from(table) as any).update(payload).eq(key, original)
+      : await (supabase.from(table) as any).insert({ ...payload, is_visible: true });
     setBusy(false);
     if (result.error) { toast.error('Could not save. Check the required fields and try again.'); return; }
     setDraft(null);
@@ -196,7 +196,7 @@ export function ContentEditor({ table }: { table: ContentTable }) {
               {editableColumns[table].map(c => (
                 <div key={c}>
                   <label htmlFor={`edit-${c}`} className="mb-2 block text-sm font-medium capitalize">
-                    {c.replaceAll('_', ' ')}
+                    {c.replace(/_/g, ' ')}
                   </label>
                   {c === 'kind' ? (
                     <Select value={String(draft[c])} onValueChange={value => setDraft({ ...draft, [c]: value })}>

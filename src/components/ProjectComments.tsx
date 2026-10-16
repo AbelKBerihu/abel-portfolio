@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, isSupabaseConfigured } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,14 +12,30 @@ export function ProjectComments({ projectId }: { projectId: string }) {
   const [name, setName] = useState('');
   const [comment, setComment] = useState('');
   const [busy, setBusy] = useState(false);
-  const { data = [], isError } = useQuery({ queryKey: ['comments', projectId], queryFn: async () => {
-    const { data, error } = await supabase.from('project_comments').select('*').eq('project_id', projectId).eq('approved', true).order('created_at', { ascending: false });
-    if (error) throw error;
-    return data;
-  }});
+  const { data = [], isError } = useQuery({
+    queryKey: ['comments', projectId],
+    queryFn: async () => {
+      if (!isSupabaseConfigured) return [];
+      try {
+        const { data, error } = await supabase.from('project_comments').select('*').eq('project_id', projectId).eq('approved', true).order('created_at', { ascending: false });
+        if (error) throw error;
+        return data ?? [];
+      } catch (err) {
+        console.warn('Error fetching project comments:', err);
+        return [];
+      }
+    },
+    retry: isSupabaseConfigured ? 1 : false,
+  });
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (name.trim().length < 2 || comment.trim().length < 3) { toast.error('Enter your name and a longer comment.'); return; }
+    if (!isSupabaseConfigured) {
+      toast.info('Database not connected. Comment received locally for preview.');
+      setName('');
+      setComment('');
+      return;
+    }
     setBusy(true);
     try {
       const { error } = await supabase.from('project_comments').insert({ project_id: projectId, name: name.trim(), comment: comment.trim(), approved: false });

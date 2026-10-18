@@ -20,14 +20,14 @@ export const Footer = () => {
         <h3 className="text-center text-xl font-bold">Follow Me</h3>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {social.filter(s => s.href).map(s => (
-            <Button key={s.name} variant="outline" size="sm" asChild>
+            <Button key={s.name} variant="outline" size="sm" asChild className="whitespace-nowrap">
               <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name}>
-                <s.icon />{s.name}
+                <s.icon className="h-4 w-4 mr-1" />{s.name}
               </a>
             </Button>
           ))}
         </div>
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground">
+        <div className="mt-10 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} {settings.hero_name || 'Abel Kebede'}. All rights reserved.</p>
         </div>
       </div>

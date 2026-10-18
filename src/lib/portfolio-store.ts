@@ -20,7 +20,7 @@ export const INITIAL_PORTFOLIO_DATA: {
     { key: 'github_url', value: 'https://github.com/abelkm99', updated_at: new Date().toISOString() },
     { key: 'linkedin_url', value: 'https://www.linkedin.com/in/abel-ks', updated_at: new Date().toISOString() },
     { key: 'telegram_url', value: 'https://t.me/avebina7', updated_at: new Date().toISOString() },
-    { key: 'whatsapp_url', value: '', updated_at: new Date().toISOString() },
+    { key: 'whatsapp_url', value: 'https://wa.me/251912345678', updated_at: new Date().toISOString() }, // Added default WhatsApp URL
     { key: 'contact_email', value: 'ks.avebina7@gmail.com', updated_at: new Date().toISOString() },
   ],
   projects: [

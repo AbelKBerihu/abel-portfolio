@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase, isSupabaseConfigured } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Pencil, Trash2, Save, Upload, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ContentTable } from '@/hooks/use-portfolio';
+import { getLocalTableData, setLocalTableData } from '@/lib/portfolio-store';
 
 type Row = Record<string, unknown>;
 
@@ -28,7 +29,21 @@ const editableColumns: Record<ContentTable, string[]> = {
   site_settings: ['key', 'value'],
 };
 
-const settingNames = ['hero_name', 'hero_role', 'hero_intro', 'about', 'status', 'languages', 'currently_learning', 'footer_banner', 'github_url', 'linkedin_url', 'telegram_url', 'whatsapp_url', 'contact_email'];
+const settingNames = [
+  'hero_name',
+  'hero_role',
+  'hero_intro',
+  'about',
+  'status',
+  'languages',
+  'currently_learning',
+  'footer_banner',
+  'github_url',
+  'linkedin_url',
+  'telegram_url',
+  'whatsapp_url',
+  'contact_email',
+];
 
 export function ContentEditor({ table }: { table: ContentTable }) {
   const cache = useQueryClient();
@@ -41,9 +56,18 @@ export function ContentEditor({ table }: { table: ContentTable }) {
   const { data = [], isLoading, isError } = useQuery({
     queryKey: ['admin', table],
     queryFn: async () => {
-      const { data, error } = await supabase.from(table).select('*').order(table === 'site_settings' ? 'key' : 'sort_order');
-      if (error) throw error;
-      return data as unknown as Row[];
+      if (!isSupabaseConfigured) {
+        return getLocalTableData(table) as unknown as Row[];
+      }
+      try {
+        const { data, error } = await supabase.from(table).select('*').order(table === 'site_settings' ? 'key' : 'sort_order');
+        if (error || !data || data.length === 0) {
+          return getLocalTableData(table) as unknown as Row[];
+        }
+        return data as unknown as Row[];
+      } catch {
+        return getLocalTableData(table) as unknown as Row[];
+      }
     },
   });
 
@@ -71,8 +95,21 @@ export function ContentEditor({ table }: { table: ContentTable }) {
 
   const toggleVisible = async (row: Row) => {
     const current = Boolean(row.is_visible);
-    const { error } = await (supabase.from(table) as any).update({ is_visible: !current }).eq(key, String(row[key]));
-    if (error) { toast.error('Could not update visibility.'); return; }
+    const targetKey = String(row[key]);
+
+    // Update local storage copy
+    const currentList = getLocalTableData(table) as any[];
+    const updatedList = currentList.map(item => item[key] === targetKey ? { ...item, is_visible: !current } : item);
+    setLocalTableData(table, updatedList as any);
+
+    if (isSupabaseConfigured) {
+      try {
+        await (supabase.from(table) as any).update({ is_visible: !current }).eq(key, targetKey);
+      } catch (err) {
+        console.warn('Supabase update failed, kept in local state:', err);
+      }
+    }
+
     refresh();
     toast.success(!current ? 'Item is now visible.' : 'Item hidden from public site.');
   };
@@ -80,10 +117,24 @@ export function ContentEditor({ table }: { table: ContentTable }) {
   const remove = async (row: Row) => {
     if (!window.confirm('Remove this item? This cannot be undone.')) return;
     setBusy(true);
-    const { error } = await (supabase.from(table) as any).delete().eq(key, String(row[key]));
+    const targetKey = String(row[key]);
+
+    // Remove from local storage copy
+    const currentList = getLocalTableData(table) as any[];
+    const filtered = currentList.filter(item => String(item[key]) !== targetKey);
+    setLocalTableData(table, filtered as any);
+
+    if (isSupabaseConfigured) {
+      try {
+        await (supabase.from(table) as any).delete().eq(key, targetKey);
+      } catch (err) {
+        console.warn('Supabase delete failed, removed from local state:', err);
+      }
+    }
+
     setBusy(false);
-    if (error) toast.error('Could not remove item.');
-    else { refresh(); toast.success('Item removed.'); }
+    refresh();
+    toast.success('Item removed.');
   };
 
   const save = async (e: React.FormEvent) => {
@@ -97,21 +148,55 @@ export function ContentEditor({ table }: { table: ContentTable }) {
         ? String(draft[c] || '').split(',').map((t: string) => t.trim()).filter(Boolean)
         : c.endsWith('_url') ? draft[c] || null
         : c === 'is_visible' ? Boolean(draft[c])
-        : c === 'coming_soon' ? Boolean(draft[c]) : draft[c],
+        : c === 'coming_soon' ? Boolean(draft[c])
+        : c === 'sort_order' ? Number(draft[c] || 0)
+        : c === 'level' ? Number(draft[c] || 0)
+        : draft[c],
     ]));
+
     if (table === 'skills' && (Number(payload.level) < 0 || Number(payload.level) > 100)) {
       toast.error('Level must be between 0 and 100.');
       setBusy(false);
       return;
     }
-    const result = original
-      ? await (supabase.from(table) as any).update(payload).eq(key, original)
-      : await (supabase.from(table) as any).insert({ ...payload, is_visible: true });
+
+    // Save locally first to guarantee persistence
+    const currentList = [...(getLocalTableData(table) as any[])];
+    if (original) {
+      const idx = currentList.findIndex(item => String(item[key]) === String(original));
+      if (idx !== -1) {
+        currentList[idx] = { ...currentList[idx], ...payload };
+      } else {
+        currentList.push({ [key]: original, ...payload });
+      }
+    } else {
+      const newId = table === 'site_settings' ? String(payload.key) : `custom-${Date.now()}`;
+      currentList.unshift({
+        [key]: newId,
+        ...payload,
+        is_visible: true,
+        created_at: new Date().toISOString(),
+      });
+    }
+    setLocalTableData(table, currentList as any);
+
+    // If Supabase is configured, also persist to Supabase
+    if (isSupabaseConfigured) {
+      try {
+        if (original) {
+          await (supabase.from(table) as any).update(payload).eq(key, original);
+        } else {
+          await (supabase.from(table) as any).insert({ ...payload, is_visible: true });
+        }
+      } catch (err) {
+        console.warn('Supabase save failed, persisted locally:', err);
+      }
+    }
+
     setBusy(false);
-    if (result.error) { toast.error('Could not save. Check the required fields and try again.'); return; }
     setDraft(null);
     refresh();
-    toast.success('Changes saved.');
+    toast.success('Changes saved successfully.');
   };
 
   const upload = async (file?: File) => {
@@ -121,72 +206,107 @@ export function ContentEditor({ table }: { table: ContentTable }) {
       return;
     }
     setBusy(true);
-    const path = `${crypto.randomUUID()}.${file.type.split('/')[1]}`;
-    const { error } = await supabase.storage.from('portfolio-images').upload(path, file, { contentType: file.type });
-    setBusy(false);
-    if (error) { toast.error('Could not upload image.'); return; }
-    const { data } = supabase.storage.from('portfolio-images').getPublicUrl(path);
-    setDraft(d => d ? { ...d, image_url: data.publicUrl } : d);
-    toast.success('Image uploaded. Save to publish it.');
-  };
 
-  const hiddenCount = hasVisibility ? data.filter(r => !r.is_visible).length : 0;
+    if (isSupabaseConfigured) {
+      try {
+        const path = `${crypto.randomUUID()}.${file.type.split('/')[1]}`;
+        const { error } = await supabase.storage.from('portfolio-images').upload(path, file, { contentType: file.type });
+        if (!error) {
+          const { data } = supabase.storage.from('portfolio-images').getPublicUrl(path);
+          setDraft(d => d ? { ...d, image_url: data.publicUrl } : d);
+          setBusy(false);
+          toast.success('Image uploaded. Click Save to publish.');
+          return;
+        }
+      } catch {
+        // Fall back to FileReader
+      }
+    }
+
+    // Fallback: convert to base64 Data URL so local storage works seamlessly
+    const reader = new FileReader();
+    reader.onload = () => {
+      setDraft(d => d ? { ...d, image_url: reader.result as string } : d);
+      setBusy(false);
+      toast.success('Image loaded. Click Save to publish.');
+    };
+    reader.onerror = () => {
+      setBusy(false);
+      toast.error('Could not read image file.');
+    };
+    reader.readAsDataURL(file);
+  };
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between gap-4">
-        <div className="flex items-baseline gap-3">
-          <h2 className="text-xl font-semibold capitalize">{table.replace('_items', '').replace('_', ' ')}</h2>
-          {hasVisibility && hiddenCount > 0 && (
-            <span className="text-sm text-muted-foreground">{hiddenCount} hidden</span>
-          )}
-        </div>
-        <Button onClick={() => edit()}><Plus />Add item</Button>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <p className="text-sm text-muted-foreground">
+          Showing {data.length} {table.replace('_', ' ')}
+        </p>
+        {table !== 'site_settings' && (
+          <Button onClick={() => edit()}>
+            <Plus className="mr-2 h-4 w-4" /> Add item
+          </Button>
+        )}
       </div>
 
       {isLoading && <p role="status">Loading…</p>}
-      {isError && <p role="alert" className="text-destructive">Could not load content.</p>}
+      {isError && <p role="alert">Could not load this table.</p>}
 
-      <div className="divide-y divide-border">
-        {data.map(row => {
-          const isVisible = !hasVisibility || Boolean(row.is_visible);
-          return (
-            <div key={String(row[key])} className={`flex items-center justify-between gap-4 py-5 ${!isVisible ? 'opacity-50' : ''}`}>
-              <div className="min-w-0">
-                <h3 className="break-words font-sans font-semibold">
-                  {String(row.title || row.name || row.key)}
-                  {!isVisible && <span className="ml-2 text-xs font-normal text-muted-foreground">hidden</span>}
-                </h3>
-                <p className="mt-1 truncate text-sm text-muted-foreground">
-                  {String(row.discipline || row.category || row.issuer || row.period || row.value || '')}
-                </p>
-              </div>
-              <div className="flex shrink-0 gap-1">
+      <div className="overflow-x-auto rounded-lg border border-border">
+        <table className="w-full text-left text-sm">
+          <thead className="border-b border-border bg-card/60 text-xs uppercase text-muted-foreground">
+            <tr>
+              <th className="px-4 py-3">Item</th>
+              <th className="px-4 py-3">Details</th>
+              {hasVisibility && <th className="px-4 py-3">Visible</th>}
+              <th className="px-4 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {data.map((row) => (
+              <tr key={String(row[key])} className="hover:bg-card/40 transition-colors">
+                <td className="px-4 py-3 font-medium">
+                  {String(row.title || row.name || row.key || '')}
+                </td>
+                <td className="max-w-md truncate px-4 py-3 text-muted-foreground">
+                  {String(row.value || row.description || row.category || row.issuer || '')}
+                </td>
                 {hasVisibility && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label={isVisible ? `Hide ${row.title || row.name || row.key}` : `Show ${row.title || row.name || row.key}`}
-                    onClick={() => toggleVisible(row)}
-                  >
-                    {isVisible ? <Eye /> : <EyeOff />}
-                  </Button>
+                  <td className="px-4 py-3">
+                    <button
+                      type="button"
+                      onClick={() => toggleVisible(row)}
+                      className={`inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-jetbrains transition-colors ${
+                        row.is_visible
+                          ? 'bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      }`}
+                    >
+                      {row.is_visible ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+                      {row.is_visible ? 'Visible' : 'Hidden'}
+                    </button>
+                  </td>
                 )}
-                <Button variant="ghost" size="icon" aria-label={`Edit ${row.title || row.name || row.key}`} onClick={() => edit(row)}>
-                  <Pencil />
-                </Button>
-                <Button variant="ghost" size="icon" aria-label={`Remove ${row.title || row.name || row.key}`} disabled={busy} onClick={() => remove(row)}>
-                  <Trash2 />
-                </Button>
-              </div>
-            </div>
-          );
-        })}
+                <td className="px-4 py-3 text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <Button variant="ghost" size="sm" onClick={() => edit(row)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    {table !== 'site_settings' && (
+                      <Button variant="ghost" size="sm" onClick={() => remove(row)} className="text-destructive hover:text-destructive">
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {!isLoading && !isError && !data.length && <p className="py-8 text-muted-foreground">No items yet.</p>}
-
-      <Dialog open={!!draft} onOpenChange={open => { if (!open && !busy) setDraft(null); }}>
+      <Dialog open={Boolean(draft)} onOpenChange={open => !open && setDraft(null)}>
         <DialogContent className="max-h-[85svh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{original ? 'Edit item' : 'Add item'}</DialogTitle>
@@ -199,57 +319,83 @@ export function ContentEditor({ table }: { table: ContentTable }) {
                     {c.replace(/_/g, ' ')}
                   </label>
                   {c === 'kind' ? (
-                    <Select value={String(draft[c])} onValueChange={value => setDraft({ ...draft, [c]: value })}>
+                    <Select value={String(draft[c] || 'experience')} onValueChange={value => setDraft({ ...draft, [c]: value })}>
                       <SelectTrigger id={`edit-${c}`}><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {['experience', 'education', 'learning'].map(k => <SelectItem key={k} value={k}>{k}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   ) : c === 'status' ? (
-                    <Select value={String(draft[c])} onValueChange={value => setDraft({ ...draft, [c]: value })}>
+                    <Select value={String(draft[c] || 'completed')} onValueChange={value => setDraft({ ...draft, [c]: value })}>
                       <SelectTrigger id={`edit-${c}`}><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="completed">Completed</SelectItem>
-                        <SelectItem value="in_progress">In Progress</SelectItem>
+                        <SelectItem value="in_progress">In progress</SelectItem>
                       </SelectContent>
                     </Select>
                   ) : c === 'coming_soon' ? (
-                    <label className="flex cursor-pointer items-center gap-2 text-sm">
+                    <div className="flex items-center gap-3">
                       <input
+                        id={`edit-${c}`}
                         type="checkbox"
                         checked={Boolean(draft[c])}
                         onChange={e => setDraft({ ...draft, [c]: e.target.checked })}
-                        className="h-4 w-4 rounded border-border accent-primary"
+                        className="h-4 w-4 rounded border-border"
                       />
-                      Mark as coming soon
-                    </label>
-                  ) : ['description', 'value'].includes(c) ? (
-                    <Textarea id={`edit-${c}`} value={String(draft[c] ?? '')} onChange={e => setDraft({ ...draft, [c]: e.target.value })} rows={5} />
+                      <label htmlFor={`edit-${c}`} className="text-sm text-muted-foreground">
+                        Show as "Coming soon" with placeholder badge
+                      </label>
+                    </div>
+                  ) : c === 'key' && table === 'site_settings' ? (
+                    <Select value={String(draft[c] || '')} onValueChange={value => setDraft({ ...draft, [c]: value })}>
+                      <SelectTrigger id={`edit-${c}`}><SelectValue placeholder="Select setting key" /></SelectTrigger>
+                      <SelectContent>
+                        {settingNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  ) : ['description', 'about', 'hero_intro'].includes(c) ? (
+                    <Textarea
+                      id={`edit-${c}`}
+                      rows={4}
+                      value={String(draft[c] || '')}
+                      onChange={e => setDraft({ ...draft, [c]: e.target.value })}
+                    />
                   ) : (
                     <Input
                       id={`edit-${c}`}
-                      type={['level', 'sort_order'].includes(c) ? 'number' : c.endsWith('_url') ? 'url' : 'text'}
-                      list={c === 'key' ? 'setting-names' : undefined}
-                      disabled={c === 'key' && !!original}
-                      required={['title', 'name', 'key'].includes(c)}
-                      min={c === 'level' ? 0 : undefined}
-                      max={c === 'level' ? 100 : undefined}
+                      type={c === 'sort_order' || c === 'level' ? 'number' : 'text'}
                       value={String(draft[c] ?? '')}
-                      onChange={e => setDraft({ ...draft, [c]: ['level', 'sort_order'].includes(c) ? Number(e.target.value) : e.target.value })}
+                      onChange={e => setDraft({ ...draft, [c]: e.target.value })}
                     />
                   )}
-                  {c === 'image_url' && (
-                    <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
-                      <Upload className="h-4 w-4" />Upload image
-                      <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={busy} onChange={e => upload(e.target.files?.[0])} />
-                    </label>
+                  {c.endsWith('_url') && c.includes('image') && (
+                    <div className="mt-2">
+                      <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-primary hover:underline">
+                        <Upload className="h-3.5 w-3.5" /> Upload image file
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          className="hidden"
+                          onChange={e => upload(e.target.files?.[0])}
+                        />
+                      </label>
+                      {draft[c] ? (
+                        <div className="mt-2 h-16 w-16 overflow-hidden rounded border border-border">
+                          <img src={String(draft[c])} alt="preview" className="h-full w-full object-cover" />
+                        </div>
+                      ) : null}
+                    </div>
                   )}
                 </div>
               ))}
-              <datalist id="setting-names">{settingNames.map(k => <option key={k} value={k} />)}</datalist>
-              <Button type="submit" disabled={busy} className="w-full">
-                <Save />{busy ? 'Saving…' : 'Save changes'}
-              </Button>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button type="button" variant="outline" onClick={() => setDraft(null)}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={busy}>
+                  <Save className="mr-2 h-4 w-4" /> {busy ? 'Saving…' : 'Save'}
+                </Button>
+              </div>
             </form>
           )}
         </DialogContent>

@@ -25,8 +25,8 @@ const DEMO_STORAGE_KEY = 'portfolio_admin_auth_demo';
 
 export default function Admin() {
   const [access, setAccess] = useState<'loading' | 'signedout' | 'denied' | 'admin'>('loading');
-  const [email, setEmail] = useState(DEMO_EMAIL);
-  const [password, setPassword] = useState(DEMO_PASSWORD);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -131,11 +131,6 @@ export default function Admin() {
       <p className="mb-8 text-muted-foreground">
         Sign in to manage your portfolio content, projects, skills, and certifications.
       </p>
-      <div className="mb-6 rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs text-muted-foreground">
-        <p className="font-medium text-foreground">Configured Owner Credentials:</p>
-        <p className="mt-1">Email: <span className="font-mono text-primary font-semibold select-all">ks.avebina7@gmail.com</span></p>
-        <p className="mt-0.5">Password: <span className="font-mono text-primary font-semibold select-all">It'sme@1221</span></p>
-      </div>
       <form onSubmit={submit} className="space-y-4">
         <div>
           <label className="mb-2 block text-sm font-medium" htmlFor="owner-email">Email</label>

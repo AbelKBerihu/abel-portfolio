@@ -74,6 +74,8 @@ export function ContentEditor({ table }: { table: ContentTable }) {
   const refresh = () => {
     cache.invalidateQueries({ queryKey: ['admin', table] });
     cache.invalidateQueries({ queryKey: ['portfolio', table] });
+    cache.refetchQueries({ queryKey: ['admin', table] });
+    cache.refetchQueries({ queryKey: ['portfolio', table] });
   };
 
   const edit = (row?: Row) => {
@@ -141,6 +143,14 @@ export function ContentEditor({ table }: { table: ContentTable }) {
     e.preventDefault();
     if (!draft) return;
     setBusy(true);
+
+    const primaryTitle = draft.title || draft.name || draft.key;
+    if (!primaryTitle && table !== 'site_settings') {
+      toast.error('Please enter a title or name for this item.');
+      setBusy(false);
+      return;
+    }
+
     const fields = editableColumns[table];
     const payload = Object.fromEntries(fields.map(c => [
       c,
@@ -149,8 +159,8 @@ export function ContentEditor({ table }: { table: ContentTable }) {
         : c.endsWith('_url') ? draft[c] || null
         : c === 'is_visible' ? Boolean(draft[c])
         : c === 'coming_soon' ? Boolean(draft[c])
-        : c === 'sort_order' ? Number(draft[c] || 0)
-        : c === 'level' ? Number(draft[c] || 0)
+        : c === 'sort_order' ? (Number.isNaN(Number(draft[c])) ? 0 : Number(draft[c]))
+        : c === 'level' ? (Number.isNaN(Number(draft[c])) ? 0 : Number(draft[c]))
         : draft[c],
     ]));
 
@@ -160,21 +170,30 @@ export function ContentEditor({ table }: { table: ContentTable }) {
       return;
     }
 
+    const isNew = !original;
+    const newId = table === 'site_settings'
+      ? String(payload.key)
+      : (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `item-${Date.now()}`);
+
+    const baseItem: any = {
+      [key]: isNew ? newId : original,
+      ...payload,
+      ...(table !== 'site_settings' ? { is_visible: draft.is_visible !== undefined ? Boolean(draft.is_visible) : true } : {}),
+      updated_at: new Date().toISOString(),
+    };
+
     // Save locally first to guarantee persistence
     const currentList = [...(getLocalTableData(table) as any[])];
     if (original) {
       const idx = currentList.findIndex(item => String(item[key]) === String(original));
       if (idx !== -1) {
-        currentList[idx] = { ...currentList[idx], ...payload };
+        currentList[idx] = { ...currentList[idx], ...baseItem };
       } else {
-        currentList.push({ [key]: original, ...payload });
+        currentList.push(baseItem);
       }
     } else {
-      const newId = table === 'site_settings' ? String(payload.key) : `custom-${Date.now()}`;
       currentList.unshift({
-        [key]: newId,
-        ...payload,
-        is_visible: true,
+        ...baseItem,
         created_at: new Date().toISOString(),
       });
     }
@@ -184,12 +203,18 @@ export function ContentEditor({ table }: { table: ContentTable }) {
     if (isSupabaseConfigured) {
       try {
         if (original) {
-          await (supabase.from(table) as any).update(payload).eq(key, original);
+          const { error } = await (supabase.from(table) as any).update(payload).eq(key, original);
+          if (error) console.warn('Supabase update returned:', error.message);
         } else {
-          await (supabase.from(table) as any).insert({ ...payload, is_visible: true });
+          const insertPayload = {
+            ...payload,
+            ...(table !== 'site_settings' ? { is_visible: true } : {}),
+          };
+          const { error } = await (supabase.from(table) as any).insert(insertPayload);
+          if (error) console.warn('Supabase insert returned:', error.message);
         }
       } catch (err) {
-        console.warn('Supabase save failed, persisted locally:', err);
+        console.warn('Supabase save error (local copy preserved):', err);
       }
     }
 

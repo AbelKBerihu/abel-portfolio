@@ -94,109 +94,126 @@ export function ContentEditor({ table }: { table: ContentTable }) {
   };
 
   const toggleVisible = async (row: Row) => {
-    const current = Boolean(row.is_visible);
-    const targetKey = String(row[key]);
-
-    // Update local storage copy
-    const currentList = getLocalTableData(table) as any[];
-    const updatedList = currentList.map(item => item[key] === targetKey ? { ...item, is_visible: !current } : item);
-    setLocalTableData(table, updatedList as any);
-
-    if (isSupabaseConfigured) {
       try {
-        await (supabase.from(table) as any).update({ is_visible: !current }).eq(key, targetKey);
+        const current = Boolean(row.is_visible);
+        const targetKey = String(row[key]);
+  
+        // Update local storage copy
+        const currentList = getLocalTableData(table) as any[];
+        const updatedList = currentList.map(item => item[key] === targetKey ? { ...item, is_visible: !current } : item);
+        setLocalTableData(table, updatedList as any);
+  
+        if (isSupabaseConfigured) {
+          try {
+            await (supabase.from(table) as any).update({ is_visible: !current }).eq(key, targetKey);
+          } catch (err) {
+            console.warn('Supabase update failed, kept in local state:', err);
+          }
+        }
+  
+        refresh();
+        toast.success(!current ? 'Item is now visible.' : 'Item hidden from public site.');
       } catch (err) {
-        console.warn('Supabase update failed, kept in local state:', err);
+        toast.error('Failed to update visibility. Please try again.');
+        console.error('Toggle visibility error:', err);
       }
-    }
-
-    refresh();
-    toast.success(!current ? 'Item is now visible.' : 'Item hidden from public site.');
-  };
-
-  const remove = async (row: Row) => {
-    if (!window.confirm('Remove this item? This cannot be undone.')) return;
-    setBusy(true);
-    const targetKey = String(row[key]);
-
-    // Remove from local storage copy
-    const currentList = getLocalTableData(table) as any[];
-    const filtered = currentList.filter(item => String(item[key]) !== targetKey);
-    setLocalTableData(table, filtered as any);
-
-    if (isSupabaseConfigured) {
+    };
+  
+    const remove = async (row: Row) => {
+      if (!window.confirm('Remove this item? This cannot be undone.')) return;
+      setBusy(true);
       try {
-        await (supabase.from(table) as any).delete().eq(key, targetKey);
+        const targetKey = String(row[key]);
+  
+        // Remove from local storage copy
+        const currentList = getLocalTableData(table) as any[];
+        const filtered = currentList.filter(item => String(item[key]) !== targetKey);
+        setLocalTableData(table, filtered as any);
+  
+        if (isSupabaseConfigured) {
+          try {
+            await (supabase.from(table) as any).delete().eq(key, targetKey);
+          } catch (err) {
+            console.warn('Supabase delete failed, removed from local state:', err);
+          }
+        }
+  
+        setBusy(false);
+        refresh();
+        toast.success('Item removed.');
       } catch (err) {
-        console.warn('Supabase delete failed, removed from local state:', err);
+        setBusy(false);
+        toast.error('Failed to remove item. Please try again.');
+        console.error('Remove error:', err);
       }
-    }
-
-    setBusy(false);
-    refresh();
-    toast.success('Item removed.');
-  };
+    };
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!draft) return;
     setBusy(true);
-    const fields = editableColumns[table];
-    const payload = Object.fromEntries(fields.map(c => [
-      c,
-      c === 'tags'
-        ? String(draft[c] || '').split(',').map((t: string) => t.trim()).filter(Boolean)
-        : c.endsWith('_url') ? draft[c] || null
-        : c === 'is_visible' ? Boolean(draft[c])
-        : c === 'coming_soon' ? Boolean(draft[c])
-        : c === 'sort_order' ? Number(draft[c] || 0)
-        : c === 'level' ? Number(draft[c] || 0)
-        : draft[c],
-    ]));
+    try {
+      const fields = editableColumns[table];
+      const payload = Object.fromEntries(fields.map(c => [
+        c,
+        c === 'tags'
+          ? String(draft[c] || '').split(',').map((t: string) => t.trim()).filter(Boolean)
+          : c.endsWith('_url') ? draft[c] || null
+          : c === 'is_visible' ? Boolean(draft[c])
+          : c === 'coming_soon' ? Boolean(draft[c])
+          : c === 'sort_order' ? Number(draft[c] || 0) || 0
+          : c === 'level' ? Number(draft[c] || 0) || 0
+          : draft[c],
+      ]));
 
-    if (table === 'skills' && (Number(payload.level) < 0 || Number(payload.level) > 100)) {
-      toast.error('Level must be between 0 and 100.');
-      setBusy(false);
-      return;
-    }
-
-    // Save locally first to guarantee persistence
-    const currentList = [...(getLocalTableData(table) as any[])];
-    if (original) {
-      const idx = currentList.findIndex(item => String(item[key]) === String(original));
-      if (idx !== -1) {
-        currentList[idx] = { ...currentList[idx], ...payload };
-      } else {
-        currentList.push({ [key]: original, ...payload });
+      if (table === 'skills' && (Number(payload.level) < 0 || Number(payload.level) > 100)) {
+        toast.error('Level must be between 0 and 100.');
+        setBusy(false);
+        return;
       }
-    } else {
-      const newId = table === 'site_settings' ? String(payload.key) : `custom-${Date.now()}`;
-      currentList.unshift({
-        [key]: newId,
-        ...payload,
-        is_visible: true,
-        created_at: new Date().toISOString(),
-      });
-    }
-    setLocalTableData(table, currentList as any);
 
-    // If Supabase is configured, also persist to Supabase
-    if (isSupabaseConfigured) {
-      try {
-        if (original) {
-          await (supabase.from(table) as any).update(payload).eq(key, original);
+      // Save locally first to guarantee persistence
+      const currentList = [...(getLocalTableData(table) as any[])];
+      if (original) {
+        const idx = currentList.findIndex(item => String(item[key]) === String(original));
+        if (idx !== -1) {
+          currentList[idx] = { ...currentList[idx], ...payload };
         } else {
-          await (supabase.from(table) as any).insert({ ...payload, is_visible: true });
+          currentList.push({ [key]: original, ...payload });
         }
-      } catch (err) {
-        console.warn('Supabase save failed, persisted locally:', err);
+      } else {
+        const newId = table === 'site_settings' ? String(payload.key || `custom-${Date.now()}`) : `custom-${Date.now()}`;
+        currentList.unshift({
+          [key]: newId,
+          ...payload,
+          is_visible: true,
+          created_at: new Date().toISOString(),
+        });
       }
-    }
+      setLocalTableData(table, currentList as any);
 
-    setBusy(false);
-    setDraft(null);
-    refresh();
-    toast.success('Changes saved successfully.');
+      // If Supabase is configured, also persist to Supabase
+      if (isSupabaseConfigured) {
+        try {
+          if (original) {
+            await (supabase.from(table) as any).update(payload).eq(key, original);
+          } else {
+            await (supabase.from(table) as any).insert({ ...payload, is_visible: true });
+          }
+        } catch (err) {
+          console.warn('Supabase save failed, persisted locally:', err);
+        }
+      }
+
+      setBusy(false);
+      setDraft(null);
+      refresh();
+      toast.success('Changes saved successfully.');
+    } catch (err) {
+      setBusy(false);
+      toast.error('Failed to save changes. Please try again.');
+      console.error('Save error:', err);
+    }
   };
 
   const upload = async (file?: File) => {

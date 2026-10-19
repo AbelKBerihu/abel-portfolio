@@ -33,7 +33,7 @@ export const Footer = () => {
       </div>
     </footer>
   );
-};
+}
 
 function KineticWord({ text }: { text: string }) {
   const reduced = useReducedMotion();

@@ -22,6 +22,7 @@ export const INITIAL_PORTFOLIO_DATA: {
     { key: 'telegram_url', value: 'https://t.me/avebina7', updated_at: new Date().toISOString() },
     { key: 'whatsapp_url', value: 'https://wa.me/251912345678', updated_at: new Date().toISOString() }, // Added default WhatsApp URL
     { key: 'contact_email', value: 'ks.avebina7@gmail.com', updated_at: new Date().toISOString() },
+    { key: 'profile_image', value: 'https://i.pravatar.cc/300?img=11', updated_at: new Date().toISOString() }, // Default profile image
   ],
   projects: [
     {

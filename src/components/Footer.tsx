@@ -18,9 +18,9 @@ export const Footer = () => {
       <KineticWord text={settings.footer_banner || 'ALWAYS LEARNING. ALWAYS BUILDING.'} />
       <div className="container mx-auto px-4 py-10">
         <h3 className="text-center text-xl font-bold">Follow Me</h3>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <div className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4">
           {social.filter(s => s.href).map(s => (
-            <Button key={s.name} variant="outline" size="sm" asChild className="whitespace-nowrap">
+            <Button key={s.name} variant="outline" size="sm" asChild className="whitespace-nowrap min-w-[auto]">
               <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name}>
                 <s.icon className="h-4 w-4 mr-1" />{s.name}
               </a>
@@ -49,7 +49,7 @@ function KineticWord({ text }: { text: string }) {
         aria-hidden="true"
       >
         {[0, 1, 2, 3].map(i => <span key={i}>{text} <Link to="/admin" className="text-primary transition-opacity hover:opacity-60" aria-label="Owner access" tabIndex={-1}>↗</Link></span>)}
-      </motion.div>
+      </div>
       <span className="sr-only">{text}</span>
     </div>
   );

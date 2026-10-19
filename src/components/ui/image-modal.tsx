@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, ArrowLeft } from 'lucide-react';
 
 interface ImageModalProps {
   open: boolean;
@@ -17,6 +17,14 @@ export function ImageModal({ open, onOpenChange, src, alt, externalUrl, external
         <DialogTitle className="sr-only">{alt}</DialogTitle>
         <div className="relative">
           <img src={src} alt={alt} className="w-full max-h-[75vh] object-contain bg-card" />
+          {/* Back arrow - close modal */}
+          <button
+            onClick={() => onOpenChange(false)}
+            className="absolute left-4 top-4 z-10 inline-flex items-center justify-center w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground hover:bg-background transition-colors"
+            aria-label="Close"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
           {externalUrl && (
             <a
               href={externalUrl}

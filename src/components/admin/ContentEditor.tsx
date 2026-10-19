@@ -43,6 +43,7 @@ const settingNames = [
   'telegram_url',
   'whatsapp_url',
   'contact_email',
+  'profile_image',
 ];
 
 export function ContentEditor({ table }: { table: ContentTable }) {

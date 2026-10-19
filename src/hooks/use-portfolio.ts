@@ -51,5 +51,12 @@ export function useSettings() {
 
 export function safeUrl(value?: string | null) {
   if (!value) return undefined;
-  try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) ? url.href : undefined; } catch { return undefined; }
+  // Allow base64 data URLs (local storage fallback)
+  if (value.startsWith('data:')) return value;
+  try {
+    const url = new URL(value);
+    return ['https:', 'http:'].includes(url.protocol) ? url.href : undefined;
+  } catch {
+    return undefined;
+  }
 }

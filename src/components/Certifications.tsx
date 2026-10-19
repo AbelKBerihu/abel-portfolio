@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Award, ArrowUpRight, Sparkles } from 'lucide-react';
+import { Award, ArrowUpRight, Sparkles, ExternalLink, ZoomIn } from 'lucide-react';
 import { usePortfolio, safeUrl } from '@/hooks/use-portfolio';
 import { SectionHeading } from './SectionHeading';
 import { Button } from './ui/button';
@@ -41,9 +41,34 @@ export const Certifications = () => {
                   <h3 className="break-words text-lg font-semibold">{c.title}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{c.issuer}{c.date && c.date !== '—' ? ` · ${c.date}` : ''}</p>
                   {image && (
-                    <button onClick={() => setModalImage({ src: image, alt: `${c.title} certificate`, link })} className="mt-4 block cursor-pointer">
-                      <img src={image} alt={`${c.title} certificate`} loading="lazy" className="max-h-48 max-w-full rounded-md object-contain transition-opacity hover:opacity-80" />
-                    </button>
+                    <div className="mt-4">
+                      <button
+                        onClick={() => setModalImage({ src: image, alt: `${c.title} certificate`, link })}
+                        className="group relative block cursor-pointer overflow-hidden rounded-md border border-border"
+                        aria-label={`View ${c.title} certificate`}
+                      >
+                        <img
+                          src={image}
+                          alt={`${c.title} certificate`}
+                          loading="lazy"
+                          className="max-h-48 w-full object-contain transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none"
+                        />
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/40">
+                          <ZoomIn className="h-8 w-8 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+                        </span>
+                      </button>
+                      {link && (
+                        <a
+                          href={link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-2 inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                        >
+                          <ExternalLink className="h-3 w-3" />
+                          <span>Open in new page</span>
+                        </a>
+                      )}
+                    </div>
                   )}
                   {link && <Button size="sm" variant="ghost" asChild className="mt-3"><a href={link} target="_blank" rel="noopener noreferrer">View credential <ArrowUpRight /></a></Button>}
                 </div>

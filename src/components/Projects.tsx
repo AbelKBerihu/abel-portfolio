@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowUpRight, MessageSquare, Network, Shield, Terminal, Sparkles } from 'lucide-react';
+import { ArrowUpRight, MessageSquare, Network, Shield, Terminal, Sparkles, ExternalLink, ZoomIn } from 'lucide-react';
 import { usePortfolio, safeUrl } from '@/hooks/use-portfolio';
 import { Button } from './ui/button';
 import { SectionHeading } from './SectionHeading';
@@ -64,39 +64,49 @@ export const Projects = () => {
             }
 
             return (
-              <motion.article key={p.id} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="min-w-0">
-                <Button
-                  variant="ghost"
-                  onClick={() => image ? setModalImage({ src: image, alt: p.title, link }) : setExpanded(open ? null : p.id)}
-                  aria-expanded={open}
-                  aria-label={`View details for ${p.title}`}
-                  className="project-visual group relative mb-5 flex aspect-[16/9] h-auto w-full items-center justify-center overflow-hidden rounded-md border border-border bg-card p-0"
-                >
-                  {image ? (
-                    <img src={image} alt={p.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none" />
-                  ) : (
-                    <>
-                      <div className="project-grid absolute inset-0" />
-                      <Icon className="relative h-16 w-16 text-primary/65 transition-transform duration-500 group-hover:scale-110" />
-                      <span className="absolute bottom-5 left-5 font-jetbrains text-xs text-muted-foreground">{String(i + 1).padStart(2, '0')} / {p.tags.slice(0, 2).join(' · ')}</span>
-                    </>
-                  )}
-                  <ArrowUpRight className="absolute right-5 top-5 h-5 w-5 text-muted-foreground" />
-                </Button>
-                <div className="mb-3 flex items-center justify-between gap-4">
-                  <p className="editorial-kicker">{p.discipline}</p>
-                  <StatusDot status={p.status} />
-                </div>
-                <h3 className="break-words text-xl font-semibold md:text-2xl">{p.title}</h3>
-                <p className="mt-3 leading-relaxed text-muted-foreground">{p.description}</p>
-                <div className="mt-4 flex flex-wrap gap-2">{p.tags.map(tag => <span key={tag} className="border-l border-primary/40 px-2 text-xs text-muted-foreground">{tag}</span>)}</div>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {link && <Button variant="outline" size="sm" asChild><a href={link} target="_blank" rel="noopener noreferrer">View project <ArrowUpRight /></a></Button>}
-                  <Button variant="ghost" size="sm" onClick={() => setExpanded(open ? null : p.id)} aria-expanded={open}><MessageSquare />{open ? 'Close notes' : 'Project notes'}</Button>
-                </div>
-                {open && <ProjectComments projectId={p.id} />}
-              </motion.article>
-            );
+                          <motion.article key={p.id} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="min-w-0">
+                            <div
+                              className="project-visual group relative mb-5 aspect-[16/9] w-full overflow-hidden rounded-md border border-border bg-card cursor-pointer"
+                              onClick={() => image ? setModalImage({ src: image, alt: p.title, link }) : setExpanded(open ? null : p.id)}
+                            >
+                              {image ? (
+                                <img src={image} alt={p.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transform-none" />
+                              ) : (
+                                <>
+                                  <div className="project-grid absolute inset-0" />
+                                  <Icon className="relative h-16 w-16 text-primary/65 transition-transform duration-500 group-hover:scale-110" />
+                                  <span className="absolute bottom-5 left-5 font-jetbrains text-xs text-muted-foreground">{String(i + 1).padStart(2, '0')} / {p.tags.slice(0, 2).join(' · ')}</span>
+                                </>
+                              )}
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/40">
+                                <ZoomIn className="h-8 w-8 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+                              </div>
+                              {link && (
+                                <a
+                                  href={link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="absolute right-5 top-5 z-10 inline-flex items-center gap-1 rounded-md bg-background/80 px-2 py-1 text-xs font-medium backdrop-blur-sm border border-border hover:bg-background transition-colors"
+                                >
+                                  <ArrowUpRight className="h-4 w-4" />
+                                </a>
+                              )}
+                            </div>
+                            <div className="mb-3 flex items-center justify-between gap-4">
+                              <p className="editorial-kicker">{p.discipline}</p>
+                              <StatusDot status={p.status} />
+                            </div>
+                            <h3 className="break-words text-xl font-semibold md:text-2xl">{p.title}</h3>
+                            <p className="mt-3 leading-relaxed text-muted-foreground">{p.description}</p>
+                            <div className="mt-4 flex flex-wrap gap-2">{p.tags.map(tag => <span key={tag} className="border-l border-primary/40 px-2 text-xs text-muted-foreground">{tag}</span>)}</div>
+                            <div className="mt-5 flex flex-wrap gap-2">
+                              {link && <Button variant="outline" size="sm" asChild><a href={link} target="_blank" rel="noopener noreferrer">View project <ArrowUpRight /></a></Button>}
+                              <Button variant="ghost" size="sm" onClick={() => setExpanded(open ? null : p.id)} aria-expanded={open}><MessageSquare />{open ? 'Close notes' : 'Project notes'}</Button>
+                            </div>
+                            {open && <ProjectComments projectId={p.id} />}
+                          </motion.article>
+                        );
           })}
         </div>
       </div>

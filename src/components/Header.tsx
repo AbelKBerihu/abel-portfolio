@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Download } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
@@ -76,6 +76,11 @@ export const Header = () => {
             ))}
           </nav>
           <ThemeToggle />
+          <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex">
+            <a href={settings.cv_url || "/cv.pdf"} download="Abel_Kebede_CV.pdf" target="_blank" rel="noopener noreferrer">
+              <Download className="mr-1.5 h-3.5 w-3.5" /> CV
+            </a>
+          </Button>
           <Button size="sm" onClick={() => scrollTo("contact")}>{t("contact")}</Button>
         </div>
 
@@ -91,6 +96,13 @@ export const Header = () => {
               {[...links, ["contact", t("contact")]].map(([id, label]) => (
                 <button key={id} type="button" onClick={() => scrollTo(id)} className="border-b border-border py-4 text-left text-sm uppercase last:border-0">{label}</button>
               ))}
+              <a
+                href={settings.cv_url || "/cv.pdf"}
+                download="Abel_Kebede_CV.pdf"
+                className="flex items-center gap-2 border-b border-border py-4 text-left text-sm uppercase text-primary"
+              >
+                <Download className="h-4 w-4" /> Download CV
+              </a>
               <div className="mt-3"><ThemeToggle /></div>
             </nav>
           </motion.div>

@@ -51,6 +51,7 @@ const settingNames = [
   'whatsapp_url',
   'contact_email',
   'profile_image',
+  'cv_url',
 ];
 
 export function ContentEditor({ table }: { table: ContentTable }) {

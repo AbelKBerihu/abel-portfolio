@@ -5,6 +5,13 @@ import { getLocalTableData } from '@/lib/portfolio-store';
 
 export type ContentTable = 'projects' | 'skills' | 'certifications' | 'timeline_items' | 'site_settings';
 
+type TableItemWithVisibility<T extends ContentTable> = Tables<T> & { is_visible?: boolean };
+
+interface DynamicQueryBuilder {
+  eq: (column: string, value: unknown) => DynamicQueryBuilder;
+  order: (column: string) => Promise<{ data: unknown[] | null; error: unknown }>;
+}
+
 export function usePortfolio<T extends ContentTable>(table: T) {
   return useQuery({
     queryKey: ['portfolio', table],
@@ -12,12 +19,12 @@ export function usePortfolio<T extends ContentTable>(table: T) {
       if (!isSupabaseConfigured) {
         const local = getLocalTableData(table);
         if (table !== 'site_settings') {
-          return (local as any[]).filter(item => item.is_visible !== false) as Tables<T>[];
+          return (local as TableItemWithVisibility<T>[]).filter(item => item.is_visible !== false);
         }
         return local;
       }
       try {
-        let query = supabase.from(table).select('*') as any;
+        let query = (supabase.from(table).select('*') as unknown as DynamicQueryBuilder);
         if (table !== 'site_settings') {
           query = query.eq('is_visible', true);
         }
@@ -25,7 +32,7 @@ export function usePortfolio<T extends ContentTable>(table: T) {
         if (error || !data || data.length === 0) {
           const local = getLocalTableData(table);
           if (table !== 'site_settings') {
-            return (local as any[]).filter(item => item.is_visible !== false) as Tables<T>[];
+            return (local as TableItemWithVisibility<T>[]).filter(item => item.is_visible !== false);
           }
           return local;
         }
@@ -34,7 +41,7 @@ export function usePortfolio<T extends ContentTable>(table: T) {
         console.warn(`Failed to fetch from ${table}, falling back to local data:`, err);
         const local = getLocalTableData(table);
         if (table !== 'site_settings') {
-          return (local as any[]).filter(item => item.is_visible !== false) as Tables<T>[];
+          return (local as TableItemWithVisibility<T>[]).filter(item => item.is_visible !== false);
         }
         return local;
       }

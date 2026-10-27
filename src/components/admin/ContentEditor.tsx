@@ -10,8 +10,15 @@ import { Plus, Pencil, Trash2, Save, Upload, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ContentTable } from '@/hooks/use-portfolio';
 import { getLocalTableData, setLocalTableData } from '@/lib/portfolio-store';
+import type { Tables } from '@/integrations/supabase/types';
 
 type Row = Record<string, unknown>;
+
+interface DynamicSupabaseQuery {
+  update: (data: unknown) => { eq: (column: string, value: unknown) => Promise<unknown> };
+  delete: () => { eq: (column: string, value: unknown) => Promise<unknown> };
+  insert: (data: unknown) => Promise<unknown>;
+}
 
 const columns: Record<ContentTable, string[]> = {
   projects: ['title', 'discipline', 'description', 'status', 'coming_soon', 'tags', 'image_url', 'link_url', 'sort_order', 'is_visible'],
@@ -101,14 +108,14 @@ export function ContentEditor({ table }: { table: ContentTable }) {
   
           // Update local storage copy
           const currentList = isSupabaseConfigured && data.length > 0
-            ? [...(data as any[])]
-            : [...(getLocalTableData(table) as any[])];
+            ? [...(data as unknown as Row[])]
+            : [...(getLocalTableData(table) as unknown as Row[])];
           const updatedList = currentList.map(item => item[key] === targetKey ? { ...item, is_visible: !current } : item);
-          setLocalTableData(table, updatedList as any);
+          setLocalTableData(table, updatedList as unknown as Tables<ContentTable>[]);
   
           if (isSupabaseConfigured) {
             try {
-              await (supabase.from(table) as any).update({ is_visible: !current }).eq(key, targetKey);
+              await (supabase.from(table) as unknown as DynamicSupabaseQuery).update({ is_visible: !current }).eq(key, targetKey);
             } catch (err) {
               console.warn('Supabase update failed, kept in local state:', err);
             }
@@ -130,14 +137,14 @@ export function ContentEditor({ table }: { table: ContentTable }) {
   
           // Remove from local storage copy
           const currentList = isSupabaseConfigured && data.length > 0
-            ? [...(data as any[])]
-            : [...(getLocalTableData(table) as any[])];
+            ? [...(data as unknown as Row[])]
+            : [...(getLocalTableData(table) as unknown as Row[])];
           const filtered = currentList.filter(item => String(item[key]) !== targetKey);
-          setLocalTableData(table, filtered as any);
+          setLocalTableData(table, filtered as unknown as Tables<ContentTable>[]);
   
           if (isSupabaseConfigured) {
             try {
-              await (supabase.from(table) as any).delete().eq(key, targetKey);
+              await (supabase.from(table) as unknown as DynamicSupabaseQuery).delete().eq(key, targetKey);
             } catch (err) {
               console.warn('Supabase delete failed, removed from local state:', err);
             }
@@ -180,8 +187,8 @@ export function ContentEditor({ table }: { table: ContentTable }) {
       // Use query data as source of truth when Supabase is configured,
       // otherwise use local storage
       const currentList = isSupabaseConfigured && data.length > 0
-        ? [...(data as any[])]
-        : [...(getLocalTableData(table) as any[])];
+        ? [...(data as unknown as Row[])]
+        : [...(getLocalTableData(table) as unknown as Row[])];
 
       if (original) {
         const idx = currentList.findIndex(item => String(item[key]) === String(original));
@@ -201,15 +208,15 @@ export function ContentEditor({ table }: { table: ContentTable }) {
       }
 
       // Always update local storage for persistence
-      setLocalTableData(table, currentList as any);
+      setLocalTableData(table, currentList as unknown as Tables<ContentTable>[]);
 
       // If Supabase is configured, also persist to Supabase
       if (isSupabaseConfigured) {
         try {
           if (original) {
-            await (supabase.from(table) as any).update(payload).eq(key, original);
+            await (supabase.from(table) as unknown as DynamicSupabaseQuery).update(payload).eq(key, original);
           } else {
-            await (supabase.from(table) as any).insert({ ...payload, is_visible: true });
+            await (supabase.from(table) as unknown as DynamicSupabaseQuery).insert({ ...payload, is_visible: true });
           }
         } catch (err) {
           console.warn('Supabase save failed, persisted locally:', err);

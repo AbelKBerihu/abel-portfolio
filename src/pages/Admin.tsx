@@ -19,10 +19,6 @@ const sections: [ContentTable, string][] = [
   ['timeline_items', 'Experience & education'],
 ];
 
-const DEMO_EMAIL = 'ks.avebina7@gmail.com';
-const DEMO_PASSWORD = "It'sme@1221";
-const DEMO_STORAGE_KEY = 'portfolio_admin_auth_demo';
-
 export default function Admin() {
   const [access, setAccess] = useState<'loading' | 'signedout' | 'denied' | 'admin'>('loading');
   const [email, setEmail] = useState('');
@@ -33,12 +29,6 @@ export default function Admin() {
   useEffect(() => {
     let live = true;
     let version = 0;
-
-    // Check if demo admin session was previously stored
-    if (localStorage.getItem(DEMO_STORAGE_KEY) === 'true') {
-      setAccess('admin');
-      return;
-    }
 
     const check = async () => {
       if (!isSupabaseConfigured) {
@@ -60,10 +50,6 @@ export default function Admin() {
 
     check();
     const { data } = supabase.auth.onAuthStateChange(() => {
-      if (localStorage.getItem(DEMO_STORAGE_KEY) === 'true') {
-        setAccess('admin');
-        return;
-      }
       setAccess('loading');
       window.setTimeout(check, 0);
     });
@@ -74,7 +60,6 @@ export default function Admin() {
   }, []);
 
   const handleSignOut = async () => {
-    localStorage.removeItem(DEMO_STORAGE_KEY);
     if (isSupabaseConfigured) {
       await supabase.auth.signOut();
     }
@@ -89,18 +74,9 @@ export default function Admin() {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPass = password;
 
-    // Direct match with the designated owner credentials
-    if (cleanEmail === DEMO_EMAIL.toLowerCase() && cleanPass === DEMO_PASSWORD) {
-      localStorage.setItem(DEMO_STORAGE_KEY, 'true');
-      setAccess('admin');
-      setBusy(false);
-      toast.success('Welcome back, admin!');
-      return;
-    }
-
     if (!isSupabaseConfigured) {
       setBusy(false);
-      toast.error('Invalid credentials. Use ks.avebina7@gmail.com');
+      toast.error('Supabase authentication is not configured. Please set your Supabase environment variables.');
       return;
     }
 

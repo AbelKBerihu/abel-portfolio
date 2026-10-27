@@ -142,7 +142,9 @@ export function getLocalTableData<T extends ContentTable>(table: T): Tables<T>[]
   const initial = (INITIAL_PORTFOLIO_DATA[table] || []) as Tables<T>[];
   try {
     localStorage.setItem(`${STORAGE_PREFIX}${table}`, JSON.stringify(initial));
-  } catch {}
+  } catch {
+    // Ignore storage quota or access errors in restricted environments
+  }
   return initial;
 }
 

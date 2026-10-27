@@ -76,6 +76,7 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const telegramToken = Deno.env.get("TELEGRAM_BOT_TOKEN");
+    const telegramChatId = Deno.env.get("TELEGRAM_CHAT_ID") || "8738536556";
     const lovableKey = Deno.env.get("LOVABLE_API_KEY");
     if (!supabaseUrl || !serviceRoleKey || !telegramToken) throw new Error("Contact service is not configured");
 
@@ -101,7 +102,7 @@ Deno.serve(async (req) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        chat_id: "8738536556",
+        chat_id: telegramChatId,
         text: [
           "New portfolio enquiry",
           "",

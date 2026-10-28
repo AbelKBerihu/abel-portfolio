@@ -61,16 +61,21 @@ export function usePortfolio<T extends ContentTable>(table: T) {
 
     let channel: ReturnType<typeof supabase.channel> | null = null;
     if (isSupabaseConfigured) {
-      channel = supabase
-        .channel(`realtime_${table}`)
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table },
-          () => {
-            queryClient.invalidateQueries({ queryKey: ['portfolio', table] });
-          }
-        )
-        .subscribe();
+      try {
+        const channelId = `realtime_${table}_${Math.random().toString(36).slice(2, 7)}`;
+        channel = supabase
+          .channel(channelId)
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table },
+            () => {
+              queryClient.invalidateQueries({ queryKey: ['portfolio', table] });
+            }
+          )
+          .subscribe();
+      } catch (err) {
+        console.warn('Realtime channel subscription error:', err);
+      }
     }
 
     return () => {
@@ -78,7 +83,11 @@ export function usePortfolio<T extends ContentTable>(table: T) {
       window.removeEventListener('storage', handleStorage);
       if (bc) bc.close();
       if (channel) {
-        supabase.removeChannel(channel);
+        try {
+          supabase.removeChannel(channel);
+        } catch {
+          // ignore
+        }
       }
     };
   }, [table, queryClient]);

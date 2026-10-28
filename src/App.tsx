@@ -10,30 +10,33 @@ import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import { LanguageProvider } from "@/contexts/language";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   return (
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="dark" attribute="class">
-          <LanguageProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/admin" element={<Admin />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </TooltipProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider defaultTheme="dark" attribute="class">
+            <LanguageProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/admin" element={<Admin />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </TooltipProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </ErrorBoundary>
     </React.StrictMode>
   );
 };

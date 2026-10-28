@@ -19,8 +19,10 @@ export function CyberBackground() {
       element.width = width * ratio; element.height = height * ratio;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       const styles = getComputedStyle(document.documentElement);
-      color = `hsl(${styles.getPropertyValue('--primary').trim()})`;
-      textColor = `hsl(${styles.getPropertyValue('--muted-foreground').trim()})`;
+      const primaryVal = styles.getPropertyValue('--primary')?.trim();
+      const mutedVal = styles.getPropertyValue('--muted-foreground')?.trim();
+      color = primaryVal ? `hsl(${primaryVal})` : 'rgba(255, 255, 255, 0.8)';
+      textColor = mutedVal ? `hsl(${mutedVal})` : 'rgba(255, 255, 255, 0.4)';
       draw(0);
     };
     const draw = (t: number) => {

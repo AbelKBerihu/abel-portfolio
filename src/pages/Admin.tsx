@@ -91,8 +91,40 @@ export default function Admin() {
     }
     setAccess('signedout');
     setNeedsMfa(false);
+    setEmail('');
+    setPassword('');
+    setMfaCode('');
+    setMfaChallengeFactorId('');
     toast.success('Signed out successfully.');
   };
+
+  // 2-Minute Inactivity Security Auto-Logout
+  useEffect(() => {
+    if (access !== 'admin') return;
+
+    const INACTIVITY_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
+    let lastActivity = Date.now();
+
+    const resetTimer = () => {
+      lastActivity = Date.now();
+    };
+
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
+    events.forEach((evt) => window.addEventListener(evt, resetTimer, { passive: true }));
+
+    const interval = window.setInterval(() => {
+      if (Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS) {
+        clearInterval(interval);
+        handleSignOut();
+        toast.info('Session timed out after 2 minutes of inactivity for your security.');
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(interval);
+      events.forEach((evt) => window.removeEventListener(evt, resetTimer));
+    };
+  }, [access]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -220,13 +252,13 @@ export default function Admin() {
           </Button>
         </form>
       ) : (
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={submit} className="space-y-4" autoComplete="off">
           <div>
             <label className="mb-2 block text-sm font-medium" htmlFor="owner-email">Email</label>
             <Input
               id="owner-email"
               type="email"
-              autoComplete="email"
+              autoComplete="off"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -239,7 +271,7 @@ export default function Admin() {
               <Input
                 id="owner-password"
                 type={showPassword ? 'text' : 'password'}
-                autoComplete="current-password"
+                autoComplete="new-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

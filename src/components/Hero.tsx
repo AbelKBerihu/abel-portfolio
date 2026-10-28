@@ -85,75 +85,105 @@ export const Hero = () => {
             {settings.hero_role || 'Cybersecurity Student & Developer'}
           </p>
 
-          {/* Interactive Name & Drop-Down Photo Reveal */}
-          <div className="relative inline-block my-2">
+          {/* Interactive Gate Open Name Title */}
+          <div className="my-2 max-w-full overflow-visible">
             <div
-              className="relative inline-flex items-center cursor-pointer select-none group py-1"
+              className="relative inline-flex flex-nowrap items-center cursor-pointer select-none group py-2 max-w-full"
               onMouseEnter={() => setIsGateOpen(true)}
               onMouseLeave={() => setIsGateOpen(false)}
               onClick={() => setIsGateOpen((prev) => !prev)}
               role="button"
               tabIndex={0}
-              aria-label={`${fullName} — View identity`}
+              aria-label={`${fullName} — Hover or tap to open gate and view picture`}
             >
-              <h1 className="hero-name font-bold uppercase leading-[1.08] tracking-tight group-hover:text-primary transition-colors flex items-center gap-3">
-                <span>{firstName}</span>
-                <span>{lastName}</span>
-                <span className="text-primary">.</span>
-              </h1>
-
-              {/* Shutter status beacon */}
-              <motion.span
+              {/* Left Gate Door */}
+              <motion.div
                 animate={{
-                  scale: isGateOpen ? 1.25 : 1,
-                  boxShadow: isGateOpen
-                    ? '0 0 14px hsl(var(--primary))'
-                    : '0 0 0px transparent',
+                  x: isGateOpen ? (typeof window !== 'undefined' && window.innerWidth < 640 ? -6 : -20) : 0,
                 }}
-                className="ml-3 h-2.5 w-2.5 rounded-full bg-primary inline-block transition-transform"
-              />
-            </div>
-
-            {/* Drop-Down Floating Gate Shutter Card (drags down to not hold layout place) */}
-            <AnimatePresence>
-              {isGateOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -12, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.9 }}
-                  transition={{ type: 'spring', stiffness: 350, damping: 26 }}
-                  className="absolute top-full left-0 z-30 pt-2 pointer-events-none"
+                transition={{ type: 'spring', stiffness: 320, damping: 25 }}
+                className="relative flex items-center shrink-0"
+              >
+                <h1
+                  className={`font-jetbrains font-bold uppercase leading-none tracking-tight transition-all duration-300 ${
+                    isGateOpen
+                      ? 'text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl'
+                      : 'text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl'
+                  }`}
                 >
-                  <div className="relative flex items-center gap-4 rounded-xl border-2 border-primary/50 bg-background/95 p-3.5 shadow-2xl backdrop-blur-xl ring-4 ring-primary/15">
-                    {/* Portal Avatar Frame */}
-                    <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-lg overflow-hidden border border-primary/40 bg-card shadow-md shrink-0">
-                      <img
-                        src={profileImage}
-                        alt={fullName}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
+                  {firstName}
+                </h1>
+                <motion.span
+                  animate={{
+                    opacity: isGateOpen ? 1 : 0,
+                    scaleY: isGateOpen ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.2 }}
+                  className="ml-1 sm:ml-2 h-7 sm:h-10 md:h-16 w-[2px] sm:w-[3px] bg-primary rounded-full shadow-[0_0_12px_hsl(var(--primary))]"
+                />
+              </motion.div>
 
-                    {/* Cyber Badge */}
-                    <div className="flex flex-col pr-3">
-                      <span className="font-jetbrains text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
-                        <Sparkles className="h-3 w-3" /> Identity Verified
-                      </span>
-                      <span className="font-jetbrains text-base font-semibold text-foreground">
-                        {fullName}
-                      </span>
-                      <span className="font-mono text-xs text-muted-foreground">
-                        {settings.hero_role || 'Cybersecurity Student & Developer'}
-                      </span>
-                      <span className="mt-1.5 font-mono text-[9px] text-emerald-400 flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              {/* Central Gate Aperture / Picture Reveal */}
+              <AnimatePresence>
+                {isGateOpen && (
+                  <motion.div
+                    initial={{ width: 0, opacity: 0, scale: 0.5 }}
+                    animate={{ width: 'auto', opacity: 1, scale: 1 }}
+                    exit={{ width: 0, opacity: 0, scale: 0.5 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 25 }}
+                    className="relative mx-1.5 sm:mx-3 md:mx-6 flex items-center justify-center overflow-visible z-20 shrink-0"
+                  >
+                    <div className="relative">
+                      {/* Cyber ring glow halo */}
+                      <div className="absolute -inset-1 sm:-inset-2 rounded-full bg-primary/20 blur-md sm:blur-lg animate-pulse" />
+                      
+                      {/* Portal Avatar Frame */}
+                      <div className="relative h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 lg:h-28 lg:w-28 rounded-full overflow-hidden border-2 border-primary bg-card shadow-2xl ring-2 sm:ring-4 ring-primary/20">
+                        <img
+                          src={profileImage}
+                          alt={fullName}
+                          className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+                        />
+                      </div>
+
+                      {/* HUD Badge */}
+                      <div className="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 sm:px-2 py-0.5 rounded bg-background/95 border border-primary/50 font-jetbrains text-[8px] sm:text-[9px] tracking-wider text-primary shadow-lg flex items-center gap-1">
+                        <Sparkles className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
                         ACCESS GRANTED
-                      </span>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Right Gate Door */}
+              <motion.div
+                animate={{
+                  x: isGateOpen ? (typeof window !== 'undefined' && window.innerWidth < 640 ? 6 : 20) : 0,
+                }}
+                transition={{ type: 'spring', stiffness: 320, damping: 25 }}
+                className="relative flex items-center shrink-0"
+              >
+                <motion.span
+                  animate={{
+                    opacity: isGateOpen ? 1 : 0,
+                    scaleY: isGateOpen ? 1 : 0,
+                  }}
+                  transition={{ duration: 0.2 }}
+                  className="mr-1 sm:mr-2 h-7 sm:h-10 md:h-16 w-[2px] sm:w-[3px] bg-primary rounded-full shadow-[0_0_12px_hsl(var(--primary))]"
+                />
+                <h1
+                  className={`font-jetbrains font-bold uppercase leading-none tracking-tight transition-all duration-300 ${
+                    isGateOpen
+                      ? 'text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl'
+                      : 'text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl'
+                  }`}
+                >
+                  {lastName}
+                  <span className="text-primary">.</span>
+                </h1>
+              </motion.div>
+            </div>
           </div>
 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground md:text-xl">

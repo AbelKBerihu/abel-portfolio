@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Pencil, Trash2, Save, Upload, Eye, EyeOff, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import type { ContentTable } from '@/hooks/use-portfolio';
+import { type ContentTable, triggerPortfolioSync } from '@/hooks/use-portfolio';
 import { getLocalTableData, setLocalTableData } from '@/lib/portfolio-store';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -81,9 +81,10 @@ export function ContentEditor({ table }: { table: ContentTable }) {
     });
 
   const refresh = () => {
-      cache.invalidateQueries({ queryKey: ['admin', table] });
-      cache.invalidateQueries({ queryKey: ['portfolio', table] });
-    };
+    cache.invalidateQueries({ queryKey: ['admin', table] });
+    cache.invalidateQueries({ queryKey: ['portfolio', table] });
+    triggerPortfolioSync(table);
+  };
 
   const edit = (row?: Row) => {
     setOriginal(row ? String(row[key]) : null);

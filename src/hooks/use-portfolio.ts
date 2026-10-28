@@ -59,10 +59,27 @@ export function usePortfolio<T extends ContentTable>(table: T) {
     window.addEventListener(PORTFOLIO_SYNC_EVENT, handleSync);
     window.addEventListener('storage', handleStorage);
 
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    if (isSupabaseConfigured) {
+      channel = supabase
+        .channel(`realtime_${table}`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table },
+          () => {
+            queryClient.invalidateQueries({ queryKey: ['portfolio', table] });
+          }
+        )
+        .subscribe();
+    }
+
     return () => {
       window.removeEventListener(PORTFOLIO_SYNC_EVENT, handleSync);
       window.removeEventListener('storage', handleStorage);
       if (bc) bc.close();
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [table, queryClient]);
 

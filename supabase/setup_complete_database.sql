@@ -144,6 +144,8 @@ CREATE TABLE IF NOT EXISTS public.contact_submissions (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public can submit contact" ON public.contact_submissions;
+CREATE POLICY "Public can submit contact" ON public.contact_submissions FOR INSERT TO anon, authenticated WITH CHECK (true);
 DROP POLICY IF EXISTS "Admin read submissions" ON public.contact_submissions;
 CREATE POLICY "Admin read submissions" ON public.contact_submissions FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'));
 DROP POLICY IF EXISTS "Admin delete submissions" ON public.contact_submissions;

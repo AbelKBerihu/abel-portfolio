@@ -29,27 +29,39 @@ export const Contact = () => {
     }
     setIsSubmitting(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke("send-contact", {
-        body: {
-          name: data.name,
-          email: data.email,
-          phone: data.phone ?? "",
-          projectNeeds: data.projectNeeds ?? "",
-          message: data.message,
-          preferredDate: format(data.preferredDate, "yyyy-MM-dd"),
-        },
+      // 1. Persist directly to Supabase contact_submissions table for Admin portal Inbox
+      const { error: dbError } = await supabase.from('contact_submissions').insert({
+        name: data.name,
+        email: data.email,
+        phone: data.phone ?? '',
+        project_needs: data.projectNeeds ?? '',
+        message: data.message,
+        preferred_date: format(data.preferredDate, "yyyy-MM-dd"),
       });
-      if (error) {
-        let msg = t("messageFailed");
-        try {
-          const body = await (error as { context?: Response }).context?.json();
-          if (body?.error) msg = body.error;
-          if (body?.brief) setBrief(body.brief);
-        } catch { /* keep default */ }
-        toast.error(msg);
+
+      // 2. Optionally invoke Telegram notification edge function if configured
+      try {
+        const { data: result } = await supabase.functions.invoke("send-contact", {
+          body: {
+            name: data.name,
+            email: data.email,
+            phone: data.phone ?? "",
+            projectNeeds: data.projectNeeds ?? "",
+            message: data.message,
+            preferredDate: format(data.preferredDate, "yyyy-MM-dd"),
+          },
+        });
+        if (result?.brief) setBrief(result.brief);
+      } catch (fnErr) {
+        console.warn("Edge function notice (submission saved to database):", fnErr);
+      }
+
+      if (dbError) {
+        console.error("Direct DB insert failed:", dbError);
+        toast.error(t("messageFailed"));
         return false;
       }
-      if (result?.brief) setBrief(result.brief);
+
       toast.success(t("messageSent"));
       return true;
     } catch (e) {

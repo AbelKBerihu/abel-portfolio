@@ -1,9 +1,24 @@
-import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase, isSupabaseConfigured } from '@/integrations/supabase/client';
 import type { Tables } from '@/integrations/supabase/types';
 import { getLocalTableData } from '@/lib/portfolio-store';
 
 export type ContentTable = 'projects' | 'skills' | 'certifications' | 'timeline_items' | 'site_settings';
+
+export const PORTFOLIO_SYNC_EVENT = 'portfolio:live_sync';
+
+export function triggerPortfolioSync(table?: ContentTable) {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(PORTFOLIO_SYNC_EVENT, { detail: { table } }));
+  try {
+    const bc = new BroadcastChannel('portfolio_sync_channel');
+    bc.postMessage({ table, timestamp: Date.now() });
+    bc.close();
+  } catch {
+    // BroadcastChannel unsupported or restricted
+  }
+}
 
 type TableItemWithVisibility<T extends ContentTable> = Tables<T> & { is_visible?: boolean };
 
@@ -13,6 +28,44 @@ interface DynamicQueryBuilder {
 }
 
 export function usePortfolio<T extends ContentTable>(table: T) {
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const handleSync = (e: Event) => {
+      const customEvent = e as CustomEvent<{ table?: ContentTable }>;
+      if (!customEvent.detail?.table || customEvent.detail.table === table) {
+        queryClient.invalidateQueries({ queryKey: ['portfolio', table] });
+      }
+    };
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key?.includes(table)) {
+        queryClient.invalidateQueries({ queryKey: ['portfolio', table] });
+      }
+    };
+
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel('portfolio_sync_channel');
+      bc.onmessage = (msg) => {
+        if (!msg.data?.table || msg.data.table === table) {
+          queryClient.invalidateQueries({ queryKey: ['portfolio', table] });
+        }
+      };
+    } catch {
+      // ignore
+    }
+
+    window.addEventListener(PORTFOLIO_SYNC_EVENT, handleSync);
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      window.removeEventListener(PORTFOLIO_SYNC_EVENT, handleSync);
+      window.removeEventListener('storage', handleStorage);
+      if (bc) bc.close();
+    };
+  }, [table, queryClient]);
+
   return useQuery({
     queryKey: ['portfolio', table],
     queryFn: async (): Promise<Tables<T>[]> => {

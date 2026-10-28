@@ -1,5 +1,5 @@
 import type { Tables } from '@/integrations/supabase/types';
-import type { ContentTable } from './use-portfolio';
+import { type ContentTable, triggerPortfolioSync } from '@/hooks/use-portfolio';
 
 export const INITIAL_PORTFOLIO_DATA: {
   site_settings: Tables<'site_settings'>[];
@@ -112,9 +112,9 @@ export const INITIAL_PORTFOLIO_DATA: {
     { id: 'skill-12', name: 'Computer Networks', category: 'General', level: 75, sort_order: 11, is_visible: true, coming_soon: false, created_at: new Date().toISOString() },
   ],
   certifications: [
-    { id: 'cert-1', title: 'DISH Computer Science Level 1', issuer: 'DISH', date: '2023', credential_url: '', image_url: '', sort_order: 0, is_visible: true, coming_soon: false, created_at: new Date().toISOString() },
-    { id: 'cert-2', title: 'Cybersecurity Fundamentals', issuer: 'Self-study', date: '2024', credential_url: '', image_url: '', sort_order: 1, is_visible: true, coming_soon: false, created_at: new Date().toISOString() },
-    { id: 'cert-3', title: 'Networking Essentials', issuer: 'Self-study', date: '2024', credential_url: '', image_url: '', sort_order: 2, is_visible: true, coming_soon: false, created_at: new Date().toISOString() },
+    { id: 'cert-1', title: 'DISH Computer Science Level 1', issuer: 'DISH', date: '2023', credential_url: '', image_url: '/certificates/dish-cs.svg', sort_order: 0, is_visible: true, coming_soon: false, created_at: new Date().toISOString() },
+    { id: 'cert-2', title: 'Cybersecurity Fundamentals', issuer: 'Self-study', date: '2024', credential_url: '', image_url: '/certificates/cyber-fundamentals.svg', sort_order: 1, is_visible: true, coming_soon: false, created_at: new Date().toISOString() },
+    { id: 'cert-3', title: 'Networking Essentials', issuer: 'Self-study', date: '2024', credential_url: '', image_url: '/certificates/networking-essentials.svg', sort_order: 2, is_visible: true, coming_soon: false, created_at: new Date().toISOString() },
   ],
   timeline_items: [
     { id: 'time-1', kind: 'education', title: 'Computer Science Studies', organization: 'Self-directed & Online', period: 'Ongoing', description: 'Continuing to study computer science independently through online courses, hands-on labs, and personal projects after interruptions to formal education.', sort_order: 0, is_visible: true, created_at: new Date().toISOString() },
@@ -153,6 +153,7 @@ export function setLocalTableData<T extends ContentTable>(table: T, data: Tables
   if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(`${STORAGE_PREFIX}${table}`, JSON.stringify(data));
+    triggerPortfolioSync(table);
   } catch (e) {
     console.error(`Failed to store local data for ${table}:`, e);
   }

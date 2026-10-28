@@ -1,14 +1,17 @@
 import { usePortfolio, useSettings } from '@/hooks/use-portfolio';
 import { SectionHeading } from './SectionHeading';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowUpRight, Download } from 'lucide-react';
-import { Button } from './ui/button';
+import { ArrowUpRight } from 'lucide-react';
 
 export function About() {
   const { settings } = useSettings();
   const { data = [], isError } = usePortfolio('timeline_items');
   const reduced = useReducedMotion();
-  const cvUrl = settings.cv_url || '/cv.pdf';
+
+  const learningTopics = (settings.currently_learning || 'Network security, Python scripting, Linux administration, Web development with React')
+    .split(/[,;\n]/)
+    .map((s) => s.trim())
+    .filter(Boolean);
 
   return (
     <section id="about" className="section-rule py-20 md:py-28">
@@ -23,17 +26,26 @@ export function About() {
               </p>
             )}
             <div className="mt-10 border-l-2 border-primary pl-5">
-              <p className="editorial-kicker mb-3">Currently learning</p>
-              <p className="leading-relaxed">
-                {settings.currently_learning || 'Cybersecurity, software development and computer networks.'}
-              </p>
-            </div>
-            <div className="mt-8">
-              <Button variant="outline" size="sm" asChild>
-                <a href={cvUrl} download="Abel_Kebede_CV.pdf" target="_blank" rel="noopener noreferrer">
-                  <Download className="mr-2 h-4 w-4" /> Download Full CV (PDF)
-                </a>
-              </Button>
+              <div className="mb-3 flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <p className="editorial-kicker text-xs uppercase tracking-wider text-muted-foreground">
+                  Currently Exploring & Learning
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {learningTopics.map((topic) => (
+                  <span
+                    key={topic}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-jetbrains bg-card border border-border text-foreground hover:border-primary/50 transition-colors"
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    {topic}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
           <div>

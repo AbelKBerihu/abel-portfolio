@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useState } from "react";
 import { ThemeToggle } from "./ThemeToggle";
@@ -10,15 +10,11 @@ export const Header = () => {
   const { t } = useLanguage();
   const { settings } = useSettings();
   const [open, setOpen] = useState(false);
-  const [showPicture, setShowPicture] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const links = [["about", "About"], ["projects", t("projects")], ["certifications", t("certifications")], ["skills", t("skills")]];
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     setOpen(false);
-  };
-
-  const handleNameDoubleClick = () => {
-    setShowPicture((prev) => !prev);
   };
 
   const profileImage = settings.profile_image || 'https://i.pravatar.cc/300?img=11';
@@ -29,42 +25,48 @@ export const Header = () => {
         <button
           type="button"
           onClick={() => scrollTo("home")}
-          onDoubleClick={handleNameDoubleClick}
-          className="font-jetbrains text-base font-extrabold uppercase md:text-lg cursor-pointer relative group"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="font-jetbrains text-base font-extrabold uppercase md:text-lg cursor-pointer relative group flex items-center gap-1.5 focus:outline-none"
+          aria-label="Abel Kebede home - Hover to open avatar gate"
         >
-          <span className="relative z-10 flex items-center gap-0">
-            <span className={showPicture ? "inline-block w-1/2 text-right pr-2 transition-all duration-300" : "inline-block"}>
-              ABEL
-            </span>
-            <span className="text-primary">.</span>
-            <span className={showPicture ? "inline-block w-1/2 text-left pl-2 transition-all duration-300" : "inline-block"}>
-              K
-            </span>
-          </span>
-          {showPicture && (
-            <AnimatePresence mode="wait">
+          <motion.span
+            animate={{ x: isHovered ? -4 : 0 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="inline-block"
+          >
+            ABEL
+          </motion.span>
+
+          <AnimatePresence>
+            {isHovered && (
               <motion.div
-                key="profile-pic"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="absolute inset-0 bg-black/85 flex items-center justify-center rounded-full transition-all duration-300"
+                initial={{ width: 0, opacity: 0, scale: 0.5 }}
+                animate={{ width: 28, opacity: 1, scale: 1 }}
+                exit={{ width: 0, opacity: 0, scale: 0.5 }}
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                className="overflow-hidden flex items-center justify-center"
               >
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="w-48 h-48 rounded-full overflow-hidden border-4 border-white/30 bg-card shadow-2xl"
-                >
+                <div className="h-6 w-6 rounded-full overflow-hidden border border-primary/70 shadow-sm ring-2 ring-primary/20">
                   <img
                     src={profileImage}
-                    alt="Profile picture"
-                    className="w-full h-full object-cover"
+                    alt="Abel avatar"
+                    className="h-full w-full object-cover"
                   />
-                </motion.div>
+                </div>
               </motion.div>
-            </AnimatePresence>
-          )}
+            )}
+          </AnimatePresence>
+
+          <span className="text-primary">.</span>
+
+          <motion.span
+            animate={{ x: isHovered ? 4 : 0 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="inline-block"
+          >
+            K
+          </motion.span>
         </button>
 
         <div className="hidden items-center gap-7 md:flex">
@@ -76,11 +78,6 @@ export const Header = () => {
             ))}
           </nav>
           <ThemeToggle />
-          <Button variant="outline" size="sm" asChild className="hidden sm:inline-flex">
-            <a href={settings.cv_url || "/cv.pdf"} download="Abel_Kebede_CV.pdf" target="_blank" rel="noopener noreferrer">
-              <Download className="mr-1.5 h-3.5 w-3.5" /> CV
-            </a>
-          </Button>
           <Button size="sm" onClick={() => scrollTo("contact")}>{t("contact")}</Button>
         </div>
 
@@ -96,13 +93,6 @@ export const Header = () => {
               {[...links, ["contact", t("contact")]].map(([id, label]) => (
                 <button key={id} type="button" onClick={() => scrollTo(id)} className="border-b border-border py-4 text-left text-sm uppercase last:border-0">{label}</button>
               ))}
-              <a
-                href={settings.cv_url || "/cv.pdf"}
-                download="Abel_Kebede_CV.pdf"
-                className="flex items-center gap-2 border-b border-border py-4 text-left text-sm uppercase text-primary"
-              >
-                <Download className="h-4 w-4" /> Download CV
-              </a>
               <div className="mt-3"><ThemeToggle /></div>
             </nav>
           </motion.div>

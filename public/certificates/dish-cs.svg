@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" width="800" height="560">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#09090b"/>
+      <stop offset="100%" stop-color="#18181b"/>
+    </linearGradient>
+    <linearGradient id="border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="560" fill="url(#bg)"/>
+  <rect x="24" y="24" width="752" height="512" fill="none" stroke="url(#border-grad)" stroke-width="2" rx="12"/>
+  <rect x="36" y="36" width="728" height="488" fill="none" stroke="#27272a" stroke-width="1" stroke-dasharray="6,4" rx="8"/>
+  
+  <!-- Seal / Emblem -->
+  <circle cx="400" cy="130" r="48" fill="#18181b" stroke="#38bdf8" stroke-width="2.5"/>
+  <polygon points="400,102 408,122 430,122 412,135 419,156 400,143 381,156 388,135 370,122 392,122" fill="#38bdf8"/>
+  
+  <!-- Header Text -->
+  <text x="400" y="225" font-family="'JetBrains Mono', monospace" font-size="14" letter-spacing="4" fill="#a1a1aa" text-anchor="middle" font-weight="600">CERTIFICATE OF COMPLETION</text>
+  <text x="400" y="270" font-family="'Inter', sans-serif" font-size="16" fill="#71717a" text-anchor="middle">THIS IS PROUDLY PRESENTED TO</text>
+  
+  <!-- Recipient -->
+  <text x="400" y="325" font-family="'Inter', sans-serif" font-size="34" font-weight="bold" fill="#f4f4f5" text-anchor="middle">ABEL KEBEDE</text>
+  <line x1="250" y1="345" x2="550" y2="345" stroke="#3f3f46" stroke-width="1"/>
+  
+  <!-- Course / Credential -->
+  <text x="400" y="390" font-family="'Inter', sans-serif" font-size="22" font-weight="600" fill="#38bdf8" text-anchor="middle">DISH Computer Science Level 1</text>
+  
+  <!-- Footer Issuer & Date -->
+  <text x="180" y="470" font-family="'JetBrains Mono', monospace" font-size="12" fill="#71717a" text-anchor="middle">ISSUED BY</text>
+  <text x="180" y="492" font-family="'Inter', sans-serif" font-size="15" font-weight="600" fill="#e4e4e7" text-anchor="middle">DISH Education</text>
+  
+  <text x="620" y="470" font-family="'JetBrains Mono', monospace" font-size="12" fill="#71717a" text-anchor="middle">DATE ISSUED</text>
+  <text x="620" y="492" font-family="'Inter', sans-serif" font-size="15" font-weight="600" fill="#e4e4e7" text-anchor="middle">2023</text>
+  
+  <circle cx="400" cy="480" r="16" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="400" y="484" font-family="'JetBrains Mono', monospace" font-size="10" fill="#38bdf8" text-anchor="middle">VERIFIED</text>
+</svg>

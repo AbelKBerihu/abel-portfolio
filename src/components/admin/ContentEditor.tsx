@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Pencil, Trash2, Save, Upload, Eye, EyeOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, Upload, Eye, EyeOff, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ContentTable } from '@/hooks/use-portfolio';
 import { getLocalTableData, setLocalTableData } from '@/lib/portfolio-store';
@@ -161,6 +161,38 @@ export function ContentEditor({ table }: { table: ContentTable }) {
         }
       };
 
+  const moveOrder = async (row: Row, direction: 'up' | 'down') => {
+    const list = [...(data as unknown as Row[])];
+    const currentIndex = list.findIndex(item => String(item[key]) === String(row[key]));
+    if (currentIndex === -1) return;
+    const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= list.length) return;
+
+    // Swap items
+    const temp = list[currentIndex];
+    list[currentIndex] = list[targetIndex];
+    list[targetIndex] = temp;
+
+    // Update sort_order numbers
+    const updated = list.map((item, idx) => ({ ...item, sort_order: idx }));
+    setLocalTableData(table, updated as unknown as Tables<ContentTable>[]);
+
+    if (isSupabaseConfigured) {
+      try {
+        for (const item of updated) {
+          await (supabase.from(table) as unknown as DynamicSupabaseQuery)
+            .update({ sort_order: item.sort_order })
+            .eq(key, item[key]);
+        }
+      } catch (err) {
+        console.warn('Reorder sync error:', err);
+      }
+    }
+
+    refresh();
+    toast.success('Order arranged.');
+  };
+
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!draft) return;
@@ -294,17 +326,31 @@ export function ContentEditor({ table }: { table: ContentTable }) {
           <thead className="border-b border-border bg-card/60 text-xs uppercase text-muted-foreground">
             <tr>
               <th className="px-4 py-3">Item</th>
+              {(table === 'certifications' || table === 'projects') && <th className="px-4 py-3">Image</th>}
               <th className="px-4 py-3">Details</th>
               {hasVisibility && <th className="px-4 py-3">Visible</th>}
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {data.map((row) => (
+            {data.map((row, idx) => (
               <tr key={String(row[key])} className="hover:bg-card/40 transition-colors">
                 <td className="px-4 py-3 font-medium">
                   {String(row.title || row.name || row.key || '')}
                 </td>
+                {(table === 'certifications' || table === 'projects') && (
+                  <td className="px-4 py-3">
+                    {row.image_url ? (
+                      <div className="h-10 w-14 rounded border border-border overflow-hidden bg-card shrink-0">
+                        <img src={String(row.image_url)} alt="preview" className="h-full w-full object-cover" />
+                      </div>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground italic">
+                        <ImageIcon className="h-3 w-3" /> None
+                      </span>
+                    )}
+                  </td>
+                )}
                 <td className="max-w-md truncate px-4 py-3 text-muted-foreground">
                   {String(row.value || row.description || row.category || row.issuer || '')}
                 </td>
@@ -326,11 +372,33 @@ export function ContentEditor({ table }: { table: ContentTable }) {
                 )}
                 <td className="px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-1">
-                    <Button variant="ghost" size="sm" onClick={() => edit(row)}>
+                    {table !== 'site_settings' && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={idx === 0}
+                          onClick={() => moveOrder(row, 'up')}
+                          title="Move up"
+                        >
+                          <ArrowUp className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          disabled={idx === data.length - 1}
+                          onClick={() => moveOrder(row, 'down')}
+                          title="Move down"
+                        >
+                          <ArrowDown className="h-3.5 w-3.5" />
+                        </Button>
+                      </>
+                    )}
+                    <Button variant="ghost" size="sm" onClick={() => edit(row)} title="Edit">
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
                     {table !== 'site_settings' && (
-                      <Button variant="ghost" size="sm" onClick={() => remove(row)} className="text-destructive hover:text-destructive">
+                      <Button variant="ghost" size="sm" onClick={() => remove(row)} className="text-destructive hover:text-destructive" title="Delete">
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
                     )}

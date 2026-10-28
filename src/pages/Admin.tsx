@@ -7,9 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ContentEditor } from '@/components/admin/ContentEditor';
 import { LearningManager } from '@/components/admin/LearningManager';
 import { ProfilePictureManager } from '@/components/admin/ProfilePictureManager';
+import { CvManager } from '@/components/admin/CvManager';
 import { SecurityMfaManager } from '@/components/admin/SecurityMfaManager';
 import { Inbox } from '@/components/admin/Inbox';
-import { ArrowLeft, LogOut, ShieldCheck, Lock, Eye, EyeOff, BookOpen, Camera, KeyRound } from 'lucide-react';
+import { ArrowLeft, LogOut, ShieldCheck, Lock, Eye, EyeOff, BookOpen, Camera, KeyRound, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ContentTable } from '@/hooks/use-portfolio';
 
@@ -320,6 +321,9 @@ export default function Admin() {
           <TabsTrigger value="profile_picture" className="border border-border">
             <Camera className="mr-1.5 h-3.5 w-3.5 text-primary" /> Profile Picture & Shutter
           </TabsTrigger>
+          <TabsTrigger value="cv_manager" className="border border-border">
+            <FileText className="mr-1.5 h-3.5 w-3.5 text-primary" /> CV / Resume
+          </TabsTrigger>
           {sections.map(([id, label]) => (
             <TabsTrigger key={id} value={id} className="border border-border">
               {label}
@@ -336,6 +340,9 @@ export default function Admin() {
         </TabsList>
         <TabsContent value="profile_picture">
           <ProfilePictureManager />
+        </TabsContent>
+        <TabsContent value="cv_manager">
+          <CvManager />
         </TabsContent>
         {sections.map(([id]) => (
           <TabsContent key={id} value={id}>

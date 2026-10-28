@@ -49,6 +49,24 @@ export default function Admin() {
         setAccess('signedout');
         return;
       }
+
+      // Check if user requires MFA AAL2 before granting admin access
+      try {
+        const { data: mfaData, error: mfaError } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (!mfaError && mfaData && mfaData.nextLevel === 'aal2' && mfaData.currentLevel !== 'aal2') {
+          const { data: factors } = await supabase.auth.mfa.listFactors();
+          const totpFactor = factors?.totp?.find(f => f.status === 'verified');
+          if (totpFactor) {
+            setMfaChallengeFactorId(totpFactor.id);
+            setNeedsMfa(true);
+            setAccess('signedout');
+            return;
+          }
+        }
+      } catch (mfaErr) {
+        console.warn('MFA assurance check warning:', mfaErr);
+      }
+
       const result = await supabase.rpc('has_role', { _user_id: data.user.id, _role: 'admin' });
       if (live && version === current) {
         setAccess(!result.error && result.data === true ? 'admin' : 'denied');
@@ -125,7 +143,13 @@ export default function Admin() {
       });
       if (error) throw error;
       setNeedsMfa(false);
+      setMfaCode('');
       toast.success('Two-factor authentication verified.');
+      const { data: userData } = await supabase.auth.getUser();
+      if (userData?.user) {
+        const result = await supabase.rpc('has_role', { _user_id: userData.user.id, _role: 'admin' });
+        setAccess(!result.error && result.data === true ? 'admin' : 'denied');
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Invalid code';
       toast.error(msg);

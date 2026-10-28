@@ -31,11 +31,11 @@ export const Header = () => {
           aria-label="Abel Kebede home - Hover to open avatar gate"
         >
           <motion.span
-            animate={{ x: isHovered ? -4 : 0 }}
+            animate={{ x: isHovered ? -3 : 0 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="inline-block"
+            className="inline-block tracking-tight"
           >
-            ABEL
+            Abel
           </motion.span>
 
           <AnimatePresence>
@@ -45,7 +45,7 @@ export const Header = () => {
                 animate={{ width: 28, opacity: 1, scale: 1 }}
                 exit={{ width: 0, opacity: 0, scale: 0.5 }}
                 transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                className="overflow-hidden flex items-center justify-center"
+                className="overflow-hidden flex items-center justify-center mx-0.5"
               >
                 <div className="h-6 w-6 rounded-full overflow-hidden border border-primary/70 shadow-sm ring-2 ring-primary/20">
                   <img
@@ -58,14 +58,12 @@ export const Header = () => {
             )}
           </AnimatePresence>
 
-          <span className="text-primary">.</span>
-
           <motion.span
-            animate={{ x: isHovered ? 4 : 0 }}
+            animate={{ x: isHovered ? 3 : 0 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="inline-block"
+            className="inline-block tracking-tight"
           >
-            K
+            K<span className="text-primary">.</span>
           </motion.span>
         </button>
 

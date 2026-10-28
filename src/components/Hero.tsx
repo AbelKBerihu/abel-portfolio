@@ -86,9 +86,9 @@ export const Hero = () => {
           </p>
 
           {/* Interactive Gate Open Name Title */}
-          <div className="my-2">
+          <div className="my-2 max-w-full overflow-visible">
             <div
-              className="relative inline-flex flex-wrap items-center cursor-pointer select-none group py-2"
+              className="relative inline-flex flex-nowrap items-center cursor-pointer select-none group py-2 max-w-full"
               onMouseEnter={() => setIsGateOpen(true)}
               onMouseLeave={() => setIsGateOpen(false)}
               onClick={() => setIsGateOpen((prev) => !prev)}
@@ -99,12 +99,18 @@ export const Hero = () => {
               {/* Left Gate Door */}
               <motion.div
                 animate={{
-                  x: isGateOpen ? -20 : 0,
+                  x: isGateOpen ? (typeof window !== 'undefined' && window.innerWidth < 640 ? -6 : -20) : 0,
                 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                className="relative flex items-center"
+                transition={{ type: 'spring', stiffness: 320, damping: 25 }}
+                className="relative flex items-center shrink-0"
               >
-                <h1 className="hero-name font-bold uppercase leading-[1.08] tracking-tight">
+                <h1
+                  className={`font-jetbrains font-bold uppercase leading-none tracking-tight transition-all duration-300 ${
+                    isGateOpen
+                      ? 'text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl'
+                      : 'text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl'
+                  }`}
+                >
                   {firstName}
                 </h1>
                 <motion.span
@@ -113,7 +119,7 @@ export const Hero = () => {
                     scaleY: isGateOpen ? 1 : 0,
                   }}
                   transition={{ duration: 0.2 }}
-                  className="ml-2 h-10 md:h-16 w-[3px] bg-primary rounded-full shadow-[0_0_12px_hsl(var(--primary))]"
+                  className="ml-1 sm:ml-2 h-7 sm:h-10 md:h-16 w-[2px] sm:w-[3px] bg-primary rounded-full shadow-[0_0_12px_hsl(var(--primary))]"
                 />
               </motion.div>
 
@@ -124,15 +130,15 @@ export const Hero = () => {
                     initial={{ width: 0, opacity: 0, scale: 0.5 }}
                     animate={{ width: 'auto', opacity: 1, scale: 1 }}
                     exit={{ width: 0, opacity: 0, scale: 0.5 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                    className="relative mx-3 md:mx-6 flex items-center justify-center overflow-visible z-20"
+                    transition={{ type: 'spring', stiffness: 320, damping: 25 }}
+                    className="relative mx-1.5 sm:mx-3 md:mx-6 flex items-center justify-center overflow-visible z-20 shrink-0"
                   >
                     <div className="relative">
                       {/* Cyber ring glow halo */}
-                      <div className="absolute -inset-2 rounded-full bg-primary/20 blur-lg animate-pulse" />
+                      <div className="absolute -inset-1 sm:-inset-2 rounded-full bg-primary/20 blur-md sm:blur-lg animate-pulse" />
                       
                       {/* Portal Avatar Frame */}
-                      <div className="relative h-20 w-20 md:h-28 md:w-28 rounded-full overflow-hidden border-2 border-primary bg-card shadow-2xl ring-4 ring-primary/20">
+                      <div className="relative h-12 w-12 sm:h-16 sm:w-16 md:h-24 md:w-24 lg:h-28 lg:w-28 rounded-full overflow-hidden border-2 border-primary bg-card shadow-2xl ring-2 sm:ring-4 ring-primary/20">
                         <img
                           src={profileImage}
                           alt={fullName}
@@ -141,8 +147,8 @@ export const Hero = () => {
                       </div>
 
                       {/* HUD Badge */}
-                      <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap px-2 py-0.5 rounded bg-background/95 border border-primary/50 font-jetbrains text-[9px] tracking-wider text-primary shadow-lg flex items-center gap-1">
-                        <Sparkles className="h-2.5 w-2.5" />
+                      <div className="absolute -bottom-4 sm:-bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap px-1.5 sm:px-2 py-0.5 rounded bg-background/95 border border-primary/50 font-jetbrains text-[8px] sm:text-[9px] tracking-wider text-primary shadow-lg flex items-center gap-1">
+                        <Sparkles className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
                         ACCESS GRANTED
                       </div>
                     </div>
@@ -153,10 +159,10 @@ export const Hero = () => {
               {/* Right Gate Door */}
               <motion.div
                 animate={{
-                  x: isGateOpen ? 20 : 0,
+                  x: isGateOpen ? (typeof window !== 'undefined' && window.innerWidth < 640 ? 6 : 20) : 0,
                 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-                className="relative flex items-center"
+                transition={{ type: 'spring', stiffness: 320, damping: 25 }}
+                className="relative flex items-center shrink-0"
               >
                 <motion.span
                   animate={{
@@ -164,9 +170,15 @@ export const Hero = () => {
                     scaleY: isGateOpen ? 1 : 0,
                   }}
                   transition={{ duration: 0.2 }}
-                  className="mr-2 h-10 md:h-16 w-[3px] bg-primary rounded-full shadow-[0_0_12px_hsl(var(--primary))]"
+                  className="mr-1 sm:mr-2 h-7 sm:h-10 md:h-16 w-[2px] sm:w-[3px] bg-primary rounded-full shadow-[0_0_12px_hsl(var(--primary))]"
                 />
-                <h1 className="hero-name font-bold uppercase leading-[1.08] tracking-tight">
+                <h1
+                  className={`font-jetbrains font-bold uppercase leading-none tracking-tight transition-all duration-300 ${
+                    isGateOpen
+                      ? 'text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-8xl'
+                      : 'text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl'
+                  }`}
+                >
                   {lastName}
                   <span className="text-primary">.</span>
                 </h1>
@@ -175,7 +187,7 @@ export const Hero = () => {
 
             <p className="font-jetbrains text-xs text-muted-foreground/80 mt-1 flex items-center gap-1.5 transition-opacity">
               <span className="text-primary">⇄</span>
-              <span>Hover on name to open gate and see photo</span>
+              <span>Hover or tap name to open gate and see photo</span>
             </p>
           </div>
 

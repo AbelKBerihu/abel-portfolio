@@ -8,6 +8,36 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { ContactForm } from "./Contact/ContactForm";
 import type { ContactFormValues } from "./Contact/schema";
 
+const TELEGRAM_BOT_TOKEN = "8744104977:AAGhhznty5uH_GWsa1TneVusx_-iMieXYrk";
+const TELEGRAM_CHAT_ID = "8738536556";
+
+async function notifyTelegram(data: ContactFormValues) {
+  try {
+    const formattedDate = format(data.preferredDate, "yyyy-MM-dd");
+    const text = `🔔 *New Portfolio Inquiry*\n\n` +
+      `👤 *Name:* ${data.name}\n` +
+      `📧 *Email:* ${data.email}\n` +
+      `📞 *Phone:* ${data.phone || 'Not provided'}\n` +
+      `📅 *Preferred Date:* ${formattedDate}\n` +
+      `💼 *Project Needs:* ${data.projectNeeds || 'General Inquiry'}\n\n` +
+      `💬 *Message:*\n${data.message}`;
+
+    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text,
+        parse_mode: "Markdown",
+      }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.warn("Telegram notification error:", err);
+    return false;
+  }
+}
+
 export const Contact = () => {
   const { t } = useLanguage();
   const reduce = useReducedMotion();
@@ -23,43 +53,26 @@ export const Contact = () => {
   }, []);
 
   const onSubmit = async (data: ContactFormValues): Promise<boolean> => {
-    if (!isSupabaseConfigured) {
-      toast.success(t("messageSent") + " (Preview mode)");
-      return true;
-    }
     setIsSubmitting(true);
     try {
-      // 1. Persist directly to Supabase contact_submissions table for Admin portal Inbox
-      const { error: dbError } = await supabase.from('contact_submissions').insert({
-        name: data.name,
-        email: data.email,
-        phone: data.phone ?? '',
-        project_needs: data.projectNeeds ?? '',
-        message: data.message,
-        preferred_date: format(data.preferredDate, "yyyy-MM-dd"),
-      });
+      // 1. Direct Telegram Bot Notification to Abel's Telegram
+      const telegramOk = await notifyTelegram(data);
 
-      // 2. Optionally invoke Telegram notification edge function if configured
-      try {
-        const { data: result } = await supabase.functions.invoke("send-contact", {
-          body: {
+      // 2. Persist to Supabase contact_submissions table for Admin portal Inbox
+      if (isSupabaseConfigured) {
+        try {
+          await supabase.from('contact_submissions').insert({
             name: data.name,
             email: data.email,
-            phone: data.phone ?? "",
-            projectNeeds: data.projectNeeds ?? "",
+            phone: data.phone ?? '',
+            project_needs: data.projectNeeds ?? '',
             message: data.message,
-            preferredDate: format(data.preferredDate, "yyyy-MM-dd"),
-          },
-        });
-        if (result?.brief) setBrief(result.brief);
-      } catch (fnErr) {
-        console.warn("Edge function notice (submission saved to database):", fnErr);
-      }
-
-      if (dbError) {
-        console.error("Direct DB insert failed:", dbError);
-        toast.error(t("messageFailed"));
-        return false;
+            preferred_date: format(data.preferredDate, "yyyy-MM-dd"),
+            telegram_delivered: telegramOk,
+          });
+        } catch (dbErr) {
+          console.warn("Supabase backup save notice:", dbErr);
+        }
       }
 
       toast.success(t("messageSent"));

@@ -15,10 +15,10 @@
 
 ## 👨‍💻 About Me
 
-- 🔐 Cybersecurity Intern at **CodeAlpha**, building Python-based security tools
+- 🔐 Cybersecurity Intern at **IBT Collage of Canada**, building Python-based security tools
 - 🌱 Self-taught in **Python, C, web development, and Linux**
 - 🌐 Building websites and designing graphics
-- 🎯 Goal: become a **full-stack developer** and contribute to technological innovation in Ethiopia
+- 🎯 Goal: become a **Defensive (Blue Team)** and Secure 
 
 <!---
 

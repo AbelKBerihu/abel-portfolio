@@ -1,69 +1,88 @@
-# Welcome to your Lovable project
+<h1 align="center">Hi, I'm Abel 👋</h1>
 
-## Project info
+<p align="center">
+  <b>Web Developer · Graphic Designer · Cybersecurity Intern</b><br>
+  📍 Mekelle, Tigray, Ethiopia
+</p>
 
-**URL**: https://lovable.dev/projects/f7a11b97-2315-4236-b764-32ad821cf7f4
+<p align="center">
+  <a href="https://abelkberihu.vercel.app/"><img src="https://img.shields.io/badge/Portfolio-abelkberihu.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Portfolio"></a>
+  <a href="https://www.linkedin.com/in/YOUR-LINKEDIN"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+  <a href="mailto:YOUR-EMAIL"><img src="https://img.shields.io/badge/Email-Contact-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
+</p>
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 👨‍💻 About Me
 
-**Use Lovable**
+- 🔐 Cybersecurity Intern at **CodeAlpha**, building Python-based security tools
+- 🌱 Self-taught in **Python, C, web development, and Linux**
+- 🌐 Building websites and designing graphics
+- 🎯 Goal: become a **full-stack developer** and contribute to technological innovation in Ethiopia
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f7a11b97-2315-4236-b764-32ad821cf7f4) and start prompting.
+<!---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠️ Tech Stack
 
-**Use your preferred IDE**
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![C](https://img.shields.io/badge/C-A8B9CC?style=flat-square&logo=c&logoColor=black)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=ubuntu&logoColor=white)
+![Windows Server](https://img.shields.io/badge/Windows_Server-0078D4?style=flat-square&logo=windows&logoColor=white)
+![Apache](https://img.shields.io/badge/Apache-D22128?style=flat-square&logo=apache&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
+![Wazuh](https://img.shields.io/badge/Wazuh-005571?style=flat-square&logo=wazuh&logoColor=white)
+![pfSense](https://img.shields.io/badge/pfSense-212121?style=flat-square&logo=pfsense&logoColor=white)
+![Cisco](https://img.shields.io/badge/Cisco_Packet_Tracer-1BA0D7?style=flat-square&logo=cisco&logoColor=white)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+--->
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Featured Projects
 
-Follow these steps:
+| Project | Description | Tech |
+|---|---|---|
+| 🌐 **[Portfolio Website](https://abelkberihu.vercel.app/)** | Personal site showcasing web development and design work | HTML, CSS, JS, Vercel |
+| 🤖 **AI Terminal Agent** | General-purpose terminal agent built for a competition, using the free Groq API | Python |
+| 🛡️ **CodeAlpha Security Tools** | Python-based security tools built during my cybersecurity internship | Python |
+| 📄 **Web Scraper to PDF** | Scrapes web pages to PDF, packaged as a Windows `.exe` | JavaScript |
+| 🔢 **C Arithmetic Programs** | 2's complement and complex number arithmetic with structs and `typedef` | C |
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🔐 Security & Systems Experience
 
-# Step 3: Install the necessary dependencies.
-npm i
+- **Ethiopia CyberShield 2026, Harden Day:** CIS hardening of 4 Windows Server 2019 and 2 Ubuntu 22.04 servers, scored with Wazuh SCA
+- **IDS/IPS:** pfSense + Suricata detecting Nmap scans in ICS networks
+- **Active Directory:** ADDS + DNS, new forest, logon hours, NTFS permissions, access-based enumeration
+- **Linux web hosting:** Apache2 setup and `scp` deployment
+- **Networking:** VLANs, trunking, EIGRP, switch and router configuration in Cisco Packet Tracer
+- **Databases:** MySQL school database design with keys, joins, and data types
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+---
 
-**Edit a file directly in GitHub**
+## 🏅 Certifications
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Fortinet NSE 1
+- Cisco Junior Cybersecurity
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📫 Let's Connect
 
-## What technologies are used for this project?
+- 🌍 Portfolio: [abelkberihu.vercel.app](https://abelkberihu.vercel.app/)
+- 💼 LinkedIn: [your profile](https://www.linkedin.com/in/YOUR-LINKEDIN)
+- 📧 Email: YOUR-EMAIL
 
-This project is built with .
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=AbelKBerihu&show_icons=true&theme=tokyonight&hide_border=true" alt="GitHub stats" />
+</p>
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/f7a11b97-2315-4236-b764-32ad821cf7f4) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+<p align="center">
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=AbelKBerihu&theme=tokyonight&hide_border=true" alt="GitHub streak" />
+</p>

@@ -1,14 +1,14 @@
 <h1 align="center">Hi, I'm Abel 👋</h1>
 
 <p align="center">
-  <b>Web Developer · Graphic Designer · Cybersecurity Intern</b><br>
-  📍 Mekelle, Tigray, Ethiopia
+  <b>Computer Science & Engineering · Graphic Designer · Cybersecurity Intern</b><br>
+  📍 Addis Abeba, Ethiopia
 </p>
 
 <p align="center">
   <a href="https://abelkberihu.vercel.app/"><img src="https://img.shields.io/badge/Portfolio-abelkberihu.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Portfolio"></a>
-  <a href="https://www.linkedin.com/in/YOUR-LINKEDIN"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
-  <a href="mailto:YOUR-EMAIL"><img src="https://img.shields.io/badge/Email-Contact-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
+  <a href="https://www.linkedin.com/in/abelkberihu"><img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>
+  <a href="mailto:ks.avebina7@gmail.com"><img src="https://img.shields.io/badge/Email-Contact-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>
 </p>
 
 ---
@@ -76,8 +76,8 @@
 ## 📫 Let's Connect
 
 - 🌍 Portfolio: [abelkberihu.vercel.app](https://abelkberihu.vercel.app/)
-- 💼 LinkedIn: [your profile](https://www.linkedin.com/in/YOUR-LINKEDIN)
-- 📧 Email: YOUR-EMAIL
+- 💼 LinkedIn: [your profile](www.linkedin.com/in/abelkberihu)
+- 📧 Email: ks.avebina7@gmail.com
 
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=AbelKBerihu&show_icons=true&theme=tokyonight&hide_border=true" alt="GitHub stats" />

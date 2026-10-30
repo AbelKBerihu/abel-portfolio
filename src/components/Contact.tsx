@@ -91,8 +91,7 @@ export const Contact = () => {
     <section className="py-24 md:py-32 border-t border-border">
       <div className="container mx-auto px-4">
         <SectionHeading
-          number="05 / Contact"
-          terminal={{ path: '05:~/contact', command: 'nc -zv abel.ke 443' }}
+          number="05 / contact"
           title={t("contactTitle")}
           subtitle="Have an opportunity, a question, or something to build? Let’s talk."
         />

@@ -17,8 +17,7 @@ export function About() {
     <section id="about" className="section-rule py-20 md:py-28">
       <div className="container mx-auto px-4 lg:px-8">
         <SectionHeading
-          number="01 / My path"
-          terminal={{ path: '01:~/my-path', command: 'cat journey.log' }}
+          number="01 / my path"
           title="Curious by nature. Learning by doing."
         />
         <div className="grid gap-12 lg:grid-cols-[1fr_1.3fr]">

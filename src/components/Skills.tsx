@@ -74,8 +74,7 @@ export const Skills = () => {
     <section className="py-24 md:py-32 border-t border-border">
       <div className="container mx-auto px-4">
         <SectionHeading
-          number="04 / Skills"
-          terminal={{ path: '04:~/skills', command: 'nmap -sV --script audit' }}
+          number="04 / skills"
           title="Skills & tools"
           subtitle="Technologies and security tools I work with."
         />

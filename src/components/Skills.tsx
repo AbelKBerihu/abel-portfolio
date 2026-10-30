@@ -2,6 +2,7 @@ import { motion, animate, useReducedMotion } from "framer-motion";
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
 import { usePortfolio } from "@/hooks/use-portfolio";
+import { SectionHeading } from "./SectionHeading";
 
 const SkillItem = ({ name, level, index }: { name: string; level: number; index: number }) => {
   const reduce = useReducedMotion();
@@ -72,17 +73,12 @@ export const Skills = () => {
   return (
     <section className="py-24 md:py-32 border-t border-border">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          viewport={{ once: true }}
-          className="mb-12 max-w-3xl"
-        >
-          <p className="editorial-kicker mb-4">04 — Skills</p>
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">Skills & tools</h2>
-          <p className="text-muted-foreground text-lg">Technologies and tools I work with</p>
-        </motion.div>
+        <SectionHeading
+          number="04 / Skills"
+          terminal={{ path: '04:~/skills', command: 'nmap -sV --script audit' }}
+          title="Skills & tools"
+          subtitle="Technologies and security tools I work with."
+        />
         <div className="grid md:grid-cols-2 gap-x-12">
           {isError && <p role="alert">Skills are temporarily unavailable.</p>}
           {skills.map((s, i) =>

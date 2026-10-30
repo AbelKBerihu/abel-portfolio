@@ -28,7 +28,12 @@ export const Projects = () => {
   return (
     <section className="section-rule py-20 md:py-28">
       <div className="container mx-auto px-4 lg:px-8">
-        <SectionHeading number="02 / Selected work" title="Projects & practical work" subtitle="Security tools, hands-on labs and things I've learned along the way." />
+        <SectionHeading
+          number="02 / Selected work"
+          terminal={{ path: '02:~/projects', command: 'ls -la ./selected-work' }}
+          title="Projects & practical work"
+          subtitle="Security tools, hands-on labs and things I've learned along the way."
+        />
         {isLoading && <p role="status">Loading projects…</p>}
         {isError && <p role="alert">Projects are temporarily unavailable.</p>}
         <div className="grid gap-x-8 gap-y-12 md:grid-cols-2">

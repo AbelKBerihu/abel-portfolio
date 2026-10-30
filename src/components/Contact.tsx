@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Sparkles, X } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { SectionHeading } from "./SectionHeading";
 import { ContactForm } from "./Contact/ContactForm";
 import type { ContactFormValues } from "./Contact/schema";
 
@@ -89,19 +90,12 @@ export const Contact = () => {
   return (
     <section className="py-24 md:py-32 border-t border-border">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          viewport={{ once: true }}
-          className="mb-12 max-w-3xl"
-        >
-          <p className="editorial-kicker mb-4">05 — Contact</p>
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">{t("contactTitle")}</h2>
-          <p className="text-muted-foreground text-lg">
-            Have an opportunity, a question, or something to build? Let’s talk.
-          </p>
-        </motion.div>
+        <SectionHeading
+          number="05 / Contact"
+          terminal={{ path: '05:~/contact', command: 'nc -zv abel.ke 443' }}
+          title={t("contactTitle")}
+          subtitle="Have an opportunity, a question, or something to build? Let’s talk."
+        />
 
         <motion.div
           initial={reduce ? false : { opacity: 0, y: 30 }}

@@ -14,7 +14,11 @@ export const Certifications = () => {
   return (
     <section id="certifications" className="section-rule py-20 md:py-28">
       <div className="container mx-auto px-4 lg:px-8">
-        <SectionHeading number="03 / Credentials" title="Certifications & training" />
+        <SectionHeading
+          number="03 / Credentials"
+          terminal={{ path: '03:~/credentials', command: 'gpg --verify certs.sig' }}
+          title="Certifications & training"
+        />
         {isError && <p role="alert">Credentials are temporarily unavailable.</p>}
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

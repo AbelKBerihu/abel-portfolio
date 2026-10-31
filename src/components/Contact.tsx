@@ -9,32 +9,25 @@ import { SectionHeading } from "./SectionHeading";
 import { ContactForm } from "./Contact/ContactForm";
 import type { ContactFormValues } from "./Contact/schema";
 
-const TELEGRAM_BOT_TOKEN = "8744104977:AAGhhznty5uH_GWsa1TneVusx_-iMieXYrk";
-const TELEGRAM_CHAT_ID = "8738536556";
-
 async function notifyTelegram(data: ContactFormValues) {
   try {
     const formattedDate = format(data.preferredDate, "yyyy-MM-dd");
-    const text = `🔔 *New Portfolio Inquiry*\n\n` +
-      `👤 *Name:* ${data.name}\n` +
-      `📧 *Email:* ${data.email}\n` +
-      `📞 *Phone:* ${data.phone || 'Not provided'}\n` +
-      `📅 *Preferred Date:* ${formattedDate}\n` +
-      `💼 *Project Needs:* ${data.projectNeeds || 'General Inquiry'}\n\n` +
-      `💬 *Message:*\n${data.message}`;
-
-    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    const res = await fetch("/api/contact", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
-        text,
-        parse_mode: "Markdown",
+        name: data.name,
+        email: data.email,
+        phone: data.phone || "",
+        preferredDate: formattedDate,
+        projectNeeds: data.projectNeeds || "",
+        message: data.message,
       }),
     });
-    return res.ok;
+    const result = await res.json();
+    return Boolean(result?.ok);
   } catch (err) {
-    console.warn("Telegram notification error:", err);
+    console.warn("Backend notification notice:", err);
     return false;
   }
 }

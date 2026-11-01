@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowUpRight, MessageSquare, Network, Shield, Terminal, Sparkles, ExternalLink, ZoomIn } from 'lucide-react';
+import { ArrowUpRight, MessageSquare, Network, Shield, Terminal, Sparkles, ExternalLink, ZoomIn, RotateCw, Maximize2, Minimize2 } from 'lucide-react';
 import { usePortfolio, safeUrl } from '@/hooks/use-portfolio';
 import { isVideoMedia, isGifMedia } from '@/lib/media-utils';
 import { Button } from './ui/button';
@@ -24,6 +24,8 @@ export const Projects = () => {
   const { data = [], isLoading, isError } = usePortfolio('projects');
   const [expanded, setExpanded] = useState<string | null>(null);
   const [modalImage, setModalImage] = useState<{ src: string; alt: string; link?: string | null } | null>(null);
+  const [rotations, setRotations] = useState<Record<string, number>>({});
+  const [fitModes, setFitModes] = useState<Record<string, 'cover' | 'contain'>>({});
   const reduced = useReducedMotion();
 
   return (
@@ -70,56 +72,119 @@ export const Projects = () => {
 
             const isVideo = isVideoMedia(image);
             const isGif = isGifMedia(image);
+            const currentRotation = rotations[p.id] || 0;
+            const currentFit = fitModes[p.id] || 'cover';
 
             return (
-                          <motion.article key={p.id} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="min-w-0">
-                            <div
-                              className="project-visual group relative mb-5 aspect-[16/9] w-full overflow-hidden rounded-md border border-border bg-card cursor-pointer"
-                              onClick={() => image ? setModalImage({ src: image, alt: p.title, link }) : setExpanded(open ? null : p.id)}
-                            >
-                              {image ? (
-                                isVideo ? (
-                                  <video
-                                    src={image}
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none"
-                                  />
-                                ) : (
-                                  <img src={image} alt={p.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transform-none" />
-                                )
-                              ) : (
-                                <>
-                                  <div className="project-grid absolute inset-0" />
-                                  <Icon className="relative h-16 w-16 text-primary/65 transition-transform duration-500 group-hover:scale-110" />
-                                  <span className="absolute bottom-5 left-5 font-jetbrains text-xs text-muted-foreground">{String(i + 1).padStart(2, '0')} / {p.tags.slice(0, 2).join(' · ')}</span>
-                                </>
-                              )}
+              <motion.article key={p.id} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="min-w-0">
+                <div
+                  className="project-visual group relative mb-5 aspect-[16/9] w-full overflow-hidden rounded-md border border-border bg-card cursor-pointer"
+                  onClick={() => image ? setModalImage({ src: image, alt: p.title, link }) : setExpanded(open ? null : p.id)}
+                >
+                  {/* Ambient backdrop for contain mode */}
+                  {image && currentFit === 'contain' && (
+                    <div className="absolute inset-0 -z-10 overflow-hidden opacity-35 blur-md pointer-events-none">
+                      {isVideo ? (
+                        <video src={image} muted autoPlay loop playsInline className="h-full w-full object-cover scale-110" />
+                      ) : (
+                        <img src={image} alt="" className="h-full w-full object-cover scale-110" />
+                      )}
+                    </div>
+                  )}
 
-                              {/* Media Type Badge */}
-                              {image && (isVideo || isGif) && (
-                                <span className="absolute left-3 top-3 z-10 rounded border border-border/70 bg-background/85 px-1.5 py-0.5 font-jetbrains text-[9px] uppercase tracking-wider text-primary backdrop-blur-sm">
-                                  {isVideo ? '▶ VIDEO DEMO' : 'GIF HIGHLIGHT'}
-                                </span>
-                              )}
+                  {image ? (
+                    <div
+                      className="h-full w-full flex items-center justify-center transition-transform duration-300 ease-out"
+                      style={{ transform: `rotate(${currentRotation}deg)` }}
+                    >
+                      {isVideo ? (
+                        <video
+                          src={image}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className={`h-full w-full ${currentFit === 'contain' ? 'object-contain' : 'object-cover'} transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none`}
+                        />
+                      ) : (
+                        <img
+                          src={image}
+                          alt={p.title}
+                          loading="lazy"
+                          decoding="async"
+                          className={`h-full w-full ${currentFit === 'contain' ? 'object-contain' : 'object-cover'} transition-transform duration-500 group-hover:scale-110 motion-reduce:transform-none`}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      <div className="project-grid absolute inset-0" />
+                      <Icon className="relative h-16 w-16 text-primary/65 transition-transform duration-500 group-hover:scale-110" />
+                      <span className="absolute bottom-5 left-5 font-jetbrains text-xs text-muted-foreground">{String(i + 1).padStart(2, '0')} / {p.tags.slice(0, 2).join(' · ')}</span>
+                    </>
+                  )}
 
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/40">
-                                <ZoomIn className="h-8 w-8 text-white opacity-0 transition-opacity group-hover:opacity-100" />
-                              </div>
-                              {link && (
-                                <a
-                                  href={link}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="absolute right-5 top-5 z-10 inline-flex items-center gap-1 rounded-md bg-background/80 px-2 py-1 text-xs font-medium backdrop-blur-sm border border-border hover:bg-background transition-colors"
-                                >
-                                  <ArrowUpRight className="h-4 w-4" />
-                                </a>
-                              )}
-                            </div>
+                  {/* Media Type & Rotation Badges */}
+                  <div className="absolute left-3 top-3 z-10 flex items-center gap-1.5">
+                    {image && (isVideo || isGif) && (
+                      <span className="rounded border border-border/70 bg-background/85 px-1.5 py-0.5 font-jetbrains text-[9px] uppercase tracking-wider text-primary backdrop-blur-sm">
+                        {isVideo ? '▶ VIDEO DEMO' : 'GIF HIGHLIGHT'}
+                      </span>
+                    )}
+                    {currentRotation > 0 && (
+                      <span className="rounded border border-border/70 bg-background/85 px-1.5 py-0.5 font-jetbrains text-[9px] text-foreground backdrop-blur-sm">
+                        {currentRotation}°
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Zoom Overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35 pointer-events-none">
+                    <ZoomIn className="h-8 w-8 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+                  </div>
+
+                  {/* Quick Card Controls: Rotate & Auto-Adjust Fill/Fit */}
+                  {image && (
+                    <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-background/85 backdrop-blur-md border border-border px-1.5 py-1 rounded-md shadow-md">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRotations(prev => ({ ...prev, [p.id]: ((prev[p.id] || 0) + 90) % 360 }));
+                        }}
+                        className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-card transition-colors"
+                        title="Rotate picture 90°"
+                        aria-label="Rotate picture 90 degrees"
+                      >
+                        <RotateCw className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFitModes(prev => ({ ...prev, [p.id]: prev[p.id] === 'contain' ? 'cover' : 'contain' }));
+                        }}
+                        className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-card transition-colors"
+                        title={currentFit === 'contain' ? 'Auto-adjust to fill format' : 'Fit original aspect'}
+                        aria-label="Toggle auto-adjust fit format"
+                      >
+                        {currentFit === 'contain' ? <Maximize2 className="h-3.5 w-3.5" /> : <Minimize2 className="h-3.5 w-3.5" />}
+                      </button>
+                    </div>
+                  )}
+
+                  {link && (
+                    <a
+                      href={link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-md bg-background/80 px-2 py-1 text-xs font-medium backdrop-blur-sm border border-border hover:bg-background transition-colors"
+                    >
+                      <ArrowUpRight className="h-4 w-4" />
+                    </a>
+                  )}
+                </div>
                             <div className="mb-3 flex items-center justify-between gap-4">
                               <p className="editorial-kicker">{p.discipline}</p>
                               <StatusDot status={p.status} />

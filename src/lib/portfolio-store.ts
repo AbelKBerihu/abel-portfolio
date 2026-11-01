@@ -27,6 +27,20 @@ export const INITIAL_PORTFOLIO_DATA: {
   ],
   projects: [
     {
+      id: 'proj-threat-sentinel',
+      title: 'Threat Sentinel: Real-time IDS & Packet Telemetry',
+      discipline: 'Cybersecurity Engineering',
+      description: 'Engineered an automated real-time intrusion detection and network telemetry monitor. Features live socket packet dissection, stealth TCP port scan identification, dynamic bandwidth telemetry, and automated iptables firewall mitigation.',
+      tags: ['Python', 'Raw Sockets', 'IDS / IPS', 'iptables', 'PCAP', 'Network Defense'],
+      image_url: '/videos/threat-sentinel.mp4',
+      link_url: 'https://github.com/AbelKBerihu',
+      sort_order: 0,
+      status: 'completed',
+      coming_soon: false,
+      is_visible: true,
+      created_at: new Date().toISOString(),
+    },
+    {
       id: 'proj-1',
       title: 'Network Traffic Analyzer with Suricata',
       discipline: 'Cybersecurity',
@@ -34,7 +48,7 @@ export const INITIAL_PORTFOLIO_DATA: {
       tags: ['Suricata', 'Networking', 'IDS', 'Linux'],
       image_url: null,
       link_url: null,
-      sort_order: 0,
+      sort_order: 1,
       status: 'completed',
       coming_soon: false,
       is_visible: true,
@@ -135,7 +149,19 @@ export function getLocalTableData<T extends ContentTable>(table: T): Tables<T>[]
     const raw = localStorage.getItem(`${STORAGE_PREFIX}${table}`);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed as Tables<T>[];
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        if (table === 'projects') {
+          // Ensure featured video project is present even if user has an older cached localStorage state
+          const hasVideoProject = parsed.some((p: Tables<'projects'>) => p.id === 'proj-threat-sentinel' || (p.image_url && p.image_url.includes('threat-sentinel')));
+          if (!hasVideoProject) {
+            const videoProj = INITIAL_PORTFOLIO_DATA.projects[0];
+            const updated = [videoProj, ...parsed.map((p: Tables<'projects'>, idx: number) => ({ ...p, sort_order: idx + 1 }))];
+            localStorage.setItem(`${STORAGE_PREFIX}projects`, JSON.stringify(updated));
+            return updated as unknown as Tables<T>[];
+          }
+        }
+        return parsed as Tables<T>[];
+      }
     }
   } catch (e) {
     console.error(`Failed to read local data for ${table}:`, e);

@@ -10,6 +10,7 @@ import { Plus, Pencil, Trash2, Save, Upload, Eye, EyeOff, ArrowUp, ArrowDown, Im
 import { toast } from 'sonner';
 import { type ContentTable, triggerPortfolioSync } from '@/hooks/use-portfolio';
 import { getLocalTableData, setLocalTableData } from '@/lib/portfolio-store';
+import { isVideoMedia } from '@/lib/media-utils';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Row = Record<string, unknown>;
@@ -270,21 +271,23 @@ export function ContentEditor({ table }: { table: ContentTable }) {
 
   const upload = async (file?: File) => {
     if (!file || !draft) return;
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
-      toast.error('Choose a JPG, PNG or WebP under 5 MB.');
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm', 'video/ogg'];
+    if (!allowed.includes(file.type) || file.size > 20 * 1024 * 1024) {
+      toast.error('Choose a JPG, PNG, WebP, GIF, or MP4/WebM video under 20 MB.');
       return;
     }
     setBusy(true);
 
     if (isSupabaseConfigured) {
       try {
-        const path = `${crypto.randomUUID()}.${file.type.split('/')[1]}`;
+        const ext = file.name.split('.').pop() || (file.type.startsWith('video/') ? 'mp4' : 'png');
+        const path = `${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from('portfolio-images').upload(path, file, { contentType: file.type });
         if (!error) {
           const { data } = supabase.storage.from('portfolio-images').getPublicUrl(path);
           setDraft(d => d ? { ...d, image_url: data.publicUrl } : d);
           setBusy(false);
-          toast.success('Image uploaded. Click Save to publish.');
+          toast.success(`${file.type.startsWith('video/') ? 'Video' : 'Media'} uploaded. Click Save to publish.`);
           return;
         }
       } catch {
@@ -297,11 +300,11 @@ export function ContentEditor({ table }: { table: ContentTable }) {
     reader.onload = () => {
       setDraft(d => d ? { ...d, image_url: reader.result as string } : d);
       setBusy(false);
-      toast.success('Image loaded. Click Save to publish.');
+      toast.success(`${file.type.startsWith('video/') ? 'Video' : 'Media'} loaded. Click Save to publish.`);
     };
     reader.onerror = () => {
       setBusy(false);
-      toast.error('Could not read image file.');
+      toast.error('Could not read media file.');
     };
     reader.readAsDataURL(file);
   };
@@ -343,7 +346,11 @@ export function ContentEditor({ table }: { table: ContentTable }) {
                   <td className="px-4 py-3">
                     {row.image_url ? (
                       <div className="h-10 w-14 rounded border border-border overflow-hidden bg-card shrink-0">
-                        <img src={String(row.image_url)} alt="preview" className="h-full w-full object-cover" />
+                        {isVideoMedia(String(row.image_url)) ? (
+                          <video src={String(row.image_url)} className="h-full w-full object-cover" muted playsInline />
+                        ) : (
+                          <img src={String(row.image_url)} alt="preview" className="h-full w-full object-cover" />
+                        )}
                       </div>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground italic">
@@ -476,17 +483,21 @@ export function ContentEditor({ table }: { table: ContentTable }) {
                   {c.endsWith('_url') && c.includes('image') && (
                     <div className="mt-2">
                       <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-primary hover:underline">
-                        <Upload className="h-3.5 w-3.5" /> Upload image file
+                        <Upload className="h-3.5 w-3.5" /> Upload image / GIF / video clip
                         <input
                           type="file"
-                          accept="image/jpeg,image/png,image/webp"
+                          accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/ogg"
                           className="hidden"
                           onChange={e => upload(e.target.files?.[0])}
                         />
                       </label>
                       {draft[c] ? (
-                        <div className="mt-2 h-16 w-16 overflow-hidden rounded border border-border">
-                          <img src={String(draft[c])} alt="preview" className="h-full w-full object-cover" />
+                        <div className="mt-2 h-20 w-32 overflow-hidden rounded border border-border bg-card">
+                          {isVideoMedia(String(draft[c])) ? (
+                            <video src={String(draft[c])} className="h-full w-full object-cover" muted autoPlay loop playsInline />
+                          ) : (
+                            <img src={String(draft[c])} alt="preview" className="h-full w-full object-cover" />
+                          )}
                         </div>
                       ) : null}
                     </div>

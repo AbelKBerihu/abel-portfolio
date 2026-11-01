@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, MessageSquare, Network, Shield, Terminal, Sparkles, ExternalLink, ZoomIn } from 'lucide-react';
 import { usePortfolio, safeUrl } from '@/hooks/use-portfolio';
+import { isVideoMedia, isGifMedia } from '@/lib/media-utils';
 import { Button } from './ui/button';
 import { SectionHeading } from './SectionHeading';
 import { ProjectComments } from './ProjectComments';
@@ -67,6 +68,9 @@ export const Projects = () => {
               );
             }
 
+            const isVideo = isVideoMedia(image);
+            const isGif = isGifMedia(image);
+
             return (
                           <motion.article key={p.id} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="min-w-0">
                             <div
@@ -74,7 +78,18 @@ export const Projects = () => {
                               onClick={() => image ? setModalImage({ src: image, alt: p.title, link }) : setExpanded(open ? null : p.id)}
                             >
                               {image ? (
-                                <img src={image} alt={p.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transform-none" />
+                                isVideo ? (
+                                  <video
+                                    src={image}
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none"
+                                  />
+                                ) : (
+                                  <img src={image} alt={p.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110 motion-reduce:transform-none" />
+                                )
                               ) : (
                                 <>
                                   <div className="project-grid absolute inset-0" />
@@ -82,6 +97,14 @@ export const Projects = () => {
                                   <span className="absolute bottom-5 left-5 font-jetbrains text-xs text-muted-foreground">{String(i + 1).padStart(2, '0')} / {p.tags.slice(0, 2).join(' · ')}</span>
                                 </>
                               )}
+
+                              {/* Media Type Badge */}
+                              {image && (isVideo || isGif) && (
+                                <span className="absolute left-3 top-3 z-10 rounded border border-border/70 bg-background/85 px-1.5 py-0.5 font-jetbrains text-[9px] uppercase tracking-wider text-primary backdrop-blur-sm">
+                                  {isVideo ? '▶ VIDEO DEMO' : 'GIF HIGHLIGHT'}
+                                </span>
+                              )}
+
                               <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/40">
                                 <ZoomIn className="h-8 w-8 text-white opacity-0 transition-opacity group-hover:opacity-100" />
                               </div>

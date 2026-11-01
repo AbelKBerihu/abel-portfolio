@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ArrowUpRight, ArrowLeft } from 'lucide-react';
+import { isVideoMedia } from '@/lib/media-utils';
 
 interface ImageModalProps {
   open: boolean;
@@ -11,16 +12,29 @@ interface ImageModalProps {
 }
 
 export function ImageModal({ open, onOpenChange, src, alt, externalUrl, externalLabel = 'Open in new tab' }: ImageModalProps) {
+  const isVideo = isVideoMedia(src);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl border-border p-0 overflow-hidden">
+      <DialogContent className="max-w-3xl border-border p-0 overflow-hidden bg-black/90">
         <DialogTitle className="sr-only">{alt}</DialogTitle>
-        <div className="relative">
-          <img src={src} alt={alt} className="w-full max-h-[75vh] object-contain bg-card" />
+        <div className="relative flex items-center justify-center min-h-[260px]">
+          {isVideo ? (
+            <video
+              src={src}
+              controls
+              autoPlay
+              loop
+              playsInline
+              className="w-full max-h-[75vh] object-contain bg-black"
+            />
+          ) : (
+            <img src={src} alt={alt} className="w-full max-h-[75vh] object-contain bg-card" />
+          )}
           {/* Back arrow - close modal */}
           <button
             onClick={() => onOpenChange(false)}
-            className="absolute left-4 top-4 z-10 inline-flex items-center justify-center w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground hover:bg-background transition-colors"
+            className="absolute left-4 top-4 z-10 inline-flex items-center justify-center w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm border border-border text-foreground hover:bg-background transition-colors shadow-lg"
             aria-label="Close"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -30,7 +44,7 @@ export function ImageModal({ open, onOpenChange, src, alt, externalUrl, external
               href={externalUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-md bg-background/80 px-3 py-1.5 text-sm font-medium backdrop-blur-sm border border-border hover:bg-background transition-colors"
+              className="absolute bottom-4 right-4 inline-flex items-center gap-1.5 rounded-md bg-background/80 px-3 py-1.5 text-sm font-medium backdrop-blur-sm border border-border hover:bg-background transition-colors shadow-lg"
             >
               {externalLabel}
               <ArrowUpRight className="h-4 w-4" />

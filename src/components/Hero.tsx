@@ -51,6 +51,13 @@ export const Hero = () => {
   const firstName = parts[0] || 'Abel';
   const lastName = parts.slice(1).join(' ') || 'Kebede';
 
+  // Dynamic focus areas from site settings (03/ Full-Stack removed by default, customizable in Admin)
+  const rawFocusTags = settings.hero_focus_tags ?? 'Security Operations, Network Analysis';
+  const focusTags = rawFocusTags
+    .split(',')
+    .map(t => t.trim())
+    .filter(Boolean);
+
   return (
     <section className="relative flex min-h-[min(840px,94svh)] items-center overflow-hidden pb-16 pt-28 md:pt-36">
       <div className="container relative mx-auto px-4 lg:px-8">
@@ -210,11 +217,16 @@ export const Hero = () => {
             </Button>
           </div>
 
-          <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-border pt-6 font-jetbrains text-xs text-muted-foreground">
-            <span>01 / Security Operations</span>
-            <span>02 / Network Analysis</span>
-            <span>03 / Full-Stack Development</span>
-          </div>
+          {focusTags.length > 0 && (
+            <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 border-t border-border pt-6 font-jetbrains text-xs text-muted-foreground">
+              {focusTags.map((tag, idx) => (
+                <span key={tag} className="flex items-center gap-1.5">
+                  <span className="text-primary font-mono">{String(idx + 1).padStart(2, '0')} /</span>
+                  <span>{tag}</span>
+                </span>
+              ))}
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

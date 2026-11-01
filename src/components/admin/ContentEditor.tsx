@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Pencil, Trash2, Save, Upload, Eye, EyeOff, ArrowUp, ArrowDown, Image as ImageIcon } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, Upload, Eye, EyeOff, ArrowUp, ArrowDown, Image as ImageIcon, RotateCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { type ContentTable, triggerPortfolioSync } from '@/hooks/use-portfolio';
 import { getLocalTableData, setLocalTableData } from '@/lib/portfolio-store';
@@ -309,6 +309,41 @@ export function ContentEditor({ table }: { table: ContentTable }) {
     reader.readAsDataURL(file);
   };
 
+  const rotateMedia = async (col: string) => {
+    const currentUrl = String(draft?.[col] || '');
+    if (!currentUrl) return;
+    if (isVideoMedia(currentUrl)) {
+      toast.info('Video files cannot be rotated via canvas. Upload an oriented video clip.');
+      return;
+    }
+    setBusy(true);
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = currentUrl;
+      await new Promise((res, rej) => {
+        img.onload = () => res(true);
+        img.onerror = () => rej(new Error('Failed to load image'));
+      });
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalHeight;
+      canvas.height = img.naturalWidth;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) throw new Error('Could not get canvas context');
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate((90 * Math.PI) / 180);
+      ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+      const rotatedUrl = canvas.toDataURL('image/png', 0.95);
+      setDraft(d => d ? { ...d, [col]: rotatedUrl } : d);
+      setBusy(false);
+      toast.success('Image rotated 90° clockwise. Click Save to publish.');
+    } catch (err) {
+      setBusy(false);
+      console.error('Image rotate error:', err);
+      toast.error('Could not rotate this image.');
+    }
+  };
+
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -492,12 +527,37 @@ export function ContentEditor({ table }: { table: ContentTable }) {
                         />
                       </label>
                       {draft[c] ? (
-                        <div className="mt-2 h-20 w-32 overflow-hidden rounded border border-border bg-card">
-                          {isVideoMedia(String(draft[c])) ? (
-                            <video src={String(draft[c])} className="h-full w-full object-cover" muted autoPlay loop playsInline />
-                          ) : (
-                            <img src={String(draft[c])} alt="preview" className="h-full w-full object-cover" />
-                          )}
+                        <div className="mt-3 flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card/60 p-3">
+                          <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded border border-border bg-black/40">
+                            {isVideoMedia(String(draft[c])) ? (
+                              <video src={String(draft[c])} className="h-full w-full object-cover" muted autoPlay loop playsInline />
+                            ) : (
+                              <img src={String(draft[c])} alt="preview" className="h-full w-full object-cover" />
+                            )}
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            {!isVideoMedia(String(draft[c])) && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => rotateMedia(c)}
+                                disabled={busy}
+                                className="h-8 text-xs font-jetbrains"
+                              >
+                                <RotateCw className="mr-1.5 h-3.5 w-3.5" /> Rotate 90° Clockwise
+                              </Button>
+                            )}
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setDraft(d => d ? { ...d, [c]: null } : d)}
+                              className="h-8 text-xs text-destructive hover:text-destructive justify-start"
+                            >
+                              <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Clear media
+                            </Button>
+                          </div>
                         </div>
                       ) : null}
                     </div>

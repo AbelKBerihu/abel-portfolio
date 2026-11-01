@@ -9,8 +9,9 @@ import { LearningManager } from '@/components/admin/LearningManager';
 import { ProfilePictureManager } from '@/components/admin/ProfilePictureManager';
 import { CvManager } from '@/components/admin/CvManager';
 import { SecurityMfaManager } from '@/components/admin/SecurityMfaManager';
+import { SiteSettingsManager } from '@/components/admin/SiteSettingsManager';
 import { Inbox } from '@/components/admin/Inbox';
-import { ArrowLeft, LogOut, ShieldCheck, Lock, Eye, EyeOff, BookOpen, Camera, KeyRound, FileText } from 'lucide-react';
+import { ArrowLeft, LogOut, ShieldCheck, Lock, Eye, EyeOff, BookOpen, Camera, KeyRound, FileText, Sliders } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ContentTable } from '@/hooks/use-portfolio';
 
@@ -356,6 +357,9 @@ export default function Admin() {
           <TabsTrigger value="cv_manager" className="border border-border">
             <FileText className="mr-1.5 h-3.5 w-3.5 text-primary" /> CV / Resume
           </TabsTrigger>
+          <TabsTrigger value="site_tools" className="border border-border">
+            <Sliders className="mr-1.5 h-3.5 w-3.5 text-primary" /> Site Settings & Tools
+          </TabsTrigger>
           {sections.map(([id, label]) => (
             <TabsTrigger key={id} value={id} className="border border-border">
               {label}
@@ -375,6 +379,9 @@ export default function Admin() {
         </TabsContent>
         <TabsContent value="cv_manager">
           <CvManager />
+        </TabsContent>
+        <TabsContent value="site_tools">
+          <SiteSettingsManager />
         </TabsContent>
         {sections.map(([id]) => (
           <TabsContent key={id} value={id}>

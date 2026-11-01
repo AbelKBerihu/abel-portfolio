@@ -24,6 +24,8 @@ export const INITIAL_PORTFOLIO_DATA: {
     { key: 'contact_email', value: 'ks.avebina7@gmail.com', updated_at: new Date().toISOString() },
     { key: 'profile_image', value: 'https://i.pravatar.cc/300?img=11', updated_at: new Date().toISOString() }, // Default profile image
     { key: 'cv_url', value: '/cv.pdf', updated_at: new Date().toISOString() }, // Default downloadable CV
+    { key: 'hero_focus_tags', value: 'Security Operations, Network Analysis', updated_at: new Date().toISOString() },
+    { key: 'calendar_rail_mode', value: 'both', updated_at: new Date().toISOString() },
   ],
   projects: [
     {
@@ -158,6 +160,20 @@ export function getLocalTableData<T extends ContentTable>(table: T): Tables<T>[]
             const updated = [videoProj, ...parsed.map((p: Tables<'projects'>, idx: number) => ({ ...p, sort_order: idx + 1 }))];
             localStorage.setItem(`${STORAGE_PREFIX}projects`, JSON.stringify(updated));
             return updated as unknown as Tables<T>[];
+          }
+        }
+        if (table === 'site_settings') {
+          const settingsList = [...(parsed as Tables<'site_settings'>[])];
+          let changed = false;
+          for (const s of INITIAL_PORTFOLIO_DATA.site_settings) {
+            if (!settingsList.some(item => item.key === s.key)) {
+              settingsList.push(s);
+              changed = true;
+            }
+          }
+          if (changed) {
+            localStorage.setItem(`${STORAGE_PREFIX}site_settings`, JSON.stringify(settingsList));
+            return settingsList as unknown as Tables<T>[];
           }
         }
         return parsed as Tables<T>[];

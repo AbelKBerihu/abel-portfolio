@@ -1,18 +1,24 @@
 
-import React from "react";
-import { Toaster } from "@/components/ui/toaster";
+import React, { lazy, Suspense } from "react";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
-import Admin from "./pages/Admin";
-import NotFound from "./pages/NotFound";
 import { LanguageProvider } from "@/contexts/language";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
+const Admin = lazy(() => import("./pages/Admin"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+
 const queryClient = new QueryClient();
+
+const PageFallback = () => (
+  <div className="min-h-screen bg-background flex items-center justify-center font-jetbrains text-xs text-muted-foreground">
+    <span className="inline-block animate-pulse">Initializing…</span>
+  </div>
+);
 
 const App = () => {
   return (
@@ -22,14 +28,26 @@ const App = () => {
           <ThemeProvider defaultTheme="dark" attribute="class">
             <LanguageProvider>
               <TooltipProvider>
-                <Toaster />
                 <Sonner />
                 <BrowserRouter>
                   <Routes>
                     <Route path="/" element={<Index />} />
-                    <Route path="/admin" element={<Admin />} />
-                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                    <Route path="*" element={<NotFound />} />
+                    <Route
+                      path="/admin"
+                      element={
+                        <Suspense fallback={<PageFallback />}>
+                          <Admin />
+                        </Suspense>
+                      }
+                    />
+                    <Route
+                      path="*"
+                      element={
+                        <Suspense fallback={<PageFallback />}>
+                          <NotFound />
+                        </Suspense>
+                      }
+                    />
                   </Routes>
                 </BrowserRouter>
               </TooltipProvider>

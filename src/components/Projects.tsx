@@ -81,6 +81,7 @@ export const Projects = () => {
                     isVideo ? (
                       <video
                         src={image}
+                        preload="metadata"
                         autoPlay
                         loop
                         muted

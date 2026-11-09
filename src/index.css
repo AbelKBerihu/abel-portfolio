@@ -93,7 +93,11 @@
   }
 
   .editorial-kicker { @apply font-jetbrains text-xs uppercase text-primary; }
-  .section-rule { @apply border-t border-border; }
+  .section-rule {
+    @apply border-t border-border;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 600px;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {

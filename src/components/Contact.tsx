@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { Sparkles, X } from "lucide-react";
 import { supabase, isSupabaseConfigured } from "@/integrations/supabase/client";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage } from "@/contexts/language";
 import { SectionHeading } from "./SectionHeading";
 import { ContactForm } from "./Contact/ContactForm";
 import type { ContactFormValues } from "./Contact/schema";

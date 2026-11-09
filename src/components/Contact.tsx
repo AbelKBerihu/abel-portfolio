@@ -52,21 +52,34 @@ export const Contact = () => {
       // 1. Direct Telegram Bot Notification to Abel's Telegram
       const telegramOk = await notifyTelegram(data);
 
+      const newSubmission = {
+        id: `sub-${Date.now()}`,
+        name: data.name,
+        email: data.email,
+        phone: data.phone ?? '',
+        project_needs: data.projectNeeds ?? '',
+        message: data.message,
+        preferred_date: format(data.preferredDate, "yyyy-MM-dd"),
+        telegram_delivered: telegramOk,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+      };
+
       // 2. Persist to Supabase contact_submissions table for Admin portal Inbox
       if (isSupabaseConfigured) {
         try {
-          await supabase.from('contact_submissions').insert({
-            name: data.name,
-            email: data.email,
-            phone: data.phone ?? '',
-            project_needs: data.projectNeeds ?? '',
-            message: data.message,
-            preferred_date: format(data.preferredDate, "yyyy-MM-dd"),
-            telegram_delivered: telegramOk,
-          });
+          await supabase.from('contact_submissions').insert(newSubmission);
         } catch (dbErr) {
           console.warn("Supabase backup save notice:", dbErr);
         }
+      }
+
+      // 3. Mirror to local storage so enquiries are always visible in Admin
+      try {
+        const existing = JSON.parse(localStorage.getItem('portfolio_cms_table_contact_submissions') || '[]');
+        localStorage.setItem('portfolio_cms_table_contact_submissions', JSON.stringify([newSubmission, ...existing]));
+      } catch {
+        // ignore
       }
 
       toast.success(t("messageSent"));

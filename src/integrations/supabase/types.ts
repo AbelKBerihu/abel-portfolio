@@ -65,6 +65,7 @@ export type Database = {
           preferred_date: string
           project_needs: string | null
           telegram_delivered: boolean
+          status: string
         }
         Insert: {
           ai_brief?: string | null
@@ -77,6 +78,7 @@ export type Database = {
           preferred_date: string
           project_needs?: string | null
           telegram_delivered?: boolean
+          status?: string
         }
         Update: {
           ai_brief?: string | null
@@ -89,6 +91,7 @@ export type Database = {
           preferred_date?: string
           project_needs?: string | null
           telegram_delivered?: boolean
+          status?: string
         }
         Relationships: []
       }

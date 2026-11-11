@@ -25,7 +25,7 @@
       ]
     },
     {
-      "source": "/favicon.(ico|svg)",
+      "source": "/(favicon|apple-touch-icon).(ico|png)",
       "headers": [
         {
           "key": "Cache-Control",
